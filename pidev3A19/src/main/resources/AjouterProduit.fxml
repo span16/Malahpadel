@@ -26,6 +26,8 @@
         <TextField fx:id="prixTf" layoutX="29.0" layoutY="450.0" prefHeight="27.0" prefWidth="338.0" promptText="prix " styleClass="TextField" />
         <Label layoutX="29.0" layoutY="485.0" text="Stock:" />
         <TextField fx:id="stockTf" layoutX="29.0" layoutY="505.0" prefHeight="27.0" prefWidth="338.0" promptText="# Quantité en stock (ex : 50)" styleClass="TextField" />
-        <Button text="Ajouter" onAction="#addProduit" fx:id="addBtn" layoutX="357.0" layoutY="540.0" mnemonicParsing="false" prefHeight="40" prefWidth="80" styleClass="GeneralButton" />
+        <Button fx:id="addBtn" layoutX="357.0" layoutY="540.0" mnemonicParsing="false" onAction="#addProduit" prefHeight="40" prefWidth="80" styleClass="GeneralButton" text="Ajouter" />
+        <Button fx:id="afficherBtn" layoutX="446.0" layoutY="540.0" mnemonicParsing="false" onAction="#affichebtn" prefHeight="40" prefWidth="216.0" styleClass="GeneralButton" text="afficher liste des produits " />
+
     </children>
 </AnchorPane>

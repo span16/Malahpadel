@@ -35,8 +35,6 @@ public class ProduitService implements IServiceProduit<Produit>{
             }
         }
     }
-
-
     @Override
     public void modifier(Produit p, int id_produit) throws SQLException {
         String sql = "UPDATE produit SET nom_produit=?, categorie=?, prix=?, stock=?, description=?, image_produit=? WHERE id_produit=?";
