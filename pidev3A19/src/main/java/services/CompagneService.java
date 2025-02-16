@@ -69,7 +69,7 @@ public class CompagneService implements IServiceCompagne<Compagne> {
 
         int rowsDeleted = st.executeUpdate();
         if (rowsDeleted > 0) {
-            System.out.println("Compagne supprimée avec succès !");
+           // System.out.println("Compagne supprimée avec succès !");
         } else {
             System.out.println("Aucune compagne supprimée. Vérifiez le nom du sponsor.");
         }
