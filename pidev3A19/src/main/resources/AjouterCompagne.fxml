@@ -6,6 +6,16 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterCompagneController">
    <children>
       <TextField fx:id="nom_produit" layoutX="66.0" layoutY="49.0" />
-      <TextField layoutX="66.0" layoutY="124.0" />
+      <TextField fx:id="date_debut" layoutX="66.0" layoutY="91.0" />
+      <TextField fx:id="date_fin" layoutX="66.0" layoutY="124.0" />
+      <TextField fx:id="logo_compagne" layoutX="66.0" layoutY="157.0" />
+      <TextField fx:id="description" layoutX="66.0" layoutY="190.0" />
+      <TextField fx:id="tarifs" layoutX="66.0" layoutY="223.0" />
+      <TextField fx:id="stock" layoutX="66.0" layoutY="256.0" />
+      <TextField fx:id="categorie" layoutX="66.0" layoutY="289.0" />
+      <TextField fx:id="typeMarketing" layoutX="66.0" layoutY="322.0" />
+
+
+      
    </children>
 </AnchorPane>

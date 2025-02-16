@@ -13,17 +13,31 @@ public class ProduitService implements IServiceProduit<Produit>{
 
     @Override
     public void ajouter(Produit p) throws SQLException {
-        String sql="insert into produit(nom_produit,categorie,prix,stock,description,image_produit) values(?,?,?,?,?,?)";
-        PreparedStatement st = cnx.prepareStatement(sql);
-        st.setString(1,p.getNom_produit());
-        st.setString(2,p.getCategorie());
-        st.setFloat(3,p.getPrix());
-        st.setInt(4,p.getStock());
-        st.setString(5,p.getDescription());
-        st.setString(6,p.getImage_produit());
-        st.executeUpdate();
-        System.out.println("Produit  ajoutée");
+        String sql = "INSERT INTO produit (nom_produit, categorie, prix, stock, description, image_produit) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement st = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+        st.setString(1, p.getNom_produit());
+        st.setString(2, p.getCategorie());
+        st.setFloat(3, p.getPrix());
+        st.setInt(4, p.getStock());
+        st.setString(5, p.getDescription());
+        st.setString(6, p.getImage_produit());
+
+        int rowsInserted = st.executeUpdate();
+
+        if (rowsInserted > 0) {
+            // Récupérer l'ID généré
+            ResultSet rs = st.getGeneratedKeys();
+            if (rs.next()) {
+                int idGenere = rs.getInt(1);
+                p.setId_produit(idGenere);  // Mettre à jour l'objet produit avec l'ID généré
+            }
+            rs.close();
+        }
+        st.close();
+        System.out.println("Produit ajouté avec succès !");
     }
+
 
     @Override
     public void modifier(Produit p, int id_produit) throws SQLException {

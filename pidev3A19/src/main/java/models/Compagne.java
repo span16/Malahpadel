@@ -1,4 +1,5 @@
 package models;
+
 import java.sql.Date;
 
 public class Compagne {
@@ -6,44 +7,44 @@ public class Compagne {
     private int id_compagne;
     private Date date_debut;
     private Date date_fin;
-    private String logo_compagne,Typemarketing;
+    private String logo_compagne;
+    private String TypeMarketing;
     private String status;
     private float tarifs;
+    private Produit produit;  // Ensure this is initialized
+
+    // Constructors
     public Compagne() {
+        this.produit = new Produit();  // Initialize the produit object
     }
-    public Compagne(String nom_sponsor, int id_compagne, Date date_debut, Date date_fin, String logo_compagne, String Typemarketing, String status, float tarifs) {
+
+    public Compagne(String nom_sponsor, int id_compagne, Date date_debut, Date date_fin, String logo_compagne, String TypeMarketing, String status, float tarifs) {
         this.nom_sponsor = nom_sponsor;
         this.id_compagne = id_compagne;
         this.date_debut = date_debut;
         this.date_fin = date_fin;
         this.logo_compagne = logo_compagne;
-        this.Typemarketing = Typemarketing;
+        this.TypeMarketing = TypeMarketing;
         this.status = status;
         this.tarifs = tarifs;
-    }
-    public Compagne(String nom_sponsor, String date_debut, String date_fin, String logo_compagne, String typeMarketing, String status, float tarifs) {
-        this.nom_sponsor = nom_sponsor;
-        this.date_debut = Date.valueOf(date_debut);
-        this.date_fin =Date.valueOf(date_fin);
-        this.logo_compagne = logo_compagne;
-       this.Typemarketing = typeMarketing;
-        this.status = status;
-        this.tarifs = tarifs;
-    }
-    @Override
-    public String toString() {
-        return "Compagne{" +
-                "id_compagne=" + id_compagne +
-                ", nom_sponsor='" + nom_sponsor + '\'' +
-                ", date_debut=" + date_debut +
-                ", date_fin=" + date_fin +
-                ", logo_compagne='" + logo_compagne + '\'' +
-                ", Typemarketing='" + Typemarketing + '\'' +
-                ", status='" + status + '\'' +
-                ", tarifs=" + tarifs +
-                '}';
+        this.produit = new Produit();  // Initialize the produit object
     }
 
+    public Compagne(String nom_sponsor, String date_debut, String date_fin, String logo_compagne, String typeMarketing, String status, float tarifs, Produit produit) {
+        this.nom_sponsor = nom_sponsor;
+        this.date_debut = Date.valueOf(date_debut);
+        this.date_fin = Date.valueOf(date_fin);
+        this.logo_compagne = logo_compagne;
+        this.TypeMarketing = typeMarketing;
+        this.status = status;
+        this.tarifs = tarifs;
+        this.produit = produit;  // Set the produit object
+    }
+
+    public Compagne(String riovaciar, Date date, Date date1, String image, String digital, String active, double v, int idProduit) {
+    }
+
+    // Getters and setters
     public String getNom_sponsor() {
         return nom_sponsor;
     }
@@ -85,11 +86,11 @@ public class Compagne {
     }
 
     public String getTypeMarketing() {
-        return Typemarketing;
+        return TypeMarketing;
     }
 
     public void setTypeMarketing(String typeMarketing) {
-        this.Typemarketing = this.Typemarketing;
+        this.TypeMarketing = typeMarketing;
     }
 
     public String getStatus() {
@@ -106,5 +107,28 @@ public class Compagne {
 
     public void setTarifs(float tarifs) {
         this.tarifs = tarifs;
+    }
+
+    public Produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+
+    @Override
+    public String toString() {
+        return "Compagne{" +
+                "id_compagne=" + id_compagne +
+                ", nom_sponsor='" + nom_sponsor + '\'' +
+                ", date_debut=" + date_debut +
+                ", date_fin=" + date_fin +
+                ", logo_compagne='" + logo_compagne + '\'' +
+                ", TypeMarketing='" + TypeMarketing + '\'' +
+                ", status='" + status + '\'' +
+                ", tarifs=" + tarifs +
+                ", produit=" + produit +
+                '}';
     }
 }

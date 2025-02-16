@@ -1,5 +1,6 @@
 package services;
 import models.Compagne;
+
 import models.Produit;
 import tools.MyDataBase;
 
@@ -14,17 +15,29 @@ public class CompagneService implements IServiceCompagne<Compagne> {
 
     @Override
     public void ajoutercompagne(Compagne c) throws SQLException {
-        String sql="insert into compagne(nom_sponsor, date_debut,date_fin,logo_compagne,typeMarketing,status,tarifs) values(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO compagne(nom_sponsor, date_debut, date_fin, logo_compagne,TypeMarketing, status, tarifs, id_produit) VALUES(?,?,?,?,?,?,?,?)";
         PreparedStatement st = cnx.prepareStatement(sql);
-        st.setString(1,c.getNom_sponsor());
-        st.setDate(2,c.getDate_debut());
-        st.setDate(3,c.getDate_fin());
-        st.setString(4,c.getLogo_compagne());
-        st.setString(5,c.getTypeMarketing());
-        st.setString(6,c.getStatus());
-        st.setFloat(7,c.getTarifs());
+        st.setString(1, c.getNom_sponsor());
+        st.setDate(2, c.getDate_debut());
+        st.setDate(3, c.getDate_fin());
+        st.setString(4, c.getLogo_compagne());
+        st.setString(5, c.getTypeMarketing());  // Debug this value
+        st.setString(6, c.getStatus());
+        st.setFloat(7, c.getTarifs());
+        st.setInt(8, c.getProduit().getId_produit());
+
+        // Debugging: Print the values being inserted
+        System.out.println("Nom Sponsor: " + c.getNom_sponsor());
+        System.out.println("Date Début: " + c.getDate_debut());
+        System.out.println("Date Fin: " + c.getDate_fin());
+        System.out.println("Logo Compagne: " + c.getLogo_compagne());
+        System.out.println("Type Marketing: " + c.getTypeMarketing());  // Check this value
+        System.out.println("Status: " + c.getStatus());
+        System.out.println("Tarifs: " + c.getTarifs());
+        System.out.println("Produit ID: " + c.getProduit().getId_produit());
+
         st.executeUpdate();
-        System.out.println("compagne  ajoutée");
+
     }
 
     @Override
@@ -65,7 +78,7 @@ public class CompagneService implements IServiceCompagne<Compagne> {
 
     @Override
     public List<Compagne> recuperercompagne() throws SQLException {
-        String sql = "SELECT * FROM compagne";  // Vérifie que la table 'compagne' existe bien et que les données sont présentes
+        String sql = "SELECT c.*, p.id_produit as id_produit, p.nom_produit as produit_nom, p.categorie as produit_categorie, p.image_produit as produit_image, p.description as produit_description, p.prix as produit_prix FROM compagne c JOIN produit p ON c.id_produit = p.id_produit";
         Statement st = cnx.createStatement();
         ResultSet rs = st.executeQuery(sql);
 
@@ -81,6 +94,17 @@ public class CompagneService implements IServiceCompagne<Compagne> {
             c.setStatus(rs.getString("status"));
             c.setTarifs(rs.getFloat("tarifs"));
 
+            // Créer un objet Produit avec les attributs corrects
+            Produit p = new Produit();
+            p.setId_produit(rs.getInt("id_produit"));
+            p.setNom_produit(rs.getString("produit_nom"));
+            p.setCategorie(rs.getString("produit_categorie"));
+            p.setImage_produit(rs.getString("produit_image"));
+            p.setDescription(rs.getString("produit_description"));
+            p.setPrix(rs.getFloat("produit_prix"));
+            p.setStock(rs.getInt("produit_stock")); // Ajout du stock
+
+            c.setProduit(p);  // Associer le produit à la compagne
             campagnes.add(c);
         }
         return campagnes;

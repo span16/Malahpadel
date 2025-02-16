@@ -1,44 +1,41 @@
 package tests;
-import java.sql.Date;
 
 import models.Compagne;
 import models.Produit;
 import services.CompagneService;
 import services.ProduitService;
 
-import java.sql.SQLException;
-
+import java.sql.*;
 public class Main {
-    public static void main(String[] args) {
-        ProduitService ps1= new ProduitService();
-        CompagneService ps2= new CompagneService();
-        Produit p = new Produit(100, "svr","skincare","svr.jpg","haute gamme",50);
-        Compagne c = new Compagne("riovaciar", "2003-08-11", "2025-05-11", "rio.png", "ads", "active", 500);
+    public static void main(String[] args) throws SQLException {
+        ProduitService ps1 = new ProduitService();
+        CompagneService ps2 = new CompagneService();
+
+        // Create and add a product
+        Produit p = new Produit(100, "svr", "skincare", "svr.jpg", "haute gamme", 50);
+        ps1.ajouter(p);
+
+        // Debug: Print the product ID after adding it to the database
+        System.out.println("Produit ID after insertion: " + p.getId_produit());
+
+        // Create a campaign and associate the product
+        Compagne c = new Compagne();
+        c.setNom_sponsor("riovaciar");
+        c.setDate_debut(Date.valueOf("2003-08-11"));
+        c.setDate_fin(Date.valueOf("2025-05-11"));
+        c.setLogo_compagne("rio.png");
+        c.setTypeMarketing("ads");  // Ensure this is set
+        c.setStatus("active");
+        c.setTarifs(500);
+        c.setProduit(p);  // Associate the product with the campaign
+
+        System.out.println("Produit in Compagne: " + c.getProduit());
+
         try {
-           // ps1.ajouter(p);
-            //ps2.ajoutercompagne(c);
-            System.out.println(ps1.recuperer());
-            for (Compagne c1 : ps2.recuperercompagne()) {
-                System.out.println("Compagne { id_compagne=" + c1.getId_compagne() +
-                        ", nom_sponsor='" + c1.getNom_sponsor() +
-                        "', date_debut=" + c1.getDate_debut() +
-                        ", date_fin=" + c1.getDate_fin() +
-                        ", logo_compagne='" + c1.getLogo_compagne() +
-                        "', Typemarketing='" + c1.getTypeMarketing() +
-                        "', status='" + c1.getStatus() +
-                        "', tarifs=" + c1.getTarifs() + " }");
-            }
-
-            Produit p2 = new Produit(40, "vanilla's", "trousse makeup", "vanilla.jpg", "makeup kit", 30);
-          ps1.modifier(p2, 8);
-            ps1.supprimer(p, "svr");
-
-           Compagne cModif = new Compagne("sugarbaby", "2024-01-01", "2024-12-31", "sugarbaby.png", "digital", "inactive", 200);
-           ps2.modifiercompagne(cModif, 11);
-            ps2.supprimercompagne(c, "rio");
+            ps2.ajoutercompagne(c);  // Add the campaign to the database
+            System.out.println("Compagne ajoutée avec succès !");
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            System.err.println("Erreur lors de l'ajout de la compagne : " + e.getMessage());
         }
     }
-
 }
