@@ -6,23 +6,27 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+public class MainFx extends Application {
 
-public class MainFX extends Application {
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            // Charger le fichier FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterProduit.fxml"));
+            Parent root = loader.load();
+
+            // Configurer la scène
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Ajouter Produit");
+            primaryStage.show();
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de l'interface : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
-
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterCompagne.fxml"));
-        Parent root = loader.load();
-        Scene sc = new Scene(root);
-        stage.setScene(sc);
-        stage.setTitle("Ajouter");
-        stage.show();
-
-
-    }
-
 }

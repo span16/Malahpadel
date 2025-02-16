@@ -6,7 +6,6 @@ import services.CompagneService;
 import services.ProduitService;
 
 import java.sql.*;
-
 public class Main {
     public static void main(String[] args) throws SQLException {
         ProduitService ps1 = new ProduitService();
@@ -51,18 +50,12 @@ public class Main {
             modifiedCampagne.setStatus("active"); // Status remains active
             modifiedCampagne.setTarifs(600); // New tarifs
 
-            ps2.modifiercompagne(modifiedCampagne, 28); // Assuming you know the ID of the campaign to update
+            ps2.modifiercompagne(modifiedCampagne, 65); // Assuming you know the ID of the campaign to update
             System.out.println("Compagne modifiée avec succès !");
         } catch (SQLException e) {
             System.err.println("Erreur lors de la modification de la compagne : " + e.getMessage());
         }
-        // Example of deleting a campaign
-        try {
-            ps2.supprimercompagne(c, "riovaciar");  // Delete based on the sponsor name
-            System.out.println("Compagne supprimée avec succès !");
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de la suppression de la compagne : " + e.getMessage());
-        }
+
 
     }
 }

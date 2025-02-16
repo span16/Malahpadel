@@ -2,12 +2,13 @@ package models;
 
 public class Produit {
     private int id_produit, stock;
-    private String nom_produit,categorie,image_produit,description;
-    private  float prix;
+    private String nom_produit, categorie, image_produit, description;
+    private float prix;
+
     public Produit() {
     }
 
-    public Produit(int stock, String nom_produit, String categorie,String image_produit,String description,float prix) {
+    public Produit(int stock, String nom_produit, String categorie, String image_produit, String description, float prix) {
         this.stock = stock;
         this.nom_produit = nom_produit;
         this.categorie = categorie;
@@ -16,7 +17,7 @@ public class Produit {
         this.prix = prix;
     }
 
-    public Produit(int id_produit, int stock, String nom_produit, String categorie,String image_produit,String description,float prix) {
+    public Produit(int id_produit, int stock, String nom_produit, String categorie, String image_produit, String description, float prix) {
         this.id_produit = id_produit;
         this.stock = stock;
         this.nom_produit = nom_produit;

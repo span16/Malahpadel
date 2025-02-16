@@ -15,30 +15,31 @@ public class CompagneService implements IServiceCompagne<Compagne> {
 
     @Override
     public void ajoutercompagne(Compagne c) throws SQLException {
-        String sql = "INSERT INTO compagne(nom_sponsor, date_debut, date_fin, logo_compagne,TypeMarketing, status, tarifs, id_produit) VALUES(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO compagne(nom_sponsor, date_debut, date_fin, logo_compagne, TypeMarketing, status, tarifs, id_produit) VALUES(?,?,?,?,?,?,?,?)";
         PreparedStatement st = cnx.prepareStatement(sql);
         st.setString(1, c.getNom_sponsor());
         st.setDate(2, c.getDate_debut());
         st.setDate(3, c.getDate_fin());
         st.setString(4, c.getLogo_compagne());
-        st.setString(5, c.getTypeMarketing());  // Debug this value
+        st.setString(5, c.getTypeMarketing());
         st.setString(6, c.getStatus());
         st.setFloat(7, c.getTarifs());
-        st.setInt(8, c.getProduit().getId_produit());
+        st.setInt(8, c.getProduit().getId_produit()); // Utiliser l'ID du produit associé
 
         // Debugging: Print the values being inserted
         System.out.println("Nom Sponsor: " + c.getNom_sponsor());
         System.out.println("Date Début: " + c.getDate_debut());
         System.out.println("Date Fin: " + c.getDate_fin());
         System.out.println("Logo Compagne: " + c.getLogo_compagne());
-        System.out.println("Type Marketing: " + c.getTypeMarketing());  // Check this value
+        System.out.println("Type Marketing: " + c.getTypeMarketing());
         System.out.println("Status: " + c.getStatus());
         System.out.println("Tarifs: " + c.getTarifs());
         System.out.println("Produit ID: " + c.getProduit().getId_produit());
 
         st.executeUpdate();
-
+        System.out.println("Compagne ajoutée avec succès !");
     }
+
 
     @Override
     public void modifiercompagne(Compagne c, int id_compagne) throws SQLException {

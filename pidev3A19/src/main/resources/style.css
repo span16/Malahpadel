@@ -1,0 +1,33 @@
+.Box {
+    -fx-background-color: #f4f4f4; /* Couleur de fond douce */
+    -fx-padding: 20px;
+    -fx-border-color: #d3d3d3;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+}
+
+.GeneralButton {
+    -fx-background-color: #0078d7; /* Couleur bleue pour les boutons */
+    -fx-text-fill: white; /* Texte blanc */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.GeneralButton:hover {
+    -fx-background-color: #005a9e; /* Couleur plus foncée au survol */
+}
+
+.TextField, .TextArea {
+    -fx-background-color: white;
+    -fx-border-color: #d3d3d3;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+Label {
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #333333; /* Couleur sombre pour le texte */
+}
