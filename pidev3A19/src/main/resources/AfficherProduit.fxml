@@ -3,6 +3,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.TilePane?>
 
-<ScrollPane prefHeight="205.0" prefWidth="239.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherProduitsController">
+<ScrollPane prefHeight="528.0" prefWidth="628.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherProduitsController">
     <TilePane fx:id="produitTilePane" hgap="50" prefColumns="3" prefRows="2" vgap="120" />
 </ScrollPane>

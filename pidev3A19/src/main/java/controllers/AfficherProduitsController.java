@@ -1,13 +1,19 @@
 package controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import models.Produit;
 import services.ProduitService;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -20,25 +26,25 @@ public class AfficherProduitsController {
 
     @FXML
     public void initialize() {
-        loadProduits(); // Charger les produits au démarrage
+        loadProduits();
     }
 
     @FXML
     public void loadProduits() {
-        produitTilePane.getChildren().clear(); // Vider le TilePane avant de charger les nouveaux produits
-        produitTilePane.setHgap(50); // Espacement horizontal entre les cartes
-        produitTilePane.setVgap(120); // Espacement vertical entre les cartes
+        produitTilePane.getChildren().clear();
+        produitTilePane.setHgap(50);
+        produitTilePane.setVgap(120);
 
         try {
-            List<Produit> produits = produitService.recuperer(); // Récupérer la liste des produits
+            List<Produit> produits = produitService.recuperer();
 
             for (Produit produit : produits) {
-                VBox produitCard = new VBox(5); // Créer une carte pour chaque produit
-                produitCard.setStyle("-fx-border-color: black; -fx-padding: 10px; -fx-background-color: #f4f4f4; -fx-border-radius: 10px;");
+                VBox produitCard = new VBox(5);
+                produitCard.setStyle("-fx-border-color: black; -fx-padding: 10px; -fx-background-color: #f4f4f4;");
                 produitCard.setPrefSize(200, 250);
 
-                // Ajouter les informations du produit à la carte
-                Label idLabel = new Label("ID Produit: " + produit.getId_produit());
+                // Éléments de la carte
+                Label idLabel = new Label("ID: " + produit.getId_produit());
                 Label nomLabel = new Label("Nom: " + produit.getNom_produit());
                 Label categorieLabel = new Label("Catégorie: " + produit.getCategorie());
                 Label prixLabel = new Label("Prix: " + produit.getPrix());
@@ -46,34 +52,62 @@ public class AfficherProduitsController {
                 Label descriptionLabel = new Label("Description: " + produit.getDescription());
                 Label imageLabel = new Label("Image: " + produit.getImage_produit());
 
-                // Bouton Supprimer
+                // Boutons
                 Button deleteButton = new Button("Supprimer");
-                deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-padding: 5px 10px; -fx-font-size: 12px;");
-                deleteButton.setOnAction(event -> deleteProduit(produit)); // Action pour supprimer le produit
+                deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+                deleteButton.setOnAction(event -> deleteProduit(produit));
 
+                Button modifierButton = new Button("Modifier");
+                modifierButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+                modifierButton.setOnAction(event -> modifierProduit(produit));
 
-                // Ajouter les éléments à la carte
-                produitCard.getChildren().addAll(idLabel, nomLabel, categorieLabel, prixLabel, stockLabel, descriptionLabel, imageLabel, deleteButton);
+                // Conteneur pour les boutons
+                HBox buttonContainer = new HBox(10);
+                buttonContainer.getChildren().addAll(deleteButton, modifierButton);
 
-                // Ajouter la carte au TilePane
+                // Ajout des éléments à la carte
+                produitCard.getChildren().addAll(
+                        idLabel, nomLabel, categorieLabel,
+                        prixLabel, stockLabel, descriptionLabel,
+                        imageLabel, buttonContainer
+                );
+
                 produitTilePane.getChildren().add(produitCard);
             }
-
         } catch (SQLException e) {
-            System.out.println("Erreur lors du chargement des produits : " + e.getMessage());
+            e.printStackTrace();
         }
     }
-
-
 
     private void deleteProduit(Produit produit) {
         try {
-            produitService.supprimer(produit, produit.getNom_produit()); // Supprimer le produit
-            loadProduits(); // Recharger les produits après suppression
+            produitService.supprimer(produit, produit.getNom_produit());
+            loadProduits();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression du produit : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    private void modifierProduit(Produit produit) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierProduit.fxml"));
+            Parent root = loader.load();
 
+            ModifierProduitController controller = loader.getController();
+            controller.initData(produit);
+
+            // Définir le callback de rafraîchissement
+            controller.setOnUpdateSuccess(() -> {
+                loadProduits(); // Rafraîchir après modification
+            });
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Modifier Produit");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

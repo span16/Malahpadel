@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.ModifierProduitController"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="499.0" prefWidth="621.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierProduitController">
+    <TextField fx:id="nomProduitTf" layoutX="50" layoutY="50" promptText="Nom du produit" />
+    <TextField fx:id="categorieTf" layoutX="50" layoutY="100" promptText="Catégorie" />
+    <TextField fx:id="prixTf" layoutX="50" layoutY="150" promptText="Prix" />
+    <TextField fx:id="stockTf" layoutX="228.0" layoutY="100.0" promptText="Stock" />
+    <TextArea fx:id="descriptionTa" layoutX="50.0" layoutY="200.0" prefHeight="126.0" prefWidth="418.0" promptText="Description" />
+    <TextField fx:id="imageProduitTf" layoutX="228.0" layoutY="150.0" promptText="Image du produit" />
+    <Button fx:id="validerButton"  text="Valider" onAction="#validerModification" layoutX="415.0" layoutY="336.0"/>
 
+    <Text layoutX="185.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modifier Produit " wrappingWidth="272.216796875" />
 </AnchorPane>

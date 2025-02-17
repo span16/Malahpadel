@@ -5,9 +5,10 @@ import tools.MyDataBase;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-public class ProduitService implements IServiceProduit<Produit>{
+public class ProduitService implements IServiceProduit<Produit> {
     private Connection cnx;
-    public ProduitService(){
+
+    public ProduitService() {
         cnx = MyDataBase.getInstance().getCnx();
     }
 
@@ -35,6 +36,7 @@ public class ProduitService implements IServiceProduit<Produit>{
             }
         }
     }
+
     @Override
     public void modifier(Produit p, int id_produit) throws SQLException {
         String sql = "UPDATE produit SET nom_produit=?, categorie=?, prix=?, stock=?, description=?, image_produit=? WHERE id_produit=?";
@@ -47,7 +49,6 @@ public class ProduitService implements IServiceProduit<Produit>{
         st.setString(5, p.getDescription());
         st.setString(6, p.getImage_produit());
         st.setInt(7, id_produit); // Utilisation correcte de l'ID fourni
-
         int rowsUpdated = st.executeUpdate();
         if (rowsUpdated > 0) {
             System.out.println("Produit mis à jour avec succès !");
@@ -70,15 +71,15 @@ public class ProduitService implements IServiceProduit<Produit>{
         }
     }
 
-
     @Override
     public List<Produit> recuperer() throws SQLException {
-        String sql ="select * from produit";
+        String sql = "SELECT * FROM produit";
         Statement st = cnx.createStatement();
         ResultSet rs = st.executeQuery(sql);
         List<Produit> produits = new ArrayList<>();
-        while(rs.next()){
+        while (rs.next()) {
             Produit p = new Produit();
+            p.setId_produit(rs.getInt("id_produit")); // Récupérer l'ID du produit
             p.setNom_produit(rs.getString("nom_produit"));
             p.setCategorie(rs.getString("categorie"));
             p.setPrix(rs.getFloat("prix"));
@@ -87,7 +88,6 @@ public class ProduitService implements IServiceProduit<Produit>{
             p.setImage_produit(rs.getString("image_produit"));
             produits.add(p);
         }
-
         return produits;
     }
 }
