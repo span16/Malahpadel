@@ -75,40 +75,52 @@ public class CompagneService implements IServiceCompagne<Compagne> {
             System.out.println("Aucune compagne supprimée. Vérifiez le nom du sponsor.");
         }
     }
-
-
-    @Override
+@Override
     public List<Compagne> recuperercompagne() throws SQLException {
-        String sql = "SELECT c.*, p.id_produit as id_produit, p.nom_produit as produit_nom, p.categorie as produit_categorie, p.image_produit as produit_image, p.description as produit_description, p.prix as produit_prix FROM compagne c JOIN produit p ON c.id_produit = p.id_produit";
-        Statement st = cnx.createStatement();
-        ResultSet rs = st.executeQuery(sql);
+        String sql = "SELECT c.*, " +
+                "p.id_produit, p.nom_produit AS produit_nom, " +
+                "p.categorie AS produit_categorie, p.image_produit AS produit_image, " +
+                "p.description AS produit_description, p.prix AS produit_prix, " +
+                "p.stock AS produit_stock " + // Vérifie que cette colonne existe
+                "FROM compagne c " +
+                "JOIN produit p ON c.id_produit = p.id_produit";
 
         List<Compagne> campagnes = new ArrayList<>();
-        while (rs.next()) {
-            Compagne c = new Compagne();
-            c.setId_compagne(rs.getInt("id_compagne"));
-            c.setNom_sponsor(rs.getString("nom_sponsor"));
-            c.setDate_debut(rs.getDate("date_debut"));
-            c.setDate_fin(rs.getDate("date_fin"));
-            c.setLogo_compagne(rs.getString("logo_compagne"));
-            c.setTypeMarketing(rs.getString("Typemarketing"));
-            c.setStatus(rs.getString("status"));
-            c.setTarifs(rs.getFloat("tarifs"));
+        try (Statement st = cnx.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            System.out.println("Exécution de la requête SQL...");
 
-            // Créer un objet Produit avec les attributs corrects
-            Produit p = new Produit();
-            p.setId_produit(rs.getInt("id_produit"));
-            p.setNom_produit(rs.getString("produit_nom"));
-            p.setCategorie(rs.getString("produit_categorie"));
-            p.setImage_produit(rs.getString("produit_image"));
-            p.setDescription(rs.getString("produit_description"));
-            p.setPrix(rs.getFloat("produit_prix"));
-            p.setStock(rs.getInt("produit_stock")); // Ajout du stock
+            while (rs.next()) {
+                System.out.println("Donnée trouvée : " + rs.getInt("id_compagne"));
 
-            c.setProduit(p);  // Associer le produit à la compagne
-            campagnes.add(c);
+                Compagne c = new Compagne();
+                c.setId_compagne(rs.getInt("id_compagne"));
+                c.setNom_sponsor(rs.getString("nom_sponsor"));
+                c.setDate_debut(rs.getDate("date_debut"));
+                c.setDate_fin(rs.getDate("date_fin"));
+                c.setLogo_compagne(rs.getString("logo_compagne"));
+                c.setTypeMarketing(rs.getString("Typemarketing")); // Vérifie l'orthographe
+                c.setStatus(rs.getString("status"));
+                c.setTarifs(rs.getFloat("tarifs"));
+
+                // Création de l'objet Produit
+                Produit p = new Produit();
+                p.setId_produit(rs.getInt("id_produit"));
+                p.setNom_produit(rs.getString("produit_nom"));
+                p.setCategorie(rs.getString("produit_categorie"));
+                p.setImage_produit(rs.getString("produit_image"));
+                p.setDescription(rs.getString("produit_description"));
+                p.setPrix(rs.getFloat("produit_prix"));
+                p.setStock(rs.getInt("produit_stock")); // Vérifie que cette colonne est bien présente
+
+                c.setProduit(p); // Associer le produit à la compagne
+                campagnes.add(c);
+            }
+
+            System.out.println("Nombre de campagnes récupérées : " + campagnes.size());
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des campagnes : " + e.getMessage());
         }
+
         return campagnes;
     }
-
 }

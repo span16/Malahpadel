@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.ModifierCompagneController">
+
+    <Label text="Modifier Campagne" style="-fx-font-size: 18px;"/>
+
+    <TextField fx:id="nomSponsorField" promptText="Nom du Sponsor"/>
+    <TextField fx:id="dateDebutField" promptText="Date Début (YYYY-MM-DD)"/>
+    <TextField fx:id="dateFinField" promptText="Date Fin (YYYY-MM-DD)"/>
+    <TextField fx:id="logoField" promptText="URL du Logo"/>
+    <TextField fx:id="typeMarketingField" promptText="Type Marketing"/>
+    <TextField fx:id="statusField" promptText="Status"/>
+    <TextField fx:id="tarifsField" promptText="Tarifs"/>
+
+    <HBox spacing="10">
+        <Button fx:id="modifierButton" text="Modifier"/>
+        <Button fx:id="annulerButton" text="Annuler"/>
+    </HBox>
+
+</VBox>
