@@ -3,6 +3,7 @@ package controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -227,6 +228,28 @@ public class CompagneFormControllerA {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Erreur", "Impossible d'ouvrir la liste des campagnes.");
+        }
+    }
+
+    public void interfaceproduit(ActionEvent actionEvent) {
+        try {
+            // Charger le fichier FXML de l'interface AjouterProduit
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterProduit.fxml"));
+            Parent root = loader.load();
+
+            // Créer une nouvelle scène
+            Scene scene = new Scene(root);
+
+            // Obtenir la fenêtre actuelle (stage) à partir de l'événement
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+
+            // Définir la nouvelle scène sur le stage
+            stage.setScene(scene);
+            stage.setTitle("Ajouter un Produit"); // Titre de la nouvelle fenêtre
+            stage.show(); // Afficher la nouvelle scène
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir l'interface AjouterProduit.");
         }
     }
 }

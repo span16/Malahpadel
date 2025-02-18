@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CompagneFormControllerA">
+<AnchorPane prefHeight="560.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CompagneFormControllerA">
     <stylesheets>
         <URL value="@style.css" /> <!-- Lien vers un fichier CSS pour le style -->
     </stylesheets>
@@ -75,7 +75,8 @@
         <HBox alignment="CENTER_RIGHT" spacing="10">
             <Button onAction="#annuler" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Annuler" />
             <Button onAction="#valider" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Valider" />
-         <Button fx:id="affichcomp" style="-fx-background-color: #6999d0; -fx-text-fill: white;" text="liste Compagne" onAction="#affichercompagne"/>
+         <Button fx:id="affichcomp" onAction="#affichercompagne" style="-fx-background-color: #6999d0; -fx-text-fill: white;" text="liste Compagne" />
         </HBox>
     </VBox>
+   <Button fx:id="produitinterface" layoutX="612.0" layoutY="28.0" mnemonicParsing="false" onAction="#interfaceproduit" text="Produit" />
 </AnchorPane>
