@@ -22,9 +22,8 @@ public class ModifierCompagneController {
     private Button modifierButton, annulerButton;
 
     private CompagneService compagneService = new CompagneService();
-    private Compagne compagne;  // Campagne sélectionnée
-    private Runnable onUpdateSuccess; // Callback
-
+    private Compagne compagne;
+    private Runnable onUpdateSuccess;
     public void setCompagne(Compagne compagne) {
         this.compagne = compagne;
         nomSponsorField.setText(compagne.getNom_sponsor());
@@ -61,7 +60,6 @@ public class ModifierCompagneController {
             showAlert(Alert.AlertType.INFORMATION, "Succès", "La campagne a été modifiée !");
             fermerFenetre();
 
-            // Déclencher le callback
             if (onUpdateSuccess != null) {
                 onUpdateSuccess.run();
             }

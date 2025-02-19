@@ -54,12 +54,11 @@ public class CompagneFormControllerA {
     // Service pour gérer les campagnes
     private CompagneService compagneService = new CompagneService();
 
-    // Méthode initialisation
     @FXML
     public void initialize() {
         TextFormatter<String> textFormatter = new TextFormatter<>(change -> {
             if (change.getControlNewText().matches("[a-zA-Z\\s]*")) {
-                return change; // Accepter la modification
+                return change;
             }
             return null;
         });
@@ -67,9 +66,9 @@ public class CompagneFormControllerA {
 
         TextFormatter<String> floatFormatter = new TextFormatter<>(change -> {
             if (change.getControlNewText().matches("\\d*(\\.\\d*)?")) {
-                return change; // Accepter la modification
+                return change;
             }
-            return null; // Rejeter la modification
+            return null;
         });
         tarifsTf.setTextFormatter(floatFormatter);
 
@@ -82,7 +81,7 @@ public class CompagneFormControllerA {
         typeMarketingComboBox.getItems().addAll("Email", "Réseaux sociaux", "Publicité en ligne", "Télévision", "Autre");
     }
 
-    // Remplir le ComboBox pour le statut
+
     private void populateStatusComboBox() {
         statusComboBox.getItems().addAll("active", "inactive", "pending");
     }

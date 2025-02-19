@@ -1,6 +1,7 @@
 package controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -48,28 +49,71 @@ public class ModifierProduitController {
     @FXML
     private void validerModification() {
         try {
-            // Mettre à jour l'objet Produit
+            // Vérification que les champs obligatoires ne sont pas vides
+            if (nomProduitTf.getText().isEmpty() || categorieTf.getText().isEmpty() ||
+                    prixTf.getText().isEmpty() || stockTf.getText().isEmpty()) {
+                throw new IllegalArgumentException("Tous les champs obligatoires doivent être remplis.");
+            }
+
+            // Validation du format des nombres pour le prix et le stock
+            float prix;
+            int stock;
+            try {
+                prix = Float.parseFloat(prixTf.getText());
+                stock = Integer.parseInt(stockTf.getText());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Le prix et le stock doivent être des nombres valides.");
+            }
+
+            // Vérification que la catégorie ne contient pas de nombres
+            if (categorieTf.getText().matches(".*\\d.*")) {
+                throw new IllegalArgumentException("La catégorie ne doit pas contenir de chiffres.");
+            }
+
+            // Validation de la longueur des chaînes de caractères
+            if (nomProduitTf.getText().length() > 100) {
+                throw new IllegalArgumentException("Le nom du produit ne doit pas dépasser 100 caractères.");
+            }
+            if (categorieTf.getText().length() > 50) {
+                throw new IllegalArgumentException("La catégorie ne doit pas dépasser 50 caractères.");
+            }
+            if (descriptionTa.getText().length() > 500) {
+                throw new IllegalArgumentException("La description ne doit pas dépasser 500 caractères.");
+            }
+
+            // Mise à jour du produit
             produit.setNom_produit(nomProduitTf.getText());
             produit.setCategorie(categorieTf.getText());
-            produit.setPrix(Float.parseFloat(prixTf.getText()));
-            produit.setStock(Integer.parseInt(stockTf.getText()));
+            produit.setPrix(prix);
+            produit.setStock(stock);
             produit.setDescription(descriptionTa.getText());
             produit.setImage_produit(imageProduitTf.getText());
 
-            // Appeler le service
+            // Appel du service pour modifier le produit
             produitService.modifier(produit, produit.getId_produit());
 
-            // Fermer la fenêtre
+            // Fermeture de la fenêtre
             Stage stage = (Stage) validerButton.getScene().getWindow();
             stage.close();
 
-            // Déclencher le callback
+            // Exécution de la callback en cas de succès
             if (onUpdateSuccess != null) {
                 onUpdateSuccess.run();
             }
 
-        } catch (NumberFormatException | SQLException e) {
+        } catch (IllegalArgumentException e) {
+            // Affichage d'un message d'erreur à l'utilisateur
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de saisie");
+            alert.setHeaderText(null);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-}
+            // Affichage d'un message d'erreur pour les problèmes de base de données
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de base de données");
+            alert.setHeaderText(null);
+            alert.setContentText("Une erreur s'est produite lors de la mise à jour du produit.");
+            alert.showAndWait();
+        }}}
