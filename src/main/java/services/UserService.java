@@ -89,7 +89,8 @@ public class UserService implements Iuser <User>
         List<User> users = new ArrayList<>();
 
         while (rs.next()) {
-            User p =new User();
+            User p = new User();
+            p.setId(rs.getInt("id")); // **Ajoute cette ligne pour récupérer l'ID**
             p.setAge(rs.getInt("age"));
             p.setCin(rs.getInt("cin"));
             p.setNom(rs.getString("nom"));
@@ -99,11 +100,26 @@ public class UserService implements Iuser <User>
             p.setEtat(rs.getString("etat"));
             p.setFonction(rs.getString("fonction"));
 
-
+            System.out.println("Utilisateur chargé : ID=" + p.getId() + ", Nom=" + p.getNom());
             users.add(p);
         }
         return users;
     }
+
+    public boolean checkUserExists(int userId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM user WHERE id = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Retourne vrai si l'utilisateur existe
+                }
+            }
+        }
+        return false; // Si aucune ligne n'est trouvée
+    }
+
+
 
     // Méthode pour vérifier si un utilisateur existe par ID
     public boolean userExists(int userId) throws SQLException {

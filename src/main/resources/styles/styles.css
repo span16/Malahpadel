@@ -1,0 +1,44 @@
+/* 🌟 Arrière-plan avec une image */
+.background {
+    -fx-background-image: url("../Image/oppa.jpg");  /* Remplace ce chemin par celui de ton image */
+    -fx-background-size: cover;  /* L'image couvre tout l'espace disponible */
+    -fx-background-position: center center;  /* Optionnel : centrer l'image */
+}
+
+/* 🌟 Carte de l'utilisateur (user-card) */
+.user-card {
+    -fx-border-color: black;
+    -fx-border-radius: 10px;
+    -fx-padding: 10px;
+    -fx-background-color: #f4f4f4;
+    -fx-background-radius: 10px;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 250px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* 🌟 Style des labels dans la carte utilisateur */
+.user-card Label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* 🌟 Style des boutons */
+.button {
+    -fx-background-radius: 5px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* 🔴 Bouton supprimer */
+.delete-button {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+}
+
+/* 🟢 Bouton modifier */
+.modify-button {
+    -fx-background-color: #000FFF;
+    -fx-text-fill: white;
+}

@@ -90,4 +90,8 @@ public class ProfilService implements Iprofil<Profil> {  // Assurez-vous que l'i
             throw ex;
         }
     }
+
+    public void checkUserExists(int userId) {
+
+    }
 }

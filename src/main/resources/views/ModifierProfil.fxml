@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="anchorPane" prefHeight="300.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ModifierProfil" stylesheets="@../styles/modifierUser.css">
+
+    <children>
+        <Label layoutX="50.0" layoutY="40.0" text="Avatar" />
+        <TextField fx:id="avatarField" layoutX="150.0" layoutY="40.0" prefWidth="200.0"/>
+
+        <Label layoutX="50.0" layoutY="90.0" text="Bio" />
+        <TextField fx:id="bioField" layoutX="150.0" layoutY="90.0" prefWidth="200.0"/>
+
+        <Label layoutX="50.0" layoutY="140.0" text="Préférences" />
+        <TextField fx:id="preferencesField" layoutX="150.0" layoutY="140.0" prefWidth="200.0"/>
+
+        <Button fx:id="modifierButton" layoutX="100.0" layoutY="200.0" text="Modifier"/>
+        <Button fx:id="annulerButton" layoutX="220.0" layoutY="200.0" text="Annuler"/>
+    </children>
+</AnchorPane>

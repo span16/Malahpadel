@@ -23,9 +23,14 @@ public class User {
         this.fonction = fonction;
     }
 
+    public User(String nom, String prenom, String email, int cin, int age) {
+
+    }
+
     public User() {
 
     }
+
 
     public int getId() {
         return id;
@@ -99,4 +104,6 @@ public class User {
         this.fonction = fonction;
     }
 
-}
+
+    }
+
