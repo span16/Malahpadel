@@ -76,9 +76,8 @@ public class AfficheCompagneController {
             produitImageView.setImage(null);
         }
 
-        // Bouton Supprimer avec confirmation
         Button suppButton = new Button("Supprimer");
-        suppButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+        suppButton.setStyle("-fx-background-color: #529fbc; -fx-text-fill: white;");
         suppButton.setOnAction(event -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation de suppression");
@@ -99,7 +98,6 @@ public class AfficheCompagneController {
 
         Button modifButton = new Button("Modifier");
         modifButton.setStyle("-fx-background-color: #6999d0; -fx-text-fill: white;");
-        // Dans AfficheCompagneController, lors de l'ouverture du formulaire de modification
         modifButton.setOnAction(event -> {
             if (compagne.getNom_sponsor() == null || compagne.getNom_sponsor().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Le nom du sponsor est vide.");

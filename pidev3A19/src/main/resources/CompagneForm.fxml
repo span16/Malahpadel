@@ -65,13 +65,11 @@
             <TextField fx:id="tarifsTf" promptText="Entrez les tarifs" style="-fx-pref-width: 300px;" />
         </HBox>
 
-        <!-- Champ pour sélectionner l'idProduit -->
         <HBox spacing="10">
             <Label style="-fx-font-weight: bold;" text="ID Produit:" />
             <ComboBox fx:id="idProduitComboBox" style="-fx-pref-width: 300px;" />
         </HBox>
 
-        <!-- Boutons pour valider ou annuler -->
         <HBox alignment="CENTER_RIGHT" spacing="10">
             <Button onAction="#annuler" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Annuler" />
             <Button onAction="#valider" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Valider" />

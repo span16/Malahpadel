@@ -46,7 +46,6 @@ public class AfficherProduitsController {
                 produitCard.setPrefSize(200, 250);
 
                 // Éléments de la carte
-                Label idLabel = new Label("ID: " + produit.getId_produit());
                 Label nomLabel = new Label("Nom: " + produit.getNom_produit());
                 Label categorieLabel = new Label("Catégorie: " + produit.getCategorie());
                 Label prixLabel = new Label("Prix: " + produit.getPrix());
@@ -56,7 +55,7 @@ public class AfficherProduitsController {
 
                 // Boutons
                 Button deleteButton = new Button("Supprimer");
-                deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+                deleteButton.setStyle("-fx-background-color: #528ec6; -fx-text-fill: white;");
                 deleteButton.setOnAction(event -> deleteProduit(produit));
 
                 Button modifierButton = new Button("Modifier");
@@ -69,7 +68,7 @@ public class AfficherProduitsController {
 
                 // Ajout des éléments à la carte
                 produitCard.getChildren().addAll(
-                        idLabel, nomLabel, categorieLabel,
+                         nomLabel, categorieLabel,
                         prixLabel, stockLabel, descriptionLabel,
                         imageLabel, buttonContainer
                 );
