@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="500.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AfficherReservationController">
+
+    <!-- TableView des réservations -->
+    <TableView fx:id="reservationTable" layoutX="14.0" layoutY="14.0" prefHeight="300.0" prefWidth="570.0">
+        <columns>
+            <TableColumn fx:id="idRColumn" text="ID Réservation" prefWidth="100.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="id_R" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="idPColumn" text="ID Paiement" prefWidth="100.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="id_P" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="nomCColumn" text="Nom Client" prefWidth="150.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="nomC" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="150.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="email" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="dateRColumn" text="Date Réservation" prefWidth="120.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="dateR" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="statusColumn" text="Statut" prefWidth="100.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="status" />
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+    <!-- Boutons d'action sous la TableView -->
+    <Button layoutX="200.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToModifier" text="Modifier"
+            style="-fx-background-color: blue; -fx-text-fill: white;" prefWidth="90.0" />
+
+    <Button layoutX="400.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToPaiement" text="Paiement"
+            style="-fx-background-color: gray; -fx-text-fill: white;" prefWidth="90.0" />
+
+
+    <!-- Champ de texte pour afficher la liste des réservations -->
+    <TextField fx:id="rlist" layoutX="14.0" layoutY="375.0" prefHeight="100.0" prefWidth="570.0"
+               editable="false" promptText="Liste des réservations" />
+
+</AnchorPane>

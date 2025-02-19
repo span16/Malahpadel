@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableColumn.CellDataFeatures?>
+<?import javafx.beans.property.SimpleIntegerProperty?>
+<?import javafx.beans.property.SimpleStringProperty?>
+<?import javafx.beans.property.SimpleFloatProperty?>
+<?import javafx.scene.control.TextArea?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherPaiementController">
+
+    <!-- Labels et champs de texte pour un seul paiement -->
+    <children>
+        <Label layoutX="34.0" layoutY="30.0" text="ID Paiement" />
+        <Label layoutX="34.0" layoutY="70.0" text="ID Réservation" />
+        <Label layoutX="34.0" layoutY="110.0" text="Montant" />
+        <Label layoutX="34.0" layoutY="150.0" text="Statut Paiement" />
+
+        <TextField fx:id="rIdP" layoutX="150.0" layoutY="26.0" />
+        <TextField fx:id="rIdR" layoutX="150.0" layoutY="66.0" />
+        <TextField fx:id="rMontant" layoutX="150.0" layoutY="106.0" />
+        <TextField fx:id="rStatusP" layoutX="150.0" layoutY="146.0" />
+
+        <!-- Ajout d'un TextArea pour afficher la liste des paiements -->
+        <TextArea fx:id="rlist" layoutX="150.0" layoutY="186.0" prefWidth="400.0" prefHeight="80.0" wrapText="true"/>
+
+        <!-- TableView pour afficher les paiements -->
+        <TableView fx:id="paiementTableView" layoutX="34.0" layoutY="280.0" prefWidth="500.0" prefHeight="150.0">
+            <columns>
+                <TableColumn text="ID Paiement" fx:id="colIdP" prefWidth="100.0"/>
+                <TableColumn text="ID Réservation" fx:id="colIdR" prefWidth="100.0"/>
+                <TableColumn text="Montant" fx:id="colMontant" prefWidth="100.0"/>
+                <TableColumn text="Statut Paiement" fx:id="colStatusP" prefWidth="200.0"/>
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>
