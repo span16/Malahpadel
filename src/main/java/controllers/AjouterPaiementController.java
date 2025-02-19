@@ -3,10 +3,13 @@ package controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import models.paiement;
+import javafx.stage.Stage;
 import service.PaiementService;
+import models.paiement;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,69 +17,96 @@ import java.sql.SQLException;
 public class AjouterPaiementController {
 
     @FXML
-    private TextField txtIdP;
+    private TextField txtId_P;
 
     @FXML
-    private TextField txtIdR;
+    private TextField txtId_R;
 
     @FXML
     private TextField txtMontant;
 
     @FXML
-    private TextField txtStatusP;
+    private TextField txtStatus_P;
+
+    private final PaiementService paiementService = new PaiementService();
 
     @FXML
-    void addPaiement(ActionEvent event) {
-        // Récupérer les valeurs des champs
-        int id_P = Integer.parseInt(txtIdP.getText());
-        int id_R = Integer.parseInt(txtIdR.getText());
-        float montant = Float.parseFloat(txtMontant.getText());
-        String status_P = txtStatusP.getText();
-
-        // Créer une instance de Paiement
-        paiement paiement = new paiement(id_P, id_R, montant, status_P);
-
-        // Créer une instance de PaiementService pour ajouter le paiement
-        PaiementService paiementService = new PaiementService();
-        try {
-            paiementService.ajouter(paiement); // Ajouter le paiement dans la base de données
-        } catch (SQLException e) {
-            System.out.println(e.getMessage()); // Afficher une erreur SQL si nécessaire
+    private void addPaiement() {
+        // Vérification des champs vides
+        if (txtId_P.getText().isEmpty() || txtId_R.getText().isEmpty() || txtMontant.getText().isEmpty() || txtStatus_P.getText().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Champs manquants", "Veuillez remplir tous les champs.");
+            return;
         }
 
-        // Charger la vue "AfficherPaiement" après l'ajout
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherPaiement.fxml"));
-            Parent root = loader.load();
-            AfficherPaiementController ac = loader.getController();
+            int id_P = Integer.parseInt(txtId_P.getText().trim());
+            int id_R = Integer.parseInt(txtId_R.getText().trim());
+            float montant = Float.parseFloat(txtMontant.getText().trim());
+            String status_P = txtStatus_P.getText().trim();
 
-            // Passer les informations à la vue AfficherPaiement
-            ac.setRIdP(id_P);
-            ac.setRIdR(id_R);
-            ac.setRMontant(montant);
-            ac.setRStatusP(status_P);
-
-            // Récupérer la liste des paiements et la formater
-            StringBuilder sb = new StringBuilder();
-            for (paiement p : paiementService.recuperer()) {
-                sb.append("ID Paiement: ").append(p.getId_P()).append(", ");
-                sb.append("ID Réservation: ").append(p.getId_R()).append(", ");
-                sb.append("Montant: ").append(p.getMontant()).append(", ");
-                sb.append("Statut: ").append(p.getStatus_P()).append("\n");
+            // Vérification des valeurs négatives ou nulles
+            if (id_P <= 0 || id_R <= 0) {
+                showAlert(Alert.AlertType.ERROR, "ID invalide", "Les identifiants doivent être des entiers positifs.");
+                return;
             }
-            ac.setRlist(sb.toString()); // Passer la liste formatée à AfficherPaiementController
 
-            // Afficher la nouvelle vue
-            txtIdP.getScene().setRoot(root);
+            if (montant <= 0) {
+                showAlert(Alert.AlertType.ERROR, "Montant invalide", "Le montant doit être supérieur à zéro.");
+                return;
+            }
 
-        } catch (IOException | SQLException e) {
-            System.out.println(e.getMessage()); // Afficher l'erreur de chargement ou SQL
+            // Vérification du statut (optionnel : restreindre à certains statuts)
+            if (status_P.length() < 3) {
+                showAlert(Alert.AlertType.ERROR, "Statut invalide", "Le statut doit contenir au moins 3 caractères.");
+                return;
+            }
+
+            paiement p = new paiement(id_P, id_R, montant, status_P);
+            paiementService.ajouter(p); // Appel du service pour l'ajout
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "✅ Paiement ajouté avec succès !");
+
+            // Appel pour nettoyer les champs
+            clearFields();
+
+            // Appel pour naviguer vers l'interface AfficherPaiement
+            goToAfficherPaiement();
+
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de format", "Veuillez entrer des valeurs numériques valides pour les IDs et le montant.");
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur SQL", "❌ Une erreur s'est produite lors de l'ajout du paiement : " + e.getMessage());
         }
     }
 
-    public void goToModifierPaiement(ActionEvent actionEvent) {
+    // Méthode utilitaire pour afficher des alertes
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
-    public void goToSupprimerPaiement(ActionEvent actionEvent) {
+    // Méthode utilitaire pour nettoyer les champs après l'ajout
+    private void clearFields() {
+        txtId_P.clear();
+        txtId_R.clear();
+        txtMontant.clear();
+        txtStatus_P.clear();
+    }
+
+    // Méthode pour naviguer vers la scène AfficherPaiement
+    private void goToAfficherPaiement() {
+        try {
+            // Charger la scène AfficherPaiement
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherPaiement.fxml"));
+            Stage stage = (Stage) txtId_P.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Afficher Paiement");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la scène Afficher Paiement.");
+        }
     }
 }

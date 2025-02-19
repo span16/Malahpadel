@@ -56,8 +56,6 @@
             style="-fx-background-color: gray; -fx-text-fill: white;" prefWidth="90.0" />
 
 
-    <!-- Champ de texte pour afficher la liste des réservations -->
-    <TextField fx:id="rlist" layoutX="14.0" layoutY="375.0" prefHeight="100.0" prefWidth="570.0"
-               editable="false" promptText="Liste des réservations" />
+
 
 </AnchorPane>

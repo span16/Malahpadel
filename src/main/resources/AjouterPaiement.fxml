@@ -10,21 +10,16 @@
         <Label layoutX="51.0" layoutY="58.0" text="ID Paiement" />
         <Label layoutX="51.0" layoutY="131.0" text="ID Reservation" />
         <Label layoutX="51.0" layoutY="218.0" text="Montant" />
-        <Label layoutX="51.0" layoutY="291.0" text="Statut" />
+        <Label layoutX="51.0" layoutY="290.0" text="Status" />
 
-        <TextField fx:id="txtIdP" layoutX="128.0" layoutY="54.0" />
-        <TextField fx:id="txtIdR" layoutX="128.0" layoutY="127.0" />
+        <TextField fx:id="txtId_P" layoutX="128.0" layoutY="54.0" />
+        <TextField fx:id="txtId_R" layoutX="128.0" layoutY="127.0" />
         <TextField fx:id="txtMontant" layoutX="128.0" layoutY="214.0" />
-        <TextField fx:id="txtStatusP" layoutX="128.0" layoutY="288.0" />
+        <TextField fx:id="txtStatus_P" layoutX="128.0" layoutY="290.0" />
 
-        <!-- Espacement des boutons -->
-        <Button layoutX="150.0" layoutY="180.0" text="Ajouter Paiement" onAction="#addPaiement"/>
+        <Button layoutX="347.0" layoutY="350.0" mnemonicParsing="false" onAction="#addPaiement" text="Ajouter" />
 
-        <!-- Déplacement du bouton Modifier plus bas -->
-        <Button layoutX="220.0" layoutY="390.0" mnemonicParsing="false" onAction="#goToModifierPaiement" text="Modifier" />
 
-        <!-- Déplacement du bouton Supprimer Paiement plus bas -->
-        <Button text="Aller à Supprimer Paiement" layoutX="250.0" layoutY="430.0" onAction="#goToSupprimerPaiement" />
+
     </children>
 </AnchorPane>
-
