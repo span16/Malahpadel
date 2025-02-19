@@ -89,10 +89,8 @@ public class ModifierProduitController {
             produit.setDescription(descriptionTa.getText());
             produit.setImage_produit(imageProduitTf.getText());
 
-            // Appel du service pour modifier le produit
             produitService.modifier(produit, produit.getId_produit());
 
-            // Fermeture de la fenêtre
             Stage stage = (Stage) validerButton.getScene().getWindow();
             stage.close();
 
@@ -110,7 +108,6 @@ public class ModifierProduitController {
             alert.showAndWait();
         } catch (SQLException e) {
             e.printStackTrace();
-            // Affichage d'un message d'erreur pour les problèmes de base de données
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur de base de données");
             alert.setHeaderText(null);

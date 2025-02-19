@@ -11,11 +11,9 @@ public class MainFx extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Charger le fichier FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterProduit.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
             Parent root = loader.load();
 
-            // Configurer la scène
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Ajouter Produit");
