@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.net.URL?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="450.0" prefWidth="600.0" styleClass="background"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.Ajouterterrain">
+
+    <stylesheets>
+        <URL value="@ajouterTerrainStyles.css" />
+    </stylesheets>
+    <children>
+        <fx:include source="Navbar.fxml" />
+        <Label layoutX="50.0" layoutY="40.0" styleClass="label-custom" text="Nom du Terrain" />
+        <TextField fx:id="txtNom" layoutX="196.0" layoutY="44.0" />
+
+        <Label layoutX="50.0" layoutY="90.0" styleClass="label-custom" text="Adresse" />
+        <TextField fx:id="txtAdresse" layoutX="196.0" layoutY="86.0" />
+
+        <Label layoutX="50.0" layoutY="140.0" styleClass="label-custom" text="Prix par personne" />
+        <TextField fx:id="txtPrix" layoutX="196.0" layoutY="143.0" />
+
+        <Label layoutX="50.0" layoutY="190.0" styleClass="label-custom" text="Heure d'Ouverture" />
+        <ComboBox fx:id="comboHeureOuvertureHeure" layoutX="196.0" layoutY="186.0" prefWidth="50.0"/>
+        <ComboBox fx:id="comboHeureOuvertureMinute" layoutX="250.0" layoutY="186.0" prefWidth="50.0"/>
+
+        <Label layoutX="50.0" layoutY="240.0" styleClass="label-custom" text="Heure de Fermeture" />
+        <ComboBox fx:id="comboHeureFermetureHeure" layoutX="196.0" layoutY="236.0" prefWidth="50.0"/>
+        <ComboBox fx:id="comboHeureFermetureMinute" layoutX="250.0" layoutY="236.0" prefWidth="50.0"/>
+
+
+
+        <Button layoutX="220.0" layoutY="340.0" onAction="#addTerrain" styleClass="custom-button" text="Ajouter Terrain" />
+    </children>
+</AnchorPane>

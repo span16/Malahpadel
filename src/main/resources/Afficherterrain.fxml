@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane stylesheets="@afficherterrain.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Afficherterrain">
+    <fx:include source="Navbar.fxml" />
+
+    <TableView fx:id="tableTerrains" layoutY="27.0" prefHeight="384.0" prefWidth="735.0">
+        <columns>
+            <TableColumn fx:id="colNom" prefWidth="115.19998550415039" text="Nom" />
+            <TableColumn fx:id="colAdresse" prefWidth="61.600006103515625" text="Adresse" />
+            <TableColumn fx:id="colPrix" prefWidth="117.6" text="Prix" />
+            <TableColumn fx:id="colHeureOuverture" prefWidth="120.0" text="Heure Ouverture" />
+            <TableColumn fx:id="colHeureFermeture" prefWidth="148.79998779296875" text="Heure Fermeture" />
+            <TableColumn fx:id="colImage" prefWidth="196.0" text="Image" />
+        </columns>
+    </TableView>
+
+    <!-- ✅ Bouton Modifier -->
+    <Button fx:id="btnModifier" layoutX="300.0" layoutY="430.0" text="Modifier" onAction="#modifierTerrain"/>
+
+    <!-- ✅ Bouton Supprimer (Ajouté) -->
+    <Button fx:id="btnSupprimer" layoutX="420.0" layoutY="430.0" text="Supprimer" onAction="#supprimerTerrain"/>
+
+</AnchorPane>

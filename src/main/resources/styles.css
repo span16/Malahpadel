@@ -1,0 +1,25 @@
+/* Style du titre */
+.title-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32; /* Vert foncé pour rappeler le tennis */
+}
+
+/* Style du bouton */
+.custom-button {
+    -fx-background-color: #ffeb3b; /* Jaune tennis */
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #2e7d32;
+    -fx-border-width: 2px;
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #2e7d32;
+    -fx-border-radius: 10px;
+}

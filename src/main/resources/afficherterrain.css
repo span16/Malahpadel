@@ -1,0 +1,50 @@
+/* 🌿 Style du TableView avec une ambiance Tennis/Padel */
+.table-view {
+    -fx-background-color: #00796B; /* Vert foncé rappelant les terrains en dur */
+    -fx-border-color: #FFD700; /* Bordure dorée élégante */
+    -fx-border-radius: 10px;
+    -fx-padding: 10px;
+}
+
+/* 🎾 Style des en-têtes de colonnes */
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, #00695C, #009688); /* Dégradé vert-bleu */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+}
+
+/* 🎨 Style du texte des cellules */
+.table-view .cell {
+    -fx-background-color: #004D40; /* Vert foncé */
+    -fx-text-fill: white;
+    -fx-border-color: #005B4F; /* Vert plus clair */
+    -fx-padding: 6px;
+}
+
+/* 🎾 Alternance des lignes pour un effet dynamique */
+.table-row-cell:odd {
+    -fx-background-color: #00838F; /* Bleu-vert (Tennis dur) */
+}
+.table-row-cell:even {
+    -fx-background-color: #00ACC1; /* Bleu plus clair */
+}
+
+/* 🏃 Effet hover sur les lignes */
+.table-row-cell:hover {
+    -fx-background-color: #4DD0E1; /* Bleu turquoise dynamique */
+    -fx-text-fill: #D32F2F; /* Rouge léger */
+}
+
+/* 🖼️ Style particulier pour la colonne des images */
+.table-view .colImage {
+    -fx-alignment: center;
+    -fx-background-color: #004D40;
+    -fx-border-color: #FFD700;
+}
+
+/* ✨ Effet d'ombre et de profondeur */
+.table-view {
+    -fx-effect: dropshadow(gaussian, rgba(0, 191, 165, 0.6), 12, 0, 0, 2);
+}

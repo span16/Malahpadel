@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Modifierterrain">
+    <children>
+        <Label layoutX="50.0" layoutY="30.0" text="Nom du Terrain" />
+        <TextField fx:id="txtNom" layoutX="180.0" layoutY="26.0" />
+
+        <Label layoutX="50.0" layoutY="80.0" text="Adresse" />
+        <TextField fx:id="txtAdresse" layoutX="180.0" layoutY="76.0" />
+
+        <Label layoutX="50.0" layoutY="130.0" text="Prix par Personne" />
+        <TextField fx:id="txtPrix" layoutX="180.0" layoutY="126.0" />
+
+        <Label layoutX="50.0" layoutY="180.0" text="Heure d'Ouverture" />
+        <ComboBox fx:id="comboHeureOuvertureHeure" layoutX="180.0" layoutY="176.0" />
+        <ComboBox fx:id="comboHeureOuvertureMinute" layoutX="250.0" layoutY="176.0" />
+
+        <Label layoutX="50.0" layoutY="230.0" text="Heure de Fermeture" />
+        <ComboBox fx:id="comboHeureFermetureHeure" layoutX="180.0" layoutY="226.0" />
+        <ComboBox fx:id="comboHeureFermetureMinute" layoutX="250.0" layoutY="226.0" />
+
+        <Button fx:id="btnModifier" layoutX="150.0" layoutY="280.0" text="Modifier" onAction="#modifierTerrain"/>
+        <Button fx:id="btnAnnuler" layoutX="250.0" layoutY="280.0" text="Annuler" />
+    </children>
+</AnchorPane>

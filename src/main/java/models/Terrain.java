@@ -6,79 +6,50 @@ public class Terrain {
     private int id;
     private String nom;
     private String adresse;
-    private double prix_par_personne;
-    private Time heure_ouverture;
-    private Time heure_fermeture;
+    private double prixParPersonne;
+    private Time heureOuverture;
+    private Time heureFermeture;
 
-    // Constructeurs
-    public Terrain() {
-    }
+    // ✅ Constructeur par défaut
+    public Terrain() {}
 
-    public Terrain(int id, String nom, String adresse, double prix_par_personne, Time heure_ouverture, Time heure_fermeture) {
+    // ✅ Constructeur principal (avec ID)
+    public Terrain(int id, String nom, String adresse, double prixParPersonne, Time heureOuverture, Time heureFermeture) {
         this.id = id;
         this.nom = nom;
         this.adresse = adresse;
-        this.prix_par_personne = prix_par_personne;
-        this.heure_ouverture = heure_ouverture;
-        this.heure_fermeture = heure_fermeture;
+        this.prixParPersonne = prixParPersonne;
+        this.heureOuverture = heureOuverture;
+        this.heureFermeture = heureFermeture;
     }
 
-    public Terrain(String nom, String adresse, double prix_par_personne, Time heure_ouverture, Time heure_fermeture) {
+    // ✅ Constructeur principal (sans ID)
+    public Terrain(String nom, String adresse, double prixParPersonne, Time heureOuverture, Time heureFermeture) {
         this.nom = nom;
         this.adresse = adresse;
-        this.prix_par_personne = prix_par_personne;
-        this.heure_ouverture = heure_ouverture;
-        this.heure_fermeture = heure_fermeture;
+        this.prixParPersonne = prixParPersonne;
+        this.heureOuverture = heureOuverture;
+        this.heureFermeture = heureFermeture;
     }
 
-    // Getters et Setters
-    public int getId() {
-        return id;
-    }
+    // ✅ Getters et Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
-    public String getNom() {
-        return nom;
-    }
+    public String getAdresse() { return adresse; }
+    public void setAdresse(String adresse) { this.adresse = adresse; }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+    public double getPrixParPersonne() { return prixParPersonne; }
+    public void setPrixParPersonne(double prixParPersonne) { this.prixParPersonne = prixParPersonne; }
 
-    public String getAdresse() {
-        return adresse;
-    }
+    public Time getHeureOuverture() { return heureOuverture; }
+    public void setHeureOuverture(Time heureOuverture) { this.heureOuverture = heureOuverture; }
 
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
-    }
-
-    public double getPrix_par_personne() {
-        return prix_par_personne;
-    }
-
-    public void setPrix_par_personne(double prix_par_personne) {
-        this.prix_par_personne = prix_par_personne;
-    }
-
-    public Time getHeure_ouverture() {
-        return heure_ouverture;
-    }
-
-    public void setHeure_ouverture(Time heure_ouverture) {
-        this.heure_ouverture = heure_ouverture;
-    }
-
-    public Time getHeure_fermeture() {
-        return heure_fermeture;
-    }
-
-    public void setHeure_fermeture(Time heure_fermeture) {
-        this.heure_fermeture = heure_fermeture;
-    }
+    public Time getHeureFermeture() { return heureFermeture; }
+    public void setHeureFermeture(Time heureFermeture) { this.heureFermeture = heureFermeture; }
 
     @Override
     public String toString() {
@@ -86,9 +57,9 @@ public class Terrain {
                 "id=" + id +
                 ", nom='" + nom + '\'' +
                 ", adresse='" + adresse + '\'' +
-                ", prix_par_personne=" + prix_par_personne +
-                ", heure_ouverture=" + heure_ouverture +
-                ", heure_fermeture=" + heure_fermeture +
+                ", prixParPersonne=" + prixParPersonne +
+                ", heureOuverture=" + heureOuverture +
+                ", heureFermeture=" + heureFermeture +
                 '}';
     }
 }
