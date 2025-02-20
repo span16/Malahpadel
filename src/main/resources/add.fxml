@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.Controller.AjoutMacthController">
+
+    <Label text="Ajouter une Annonce de Match" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <TextField fx:id="titreField" promptText="Titre de l'annonce" />
+    <DatePicker fx:id="datePicker" promptText="Date du match" />
+    <TextField fx:id="heureField" promptText="Heure (HH:MM)" />
+    <TextField fx:id="lieuField" promptText="Lieu" />
+    <TextField fx:id="joueursRecherchesField" promptText="Nombre de joueurs recherchés" />
+    <ComboBox fx:id="niveauComboBox">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Débutant"/>
+                <String fx:value="Intermédiaire"/>
+                <String fx:value="Avancé"/>
+            </FXCollections>
+        </items>
+    </ComboBox>
+    <TextArea fx:id="descriptionField" promptText="Description" />
+
+    <Button text="Ajouter" onAction="#ajouterAnnonce" />
+
+</VBox>

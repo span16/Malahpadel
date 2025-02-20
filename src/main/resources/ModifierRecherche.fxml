@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.Controller.ModifierRechercheController">
+
+    <Label text="Modifier Recherche" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <Label text="Nom :"/>
+    <TextField fx:id="nomField"/>
+
+    <Label text="Niveau :"/>
+    <TextField fx:id="niveauField"/>
+
+    <Label text="Annonces :"/>
+    <TextField fx:id="annoncesField"/>
+
+    <Button text="Sauvegarder" fx:id="sauvegarderBtn" onAction="#sauvegarderRecherche"/>
+    <Button text="Annuler" fx:id="annulerBtn" onAction="#annulerModification"/>
+</VBox>

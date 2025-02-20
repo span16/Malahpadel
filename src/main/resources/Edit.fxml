@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.Controller.ModifierPageController">
+    <Label text="Modifier l'annonce" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <Label text="Titre:"/>
+    <TextField fx:id="titreField"/>
+
+    <Label text="Lieu:"/>
+    <TextField fx:id="lieuField"/>
+
+    <Label text="Description:"/>
+    <TextField fx:id="descriptionField"/>
+
+    <Button text="Enregistrer" fx:id="enregistrerBtn" onAction="#enregistrerModification"/>
+</VBox>
+
