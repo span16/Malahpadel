@@ -31,3 +31,18 @@ Label {
     -fx-font-family: "Arial";
     -fx-text-fill: #333333; /* Couleur sombre pour le texte */
 }
+.button {
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+}
+
+.button-modifier {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+.button-supprimer {
+    -fx-background-color: #4ca680;
+    -fx-text-fill: white;
+}

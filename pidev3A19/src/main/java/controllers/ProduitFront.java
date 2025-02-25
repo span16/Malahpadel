@@ -9,14 +9,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Produit;
+import services.ProduitService;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 public class ProduitFront {
 
@@ -29,20 +33,17 @@ public class ProduitFront {
     @FXML
     private void ajoutprodfront(ActionEvent event) {
         try {
-            // Charger le fichier FXML du formulaire d'ajout
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutProduitForm.fxml"));
-            VBox form = loader.load(); // Charger l'interface
+            VBox form = loader.load();
 
-            // Configurer le contrôleur du formulaire
             AjoutProduitFormController controller = loader.getController();
-            controller.setProduitFrontController(this); // Passer une référence du contrôleur actuel
+            controller.setProduitFrontController(this);
 
-            // Créer une nouvelle fenêtre (Stage) pour le formulaire
             Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL); // Fenêtre modale (bloque l'interface principale)
-            stage.setTitle("Ajouter un produit"); // Titre de la fenêtre
-            stage.setScene(new Scene(form)); // Définir la scène
-            stage.showAndWait(); // Afficher la fenêtre et attendre sa fermeture
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Ajouter un produit");
+            stage.setScene(new Scene(form));
+            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Erreur lors du chargement du formulaire d'ajout.");
@@ -50,29 +51,26 @@ public class ProduitFront {
     }
 
     public void afficherProduit(Produit produit) {
-        // Créer une carte pour le produit
         VBox produitBox = new VBox(10);
         produitBox.setStyle("-fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 10;");
 
-        // Image du produit
+        // Associer le produit à la carte
+        produitBox.setUserData(produit);
+
         ImageView imageView = new ImageView(new Image(produit.getImage_produit()));
         imageView.setFitWidth(200);
         imageView.setFitHeight(200);
         imageView.setPreserveRatio(true);
 
-        // Nom du produit
         Label nomLabel = new Label(produit.getNom_produit());
         nomLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
 
-        // Prix du produit
         Label prixLabel = new Label(String.format("Prix : %.2f €", produit.getPrix()));
         prixLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #e74c3c;");
 
-        // Description du produit
         Label descriptionLabel = new Label("Description : " + produit.getDescription());
         descriptionLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #333;");
 
-        // Boutons d'action
         Button modifierBtn = new Button("Modifier");
         modifierBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
 
@@ -82,10 +80,48 @@ public class ProduitFront {
         HBox boutonsBox = new HBox(10, modifierBtn, supprimerBtn);
         boutonsBox.setAlignment(Pos.CENTER);
 
-        // Ajouter les éléments à la carte
         produitBox.getChildren().addAll(imageView, nomLabel, prixLabel, descriptionLabel, boutonsBox);
 
-        // Ajouter la carte à la FlowPane
+        produitBox.setOnMouseClicked(this::ouvrirModifierProduit);
+
         produitsContainer.getChildren().add(produitBox);
+    }
+
+    @FXML
+    private void ouvrirModifierProduit(MouseEvent event) {
+        VBox produitBox = (VBox) event.getSource();
+        Produit produit = (Produit) produitBox.getUserData();
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierProduitFront.fxml"));
+            VBox form = loader.load();
+
+            ModifierProduitFrontController controller = loader.getController();
+            controller.setProduit(produit);
+            controller.setOnUpdateSuccess(() -> {
+                produitsContainer.getChildren().clear(); // Effacer les produits actuels
+
+                // Recharger les produits depuis la base de données
+                ProduitService produitService = new ProduitService();
+                List<Produit> produits = null; // Récupérer la liste des produits
+                try {
+                    produits = produitService.recuperer();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                for (Produit p : produits) {
+                    afficherProduit(p); // Afficher chaque produit
+                }
+            });
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Modifier un produit");
+            stage.setScene(new Scene(form));
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Erreur lors du chargement de l'interface de modification.");
+        }
     }
 }
