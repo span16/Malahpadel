@@ -42,16 +42,12 @@ public class AjouterProduitController {
     @FXML
     private Button selectImageBtn;
 
-    // Variable pour stocker le chemin de l'image
     private String imagePath;
 
-    // Service pour interagir avec la base de données
     private ProduitService produitService = new ProduitService();
 
-    // Méthode pour ajouter un produit
     @FXML
     public void addProduit() {
-        // Vérifier que tous les champs sont remplis
         if (nomProduitTf.getText().isEmpty() || categorieTf.getText().isEmpty() ||
                 prixTf.getText().isEmpty() || stockTf.getText().isEmpty() ||
                 descriptionTa.getText().isEmpty() || imagePath == null) {
@@ -59,7 +55,6 @@ public class AjouterProduitController {
             return;
         }
 
-        // Vérifier que le prix est un nombre valide
         float prix;
         try {
             prix = Float.parseFloat(prixTf.getText());
@@ -72,7 +67,6 @@ public class AjouterProduitController {
             return;
         }
 
-        // Vérifier que le stock est un nombre valide
         int stock;
         try {
             stock = Integer.parseInt(stockTf.getText());
@@ -85,7 +79,6 @@ public class AjouterProduitController {
             return;
         }
 
-        // Vérifier la longueur des champs texte
         if (nomProduitTf.getText().length() > 50) {
             showAlert("Erreur", "Le nom du produit ne doit pas dépasser 50 caractères !");
             return;
@@ -99,29 +92,23 @@ public class AjouterProduitController {
             return;
         }
 
-        // Si tout est valide, ajouter le produit
         try {
             String nomProduit = nomProduitTf.getText();
             String categorie = categorieTf.getText();
             String description = descriptionTa.getText();
 
-            // Créer un nouvel objet Produit
             Produit produit = new Produit(stock, nomProduit, categorie, imagePath, description, prix);
 
-            // Ajouter le produit à la base de données
             produitService.ajouter(produit);
 
-            // Afficher un message de succès
             showAlert("Succès", "Produit ajouté avec succès !");
 
-            // Réinitialiser les champs après l'ajout
             clearFields();
         } catch (SQLException e) {
             showAlert("Erreur SQL", "Erreur lors de l'ajout du produit : " + e.getMessage());
         }
     }
 
-    // Méthode pour sélectionner une image
     @FXML
     public void selectImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -130,20 +117,16 @@ public class AjouterProduitController {
                 new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
         );
 
-        // Ouvrir la boîte de dialogue de sélection de fichier
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
-            // Stocker le chemin de l'image
             imagePath = selectedFile.getAbsolutePath();
 
-            // Afficher l'image dans l'ImageView
             Image image = new Image(selectedFile.toURI().toString());
             imgpa.setImage(image);
         }
     }
 
-    // Méthode pour afficher une alerte
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -152,18 +135,16 @@ public class AjouterProduitController {
         alert.showAndWait();
     }
 
-    // Méthode pour réinitialiser les champs
     private void clearFields() {
         nomProduitTf.clear();
         categorieTf.clear();
         prixTf.clear();
         stockTf.clear();
         descriptionTa.clear();
-        imgpa.setImage(null); // Réinitialiser l'image
-        imagePath = null; // Réinitialiser le chemin de l'image
+        imgpa.setImage(null);
+        imagePath = null;
     }
 
-    // Méthode pour afficher la liste des produits
     @FXML
     public void affichebtn(ActionEvent event) {
         try {
@@ -192,7 +173,6 @@ public class AjouterProduitController {
             stage.setTitle("Formulaire Compagne");
             stage.show();
 
-            // Fermer la fenêtre actuelle (celle qui contient ce bouton)
             Stage currentStage = (Stage) compagnegestion.getScene().getWindow();
             currentStage.close();
 
@@ -200,4 +180,5 @@ public class AjouterProduitController {
             e.printStackTrace();
         }
     }
+
 }

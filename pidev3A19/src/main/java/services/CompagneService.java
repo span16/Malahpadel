@@ -52,7 +52,7 @@ public class CompagneService implements IServiceCompagne<Compagne> {
         st.setString(5, c.getTypeMarketing());
         st.setString(6, c.getStatus());
         st.setFloat(7, c.getTarifs());
-        st.setInt(8, id_compagne);  // L'ID de la compagne à mettre à jour
+        st.setInt(8, id_compagne);
 
         int rowsUpdated = st.executeUpdate();
         if (rowsUpdated > 0) {

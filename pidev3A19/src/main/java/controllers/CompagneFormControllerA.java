@@ -90,10 +90,10 @@ public class CompagneFormControllerA {
         try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pidev3A19", "root", "");
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT id_Produit FROM Produit");
+            ResultSet rs = stmt.executeQuery("SELECT nom_produit FROM Produit"); // Récupérer le nom_produit
 
             while (rs.next()) {
-                idProduitComboBox.getItems().add(rs.getString("id_Produit"));
+                idProduitComboBox.getItems().add(rs.getString("nom_produit")); // Ajouter le nom_produit à la ComboBox
             }
 
             rs.close();
@@ -101,10 +101,9 @@ public class CompagneFormControllerA {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Erreur de base de données", "Impossible de charger les idProduit.");
+            showAlert("Erreur de base de données", "Impossible de charger les noms des produits.");
         }
     }
-
     @FXML
     private void selectLogo() {
         FileChooser fileChooser = new FileChooser();
@@ -117,7 +116,6 @@ public class CompagneFormControllerA {
             logoImageView.setImage(image);
         }
     }
-
     @FXML
     private void valider() {
         String nomSponsor = nomSponsorTf.getText();
@@ -126,9 +124,9 @@ public class CompagneFormControllerA {
         String typeMarketing = typeMarketingComboBox.getValue();
         String statut = statusComboBox.getValue();
         String tarifs = tarifsTf.getText();
-        String idProduit = idProduitComboBox.getValue();
+        String nomProduit = idProduitComboBox.getValue(); // Récupérer le nom_produit sélectionné
 
-        if (nomSponsor.isEmpty() || dateDebut == null || dateFin == null || typeMarketing == null || statut == null || tarifs.isEmpty() || idProduit == null) {
+        if (nomSponsor.isEmpty() || dateDebut == null || dateFin == null || typeMarketing == null || statut == null || tarifs.isEmpty() || nomProduit == null) {
             showAlert("Erreur de validation", "Veuillez remplir tous les champs.");
             return;
         }
@@ -138,7 +136,12 @@ public class CompagneFormControllerA {
             return;
         }
 
-        int produitId = Integer.parseInt(idProduit);
+        // Récupérer l'id_produit correspondant au nom_produit sélectionné
+        int produitId = getProduitIdByNom(nomProduit);
+        if (produitId == -1) {
+            showAlert("Erreur", "Produit non trouvé dans la base de données.");
+            return;
+        }
 
         Produit produit = new Produit();
         produit.setId_produit(produitId);
@@ -161,6 +164,29 @@ public class CompagneFormControllerA {
             e.printStackTrace();
             showAlert("Erreur de base de données", "Impossible d'ajouter la campagne : " + e.getMessage());
         }
+    }
+
+    // Méthode pour récupérer l'id_produit à partir du nom_produit
+    private int getProduitIdByNom(String nomProduit) {
+        int produitId = -1;
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pidev3A19", "root", "");
+            PreparedStatement stmt = conn.prepareStatement("SELECT id_produit FROM Produit WHERE nom_produit = ?");
+            stmt.setString(1, nomProduit);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                produitId = rs.getInt("id_produit");
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur de base de données", "Impossible de récupérer l'id_produit.");
+        }
+        return produitId;
     }
     @FXML
     private void annuler() {

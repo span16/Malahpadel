@@ -25,7 +25,6 @@ public class ProduitService implements IServiceProduit<Produit> {
 
             int rowsInserted = st.executeUpdate();
             if (rowsInserted > 0) {
-                // Récupérer l'ID généré
                 try (ResultSet rs = st.getGeneratedKeys()) {
                     if (rs.next()) {
                         int idGenere = rs.getInt(1); // Récupérer l'ID généré

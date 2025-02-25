@@ -11,11 +11,11 @@ public class Compagne {
     private String TypeMarketing;
     private String status;
     private float tarifs;
-    private Produit produit;  // Ensure this is initialized
+    private Produit produit;
 
     // Constructors
     public Compagne() {
-        this.produit = new Produit();  // Initialize the produit object
+        this.produit = new Produit();
     }
 
     public Compagne(String nom_sponsor, int id_compagne, Date date_debut, Date date_fin, String logo_compagne, String TypeMarketing, String status, float tarifs) {
@@ -27,7 +27,7 @@ public class Compagne {
         this.TypeMarketing = TypeMarketing;
         this.status = status;
         this.tarifs = tarifs;
-        this.produit = new Produit();  // Initialize the produit object
+        this.produit = new Produit();
     }
 
     public Compagne(String nom_sponsor, String date_debut, String date_fin, String logo_compagne, String typeMarketing, String status, float tarifs, Produit produit) {
@@ -38,7 +38,7 @@ public class Compagne {
         this.TypeMarketing = typeMarketing;
         this.status = status;
         this.tarifs = tarifs;
-        this.produit = produit;  // Set the produit object
+        this.produit = produit;
     }
 
     public Compagne(String riovaciar, Date date, Date date1, String image, String digital, String active, double v, int idProduit) {
