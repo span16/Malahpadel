@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 import models.Compagne;
 import models.Produit;
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 
 public class CompagneFormControllerA {
 
-    // Références aux éléments du formulaire FXML
     @FXML
     private TextField nomSponsorTf;
 
@@ -51,25 +49,26 @@ public class CompagneFormControllerA {
     @FXML
     private ComboBox<String> idProduitComboBox;
 
-    // Service pour gérer les campagnes
     private CompagneService compagneService = new CompagneService();
 
     @FXML
     public void initialize() {
-        TextFormatter<String> textFormatter = new TextFormatter<>(change -> {
-            if (change.getControlNewText().matches("[a-zA-Z\\s]*")) {
-                return change;
-            }
-            return null;
-        });
+        LocalDate dateActuelle = LocalDate.now();
+        dateDebutPicker.setValue(dateActuelle);
+        dateFinPicker.setValue(dateActuelle.plusDays(30));
+
+        // Rendre les champs de date non modifiables
+        dateDebutPicker.setDisable(true);
+        dateFinPicker.setDisable(true);
+
+        TextFormatter<String> textFormatter = new TextFormatter<>(change ->
+                change.getControlNewText().matches("[a-zA-Z\\s]*") ? change : null
+        );
         nomSponsorTf.setTextFormatter(textFormatter);
 
-        TextFormatter<String> floatFormatter = new TextFormatter<>(change -> {
-            if (change.getControlNewText().matches("\\d*(\\.\\d*)?")) {
-                return change;
-            }
-            return null;
-        });
+        TextFormatter<String> floatFormatter = new TextFormatter<>(change ->
+                change.getControlNewText().matches("\\d*(\\.\\d*)?") ? change : null
+        );
         tarifsTf.setTextFormatter(floatFormatter);
 
         populateTypeMarketingComboBox();
@@ -81,7 +80,6 @@ public class CompagneFormControllerA {
         typeMarketingComboBox.getItems().addAll("Email", "Réseaux sociaux", "Publicité en ligne", "Télévision", "Autre");
     }
 
-
     private void populateStatusComboBox() {
         statusComboBox.getItems().addAll("active", "inactive", "pending");
     }
@@ -90,10 +88,10 @@ public class CompagneFormControllerA {
         try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pidev3A19", "root", "");
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT nom_produit FROM Produit"); // Récupérer le nom_produit
+            ResultSet rs = stmt.executeQuery("SELECT nom_produit FROM Produit");
 
             while (rs.next()) {
-                idProduitComboBox.getItems().add(rs.getString("nom_produit")); // Ajouter le nom_produit à la ComboBox
+                idProduitComboBox.getItems().add(rs.getString("nom_produit"));
             }
 
             rs.close();
@@ -104,6 +102,7 @@ public class CompagneFormControllerA {
             showAlert("Erreur de base de données", "Impossible de charger les noms des produits.");
         }
     }
+
     @FXML
     private void selectLogo() {
         FileChooser fileChooser = new FileChooser();
@@ -116,6 +115,7 @@ public class CompagneFormControllerA {
             logoImageView.setImage(image);
         }
     }
+
     @FXML
     private void valider() {
         String nomSponsor = nomSponsorTf.getText();
@@ -124,7 +124,7 @@ public class CompagneFormControllerA {
         String typeMarketing = typeMarketingComboBox.getValue();
         String statut = statusComboBox.getValue();
         String tarifs = tarifsTf.getText();
-        String nomProduit = idProduitComboBox.getValue(); // Récupérer le nom_produit sélectionné
+        String nomProduit = idProduitComboBox.getValue();
 
         if (nomSponsor.isEmpty() || dateDebut == null || dateFin == null || typeMarketing == null || statut == null || tarifs.isEmpty() || nomProduit == null) {
             showAlert("Erreur de validation", "Veuillez remplir tous les champs.");
@@ -132,14 +132,13 @@ public class CompagneFormControllerA {
         }
 
         if (!statut.equals("active") && !statut.equals("inactive") && !statut.equals("pending")) {
-            showAlert("Erreur de validation", "Le statut sélectionné est invalide. Les valeurs autorisées sont : active, inactive, pending.");
+            showAlert("Erreur de validation", "Le statut sélectionné est invalide.");
             return;
         }
 
-        // Récupérer l'id_produit correspondant au nom_produit sélectionné
         int produitId = getProduitIdByNom(nomProduit);
         if (produitId == -1) {
-            showAlert("Erreur", "Produit non trouvé dans la base de données.");
+            showAlert("Erreur", "Produit non trouvé.");
             return;
         }
 
@@ -150,7 +149,7 @@ public class CompagneFormControllerA {
         compagne.setNom_sponsor(nomSponsor);
         compagne.setDate_debut(Date.valueOf(dateDebut));
         compagne.setDate_fin(Date.valueOf(dateFin));
-        compagne.setLogo_compagne(logoImageView.getImage().getUrl()); // Récupérer l'URL de l'image
+        compagne.setLogo_compagne(logoImageView.getImage() != null ? logoImageView.getImage().getUrl() : null);
         compagne.setTypeMarketing(typeMarketing);
         compagne.setStatus(statut);
         compagne.setTarifs(Float.parseFloat(tarifs));
@@ -162,11 +161,10 @@ public class CompagneFormControllerA {
             clearForm();
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Erreur de base de données", "Impossible d'ajouter la campagne : " + e.getMessage());
+            showAlert("Erreur", "Impossible d'ajouter la campagne : " + e.getMessage());
         }
     }
 
-    // Méthode pour récupérer l'id_produit à partir du nom_produit
     private int getProduitIdByNom(String nomProduit) {
         int produitId = -1;
         try {
@@ -188,6 +186,7 @@ public class CompagneFormControllerA {
         }
         return produitId;
     }
+
     @FXML
     private void annuler() {
         clearForm();
@@ -195,14 +194,15 @@ public class CompagneFormControllerA {
 
     private void clearForm() {
         nomSponsorTf.clear();
-        dateDebutPicker.setValue(null);
-        dateFinPicker.setValue(null);
+        dateDebutPicker.setValue(LocalDate.now());
+        dateFinPicker.setValue(LocalDate.now().plusDays(30));
         typeMarketingComboBox.setValue(null);
         statusComboBox.setValue(null);
         tarifsTf.clear();
         idProduitComboBox.setValue(null);
         logoImageView.setImage(null);
     }
+
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -228,19 +228,26 @@ public class CompagneFormControllerA {
         }
     }
 
-    public void interfaceproduit(ActionEvent actionEvent) {
+    @FXML
+    private void interfaceproduit(ActionEvent actionEvent) {
         try {
+            // Charger le fichier FXML de la page AjouterProduit.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterProduit.fxml"));
             Parent root = loader.load();
+
+            // Créer une nouvelle scène
             Scene scene = new Scene(root);
+
+            // Récupérer la fenêtre actuelle (stage)
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 
+            // Définir la nouvelle scène sur le stage
             stage.setScene(scene);
-            stage.setTitle("Ajouter un Produit");
+            stage.setTitle("Ajouter un Produit"); // Titre de la fenêtre
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible d'ouvrir l'interface AjouterProduit.");
+            showAlert("Erreur", "Impossible d'ouvrir la page AjouterProduit.fxml.");
         }
     }
 }
