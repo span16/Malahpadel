@@ -3,6 +3,7 @@ package controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -10,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -18,6 +20,7 @@ import services.CompagneService;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,10 +34,13 @@ public class AfficheCompagneController {
 
     @FXML
     private Button sortStatusButton;
+    @FXML
+    private Button statsButton;
+
 
     private CompagneService compagneService = new CompagneService();
     private String currentSortStatus = "Active"; // Statut de tri actuel
-
+    
     @FXML
     public void initialize() {
         loadCampagnes();
@@ -46,6 +52,57 @@ public class AfficheCompagneController {
 
         // Ajouter un écouteur sur le bouton de tri par statut
         sortStatusButton.setOnAction(event -> sortCampagnesByStatus());
+
+        // Ajouter un écouteur sur le bouton des statistiques
+        statsButton.setOnAction(event -> showCampaignStatsChart());
+    }
+
+    private void showCampaignStatsChart() {
+        try {
+            Map<String, Long> stats = calculateCampaignStats();
+
+            // Créer un PieChart
+            PieChart pieChart = new PieChart();
+
+            // Ajouter les données au graphique
+            stats.forEach((status, count) -> {
+                PieChart.Data data = new PieChart.Data(status + " (" + count + ")", count);
+                pieChart.getData().add(data);
+            });
+
+            // Configurer le graphique
+            pieChart.setTitle("Statistiques des campagnes par statut");
+            pieChart.setLegendVisible(true); // Afficher la légende
+            pieChart.setLabelsVisible(true); // Afficher les étiquettes
+
+            // Créer une nouvelle fenêtre pour afficher le graphique
+            Stage stage = new Stage();
+            stage.setTitle("Statistiques des campagnes");
+            StackPane root = new StackPane(pieChart);
+            Scene scene = new Scene(root, 600, 400);
+            stage.setScene(scene);
+            stage.show();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les statistiques.");
+        }
+    }
+
+    private void showCampaignStats() {
+        try {
+            Map<String, Long> stats = calculateCampaignStats();
+            StringBuilder statsMessage = new StringBuilder("Statistiques des campagnes par statut :\n");
+            stats.forEach((status, count) -> statsMessage.append(status).append(" : ").append(count).append("\n"));
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Statistiques des campagnes");
+            alert.setHeaderText(null);
+            alert.setContentText(statsMessage.toString());
+            alert.showAndWait();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les statistiques.");
+        }
     }
 
     private void loadCampagnes() {
@@ -230,5 +287,10 @@ public class AfficheCompagneController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    private Map<String, Long> calculateCampaignStats() throws SQLException {
+        List<Compagne> campagnes = compagneService.recuperercompagne();
+        return campagnes.stream()
+                .collect(Collectors.groupingBy(Compagne::getStatus, Collectors.counting()));
     }
 }

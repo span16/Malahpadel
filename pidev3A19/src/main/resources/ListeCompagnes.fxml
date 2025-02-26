@@ -13,6 +13,7 @@
         <HBox spacing="10" style="-fx-padding: 10px;">
             <TextField fx:id="searchField" promptText="Rechercher une campagne..." style="-fx-pref-width: 200px;"/>
             <Button fx:id="sortStatusButton" text="Trier par statut" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+            <Button fx:id="statsButton" text="Afficher les statistiques" style="-fx-background-color: #528ec6; -fx-text-fill: white;"/>
         </HBox>
         <TilePane fx:id="compagneTilePane" hgap="50" prefColumns="3" prefRows="2" vgap="120" />
     </VBox>
