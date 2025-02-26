@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -19,11 +20,15 @@ import services.ProduitService;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AfficherProduitsController {
 
     @FXML
     private TilePane produitTilePane;
+
+    @FXML
+    private TextField searchField;
 
     private ProduitService produitService = new ProduitService();
     private boolean isSortedAscending = true; // Pour alterner entre ascendant et descendant
@@ -31,6 +36,11 @@ public class AfficherProduitsController {
     @FXML
     public void initialize() {
         loadProduits();
+
+        // Ajouter un écouteur sur le champ de recherche
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterProduits(newValue); // Appeler la méthode de filtrage
+        });
     }
 
     @FXML
@@ -46,6 +56,7 @@ public class AfficherProduitsController {
             e.printStackTrace();
         }
     }
+
     private void displayProduits(List<Produit> produits) {
         produitTilePane.getChildren().clear(); // Effacer les anciens produits
 
@@ -89,6 +100,22 @@ public class AfficherProduitsController {
         System.out.println("Produits affichés :");
         for (Produit produit : produits) {
             System.out.println("Nom: " + produit.getNom_produit() + ", Prix: " + produit.getPrix());
+        }
+    }
+
+    private void filterProduits(String searchText) {
+        try {
+            List<Produit> produits = produitService.recuperer();
+
+            // Filtrer les produits dont le nom contient le texte saisi (insensible à la casse)
+            List<Produit> filteredProduits = produits.stream()
+                    .filter(produit -> produit.getNom_produit().toLowerCase().contains(searchText.toLowerCase()))
+                    .collect(Collectors.toList());
+
+            // Afficher les produits filtrés
+            displayProduits(filteredProduits);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
