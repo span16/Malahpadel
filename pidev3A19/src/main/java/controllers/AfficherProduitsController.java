@@ -1,5 +1,8 @@
 package controllers;
-
+import javafx.scene.chart.PieChart;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +23,7 @@ import services.ProduitService;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AfficherProduitsController {
@@ -34,13 +38,19 @@ public class AfficherProduitsController {
     private boolean isSortedAscending = true; // Pour alterner entre ascendant et descendant
 
     @FXML
+    private Button statsButton;
+
+    @FXML
     public void initialize() {
         loadProduits();
 
         // Ajouter un écouteur sur le champ de recherche
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterProduits(newValue); // Appeler la méthode de filtrage
+            filterProduits(newValue);
         });
+
+        // Ajouter un écouteur sur le bouton des statistiques
+        statsButton.setOnAction(event -> showPriceStatsChart());
     }
 
     @FXML
@@ -194,5 +204,58 @@ public class AfficherProduitsController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    private Map<String, Long> calculatePriceStats() throws SQLException {
+        List<Produit> produits = produitService.recuperer();
+
+        // Regrouper les produits par intervalles de prix
+        return produits.stream()
+                .collect(Collectors.groupingBy(
+                        produit -> {
+                            double prix = produit.getPrix();
+                            if (prix >= 0 && prix <= 50) return "0-50";
+                            else if (prix > 50 && prix <= 100) return "50-100";
+                            else return "100+";
+                        },
+                        Collectors.counting()
+                ));
+    }
+    private void showPriceStatsChart() {
+        try {
+            Map<String, Long> stats = calculatePriceStats();
+
+            // Créer un PieChart
+            PieChart pieChart = new PieChart();
+
+            // Ajouter les données au graphique
+            stats.forEach((interval, count) -> {
+                PieChart.Data data = new PieChart.Data(interval + " (" + count + ")", count);
+                pieChart.getData().add(data);
+            });
+
+            // Configurer le graphique
+            pieChart.setTitle("Statistiques des produits par prix");
+            pieChart.setLegendVisible(true); // Afficher la légende
+            pieChart.setLabelsVisible(true); // Afficher les étiquettes
+
+            // Créer une nouvelle fenêtre pour afficher le graphique
+            Stage stage = new Stage();
+            stage.setTitle("Statistiques des produits par prix");
+            StackPane root = new StackPane(pieChart);
+            Scene scene = new Scene(root, 600, 400);
+            stage.setScene(scene);
+            stage.show();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les statistiques.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String erreur, String s) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(erreur);
+        alert.setHeaderText(null);
+        alert.setContentText(s);
+        alert.showAndWait();
     }
 }

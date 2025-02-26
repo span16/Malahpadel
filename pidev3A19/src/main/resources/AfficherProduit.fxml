@@ -14,6 +14,7 @@
         <HBox spacing="10" style="-fx-padding: 10px;">
             <TextField fx:id="searchField" promptText="Rechercher un produit..." style="-fx-pref-width: 200px;"/>
             <Button fx:id="sortButton" onAction="#trierparpix" text="Trier par prix" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+            <Button fx:id="statsButton" text="Statistiques par prix" style="-fx-background-color: #6999d0; -fx-text-fill: white;"/>
         </HBox>
         <TilePane fx:id="produitTilePane" hgap="50" prefColumns="3" prefRows="2" vgap="120" />
     </VBox>
