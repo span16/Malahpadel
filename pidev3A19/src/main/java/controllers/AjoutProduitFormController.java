@@ -63,7 +63,6 @@ public class AjoutProduitFormController {
     @FXML
     private void validerAjout() {
         try {
-            // Récupérer les valeurs du formulaire
             String nom = nomField.getText();
             String categorie = categorieField.getText();
             String description = descriptionField.getText();
@@ -82,10 +81,8 @@ public class AjoutProduitFormController {
                 produitFrontController.afficherProduit(produit);
             }
 
-            // Afficher un message de succès
             showAlert("Succès", "Produit ajouté avec succès !");
 
-            // Fermer la fenêtre du formulaire
             Stage stage = (Stage) nomField.getScene().getWindow();
             stage.close();
         } catch (SQLException e) {

@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ public class AfficherProduitsController {
     private TilePane produitTilePane;
 
     private ProduitService produitService = new ProduitService();
+    private boolean isSortedAscending = true; // Pour alterner entre ascendant et descendant
 
     @FXML
     public void initialize() {
@@ -39,44 +41,54 @@ public class AfficherProduitsController {
 
         try {
             List<Produit> produits = produitService.recuperer();
-
-            for (Produit produit : produits) {
-                VBox produitCard = new VBox(5);
-                produitCard.setStyle("-fx-border-color: black; -fx-padding: 10px; -fx-background-color: #f4f4f4;");
-                produitCard.setPrefSize(200, 250);
-
-                // Éléments de la carte
-                Label nomLabel = new Label("Nom: " + produit.getNom_produit());
-                Label categorieLabel = new Label("Catégorie: " + produit.getCategorie());
-                Label prixLabel = new Label("Prix: " + produit.getPrix());
-                Label stockLabel = new Label("Stock: " + produit.getStock());
-                Label descriptionLabel = new Label("Description: " + produit.getDescription());
-                Label imageLabel = new Label("Image: " + produit.getImage_produit());
-
-                // Boutons
-                Button deleteButton = new Button("Supprimer");
-                deleteButton.setStyle("-fx-background-color: #528ec6; -fx-text-fill: white;");
-                deleteButton.setOnAction(event -> deleteProduit(produit));
-
-                Button modifierButton = new Button("Modifier");
-                modifierButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-                modifierButton.setOnAction(event -> modifierProduit(produit));
-
-                // Conteneur pour les boutons
-                HBox buttonContainer = new HBox(10);
-                buttonContainer.getChildren().addAll(deleteButton, modifierButton);
-
-                // Ajout des éléments à la carte
-                produitCard.getChildren().addAll(
-                         nomLabel, categorieLabel,
-                        prixLabel, stockLabel, descriptionLabel,
-                        imageLabel, buttonContainer
-                );
-
-                produitTilePane.getChildren().add(produitCard);
-            }
+            displayProduits(produits);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    private void displayProduits(List<Produit> produits) {
+        produitTilePane.getChildren().clear(); // Effacer les anciens produits
+
+        for (Produit produit : produits) {
+            VBox produitCard = new VBox(5);
+            produitCard.setStyle("-fx-border-color: black; -fx-padding: 10px; -fx-background-color: #f4f4f4;");
+            produitCard.setPrefSize(200, 250);
+
+            // Éléments de la carte
+            Label nomLabel = new Label("Nom: " + produit.getNom_produit());
+            Label categorieLabel = new Label("Catégorie: " + produit.getCategorie());
+            Label prixLabel = new Label("Prix: " + produit.getPrix());
+            Label stockLabel = new Label("Stock: " + produit.getStock());
+            Label descriptionLabel = new Label("Description: " + produit.getDescription());
+            Label imageLabel = new Label("Image: " + produit.getImage_produit());
+
+            // Boutons
+            Button deleteButton = new Button("Supprimer");
+            deleteButton.setStyle("-fx-background-color: #528ec6; -fx-text-fill: white;");
+            deleteButton.setOnAction(event -> deleteProduit(produit));
+
+            Button modifierButton = new Button("Modifier");
+            modifierButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+            modifierButton.setOnAction(event -> modifierProduit(produit));
+
+            // Conteneur pour les boutons
+            HBox buttonContainer = new HBox(10);
+            buttonContainer.getChildren().addAll(deleteButton, modifierButton);
+
+            // Ajout des éléments à la carte
+            produitCard.getChildren().addAll(
+                    nomLabel, categorieLabel,
+                    prixLabel, stockLabel, descriptionLabel,
+                    imageLabel, buttonContainer
+            );
+
+            produitTilePane.getChildren().add(produitCard);
+        }
+
+        // Log pour vérifier l'ordre des produits
+        System.out.println("Produits affichés :");
+        for (Produit produit : produits) {
+            System.out.println("Nom: " + produit.getNom_produit() + ", Prix: " + produit.getPrix());
         }
     }
 
@@ -132,4 +144,28 @@ public class AfficherProduitsController {
         });
     }
 
+    @FXML
+    public void trierparpix(ActionEvent actionEvent) {
+        try {
+            List<Produit> produits = produitService.recuperer();
+
+            if (isSortedAscending) {
+                // Trier par prix ascendant
+                produits.sort((p1, p2) -> Double.compare(p1.getPrix(), p2.getPrix()));
+                System.out.println("Tri par prix ascendant");
+            } else {
+                // Trier par prix descendant
+                produits.sort((p1, p2) -> Double.compare(p2.getPrix(), p1.getPrix()));
+                System.out.println("Tri par prix descendant");
+            }
+
+            // Inverser l'ordre de tri pour le prochain clic
+            isSortedAscending = !isSortedAscending;
+
+            // Mettre à jour l'affichage
+            displayProduits(produits);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -78,7 +78,7 @@ public class ProduitService implements IServiceProduit<Produit> {
         List<Produit> produits = new ArrayList<>();
         while (rs.next()) {
             Produit p = new Produit();
-            p.setId_produit(rs.getInt("id_produit")); // Récupérer l'ID du produit
+            p.setId_produit(rs.getInt("id_produit"));
             p.setNom_produit(rs.getString("nom_produit"));
             p.setCategorie(rs.getString("categorie"));
             p.setPrix(rs.getFloat("prix"));
@@ -87,6 +87,13 @@ public class ProduitService implements IServiceProduit<Produit> {
             p.setImage_produit(rs.getString("image_produit"));
             produits.add(p);
         }
+
+        // Log pour vérifier les produits récupérés
+        System.out.println("Produits récupérés depuis la base de données :");
+        for (Produit produit : produits) {
+            System.out.println("Nom: " + produit.getNom_produit() + ", Prix: " + produit.getPrix());
+        }
+
         return produits;
     }
 }

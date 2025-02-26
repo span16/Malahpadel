@@ -66,18 +66,16 @@ public class ProduitFront {
         nomLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
 
         Label prixLabel = new Label(String.format("Prix : %.2f €", produit.getPrix()));
-        prixLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #e74c3c;");
+        prixLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #85a570;");
 
         Label descriptionLabel = new Label("Description : " + produit.getDescription());
         descriptionLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #333;");
 
-        Button modifierBtn = new Button("Modifier");
-        modifierBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
 
         Button supprimerBtn = new Button("Supprimer");
         supprimerBtn.setStyle("-fx-background-color: #4ca680; -fx-text-fill: white;");
 
-        HBox boutonsBox = new HBox(10, modifierBtn, supprimerBtn);
+        HBox boutonsBox = new HBox(10, supprimerBtn);
         boutonsBox.setAlignment(Pos.CENTER);
 
         produitBox.getChildren().addAll(imageView, nomLabel, prixLabel, descriptionLabel, boutonsBox);
@@ -99,18 +97,17 @@ public class ProduitFront {
             ModifierProduitFrontController controller = loader.getController();
             controller.setProduit(produit);
             controller.setOnUpdateSuccess(() -> {
-                produitsContainer.getChildren().clear(); // Effacer les produits actuels
+                produitsContainer.getChildren().clear();
 
-                // Recharger les produits depuis la base de données
                 ProduitService produitService = new ProduitService();
-                List<Produit> produits = null; // Récupérer la liste des produits
+                List<Produit> produits = null;
                 try {
                     produits = produitService.recuperer();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 for (Produit p : produits) {
-                    afficherProduit(p); // Afficher chaque produit
+                    afficherProduit(p);
                 }
             });
 
