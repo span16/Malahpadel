@@ -81,8 +81,10 @@ public class AjoutProduitFormController {
                 produitFrontController.afficherProduit(produit);
             }
 
+            // Afficher un message de succès
             showAlert("Succès", "Produit ajouté avec succès !");
 
+            // Fermer la fenêtre du formulaire
             Stage stage = (Stage) nomField.getScene().getWindow();
             stage.close();
         } catch (SQLException e) {

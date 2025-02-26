@@ -5,8 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -23,22 +22,16 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ProduitFront {
-
-    @FXML
-    private FlowPane produitsContainer;
-
-    @FXML
-    private Button frontprodajout;
+    @FXML private FlowPane produitsContainer;
+    @FXML private Button frontprodajout;
 
     @FXML
     private void ajoutprodfront(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutProduitForm.fxml"));
             VBox form = loader.load();
-
             AjoutProduitFormController controller = loader.getController();
             controller.setProduitFrontController(this);
-
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Ajouter un produit");
@@ -53,8 +46,6 @@ public class ProduitFront {
     public void afficherProduit(Produit produit) {
         VBox produitBox = new VBox(10);
         produitBox.setStyle("-fx-border-color: #ddd; -fx-border-radius: 5; -fx-padding: 10;");
-
-        // Associer le produit à la carte
         produitBox.setUserData(produit);
 
         ImageView imageView = new ImageView(new Image(produit.getImage_produit()));
@@ -71,34 +62,54 @@ public class ProduitFront {
         Label descriptionLabel = new Label("Description : " + produit.getDescription());
         descriptionLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #333;");
 
-
         Button supprimerBtn = new Button("Supprimer");
         supprimerBtn.setStyle("-fx-background-color: #4ca680; -fx-text-fill: white;");
+        supprimerBtn.setOnAction(event -> supprimerProduit(produit));
 
         HBox boutonsBox = new HBox(10, supprimerBtn);
         boutonsBox.setAlignment(Pos.CENTER);
 
         produitBox.getChildren().addAll(imageView, nomLabel, prixLabel, descriptionLabel, boutonsBox);
-
         produitBox.setOnMouseClicked(this::ouvrirModifierProduit);
-
         produitsContainer.getChildren().add(produitBox);
+    }
+
+    private void supprimerProduit(Produit produit) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation de suppression");
+        alert.setHeaderText("Êtes-vous sûr de vouloir supprimer ce produit ?");
+        alert.setContentText("Cette action est irréversible.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    ProduitService produitService = new ProduitService();
+                    produitService.supprimer(produit, produit.getNom_produit());
+                    produitsContainer.getChildren().removeIf(node -> {
+                        VBox produitBox = (VBox) node;
+                        Produit p = (Produit) produitBox.getUserData();
+                        return p.getId_produit() == produit.getId_produit();
+                    });
+                    System.out.println("Produit supprimé avec succès : " + produit.getNom_produit());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    System.out.println("Erreur lors de la suppression du produit.");
+                }
+            }
+        });
     }
 
     @FXML
     private void ouvrirModifierProduit(MouseEvent event) {
         VBox produitBox = (VBox) event.getSource();
         Produit produit = (Produit) produitBox.getUserData();
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierProduitFront.fxml"));
             VBox form = loader.load();
-
             ModifierProduitFrontController controller = loader.getController();
             controller.setProduit(produit);
             controller.setOnUpdateSuccess(() -> {
                 produitsContainer.getChildren().clear();
-
                 ProduitService produitService = new ProduitService();
                 List<Produit> produits = null;
                 try {
@@ -110,7 +121,6 @@ public class ProduitFront {
                     afficherProduit(p);
                 }
             });
-
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Modifier un produit");
