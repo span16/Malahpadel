@@ -1,6 +1,5 @@
 package controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -20,10 +19,10 @@ import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 
-public class CompagneFormControllerA {
+public class AjouterCampagneFrontController {
 
     @FXML
-    private TextField nomSponsorTf;
+    private TextField nomSponsorField;
 
     @FXML
     private DatePicker dateDebutPicker;
@@ -44,50 +43,39 @@ public class CompagneFormControllerA {
     private ComboBox<String> statusComboBox;
 
     @FXML
-    private TextField tarifsTf;
+    private TextField tarifsField;
 
     @FXML
-    private ComboBox<String> idProduitComboBox;
+    private ComboBox<String> produitIdComboBox;
 
     private CompagneService compagneService = new CompagneService();
 
     @FXML
     public void initialize() {
-        // Définir la date de début sur la date actuelle
         LocalDate dateActuelle = LocalDate.now();
         dateDebutPicker.setValue(dateActuelle);
-
-        // Définir la date de fin automatiquement à +30 jours
         dateFinPicker.setValue(dateActuelle.plusDays(30));
 
-        // Mettre à jour la date de fin si l'utilisateur change la date de début
-        dateDebutPicker.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                dateFinPicker.setValue(newValue.plusDays(30));
-            }
-        });
+        // Rendre les champs de date non modifiables
+        dateDebutPicker.setDisable(true);
+        dateFinPicker.setDisable(true);
 
-        // Formatter pour le champ nomSponsor (uniquement lettres et espaces)
-        TextFormatter<String> textFormatter = new TextFormatter<>(change -> {
-            if (change.getControlNewText().matches("[a-zA-Z\\s]*")) {
-                return change;
-            }
-            return null;
-        });
-        nomSponsorTf.setTextFormatter(textFormatter);
+        // Input validation for sponsor name (letters and spaces only)
+        TextFormatter<String> textFormatter = new TextFormatter<>(change ->
+                change.getControlNewText().matches("[a-zA-Z\\s]*") ? change : null
+        );
+        nomSponsorField.setTextFormatter(textFormatter);
 
-        // Formatter pour le champ tarifs (uniquement chiffres et point)
-        TextFormatter<String> floatFormatter = new TextFormatter<>(change -> {
-            if (change.getControlNewText().matches("\\d*(\\.\\d*)?")) {
-                return change;
-            }
-            return null;
-        });
-        tarifsTf.setTextFormatter(floatFormatter);
+        // Input validation for tariffs (numbers and optional decimal point)
+        TextFormatter<String> floatFormatter = new TextFormatter<>(change ->
+                change.getControlNewText().matches("\\d*(\\.\\d*)?") ? change : null
+        );
+        tarifsField.setTextFormatter(floatFormatter);
 
+        // Populate ComboBoxes
         populateTypeMarketingComboBox();
         populateStatusComboBox();
-        populateIdProduitComboBox();
+        populateProduitIdComboBox();
     }
 
     private void populateTypeMarketingComboBox() {
@@ -98,14 +86,14 @@ public class CompagneFormControllerA {
         statusComboBox.getItems().addAll("active", "inactive", "pending");
     }
 
-    private void populateIdProduitComboBox() {
+    private void populateProduitIdComboBox() {
         try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pidev3A19", "root", "");
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT nom_produit FROM Produit");
 
             while (rs.next()) {
-                idProduitComboBox.getItems().add(rs.getString("nom_produit"));
+                produitIdComboBox.getItems().add(rs.getString("nom_produit"));
             }
 
             rs.close();
@@ -131,14 +119,14 @@ public class CompagneFormControllerA {
     }
 
     @FXML
-    private void valider() {
-        String nomSponsor = nomSponsorTf.getText();
+    private void handleAjouterCampagne() {
+        String nomSponsor = nomSponsorField.getText();
         LocalDate dateDebut = dateDebutPicker.getValue();
         LocalDate dateFin = dateFinPicker.getValue();
         String typeMarketing = typeMarketingComboBox.getValue();
         String statut = statusComboBox.getValue();
-        String tarifs = tarifsTf.getText();
-        String nomProduit = idProduitComboBox.getValue();
+        String tarifs = tarifsField.getText();
+        String nomProduit = produitIdComboBox.getValue();
 
         if (nomSponsor.isEmpty() || dateDebut == null || dateFin == null || typeMarketing == null || statut == null || tarifs.isEmpty() || nomProduit == null) {
             showAlert("Erreur de validation", "Veuillez remplir tous les champs.");
@@ -201,19 +189,14 @@ public class CompagneFormControllerA {
         return produitId;
     }
 
-    @FXML
-    private void annuler() {
-        clearForm();
-    }
-
     private void clearForm() {
-        nomSponsorTf.clear();
+        nomSponsorField.clear();
         dateDebutPicker.setValue(LocalDate.now());
         dateFinPicker.setValue(LocalDate.now().plusDays(30));
         typeMarketingComboBox.setValue(null);
         statusComboBox.setValue(null);
-        tarifsTf.clear();
-        idProduitComboBox.setValue(null);
+        tarifsField.clear();
+        produitIdComboBox.setValue(null);
         logoImageView.setImage(null);
     }
 
@@ -226,7 +209,7 @@ public class CompagneFormControllerA {
     }
 
     @FXML
-    private void affichercompagne(ActionEvent actionEvent) {
+    private void afficherCompagne() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeCompagnes.fxml"));
             Parent root = loader.load();
@@ -239,29 +222,6 @@ public class CompagneFormControllerA {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Erreur", "Impossible d'ouvrir la liste des campagnes.");
-        }
-    }
-
-    @FXML
-    private void interfaceproduit(ActionEvent actionEvent) {
-        try {
-            // Charger le fichier FXML de la page AjouterProduit.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterProduit.fxml"));
-            Parent root = loader.load();
-
-            // Créer une nouvelle scène
-            Scene scene = new Scene(root);
-
-            // Récupérer la fenêtre actuelle (stage)
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-
-            // Définir la nouvelle scène sur le stage
-            stage.setScene(scene);
-            stage.setTitle("Ajouter un Produit"); // Titre de la fenêtre
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Erreur", "Impossible d'ouvrir la page AjouterProduit.fxml.");
         }
     }
 }
