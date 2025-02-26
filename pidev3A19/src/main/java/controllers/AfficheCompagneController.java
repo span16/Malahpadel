@@ -143,16 +143,7 @@ public class AfficheCompagneController {
         Label produitCategorieLabel = new Label("Catégorie: " + compagne.getProduit().getCategorie());
         Label produitPrixLabel = new Label("Prix: " + compagne.getProduit().getPrix());
 
-        // Image du produit
-        ImageView produitImageView = new ImageView();
-        try {
-            Image produitImage = new Image(compagne.getProduit().getImage_produit());
-            produitImageView.setImage(produitImage);
-            produitImageView.setFitHeight(50);
-            produitImageView.setFitWidth(50);
-        } catch (Exception e) {
-            produitImageView.setImage(null);
-        }
+
 
         Button suppButton = new Button("Supprimer");
         suppButton.setStyle("-fx-background-color: #529fbc; -fx-text-fill: white;");
@@ -226,7 +217,6 @@ public class AfficheCompagneController {
                 produitNomLabel,
                 produitCategorieLabel,
                 produitPrixLabel,
-                produitImageView,
                 suppButton,
                 modifButton
         );
