@@ -4,35 +4,34 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 
 <?import java.net.URL?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterReservationController" style="-fx-background-color: #D3D3D3;">
-
 
     <stylesheets>
         <URL value="@style.css" />
     </stylesheets>
     <children>
-        <Label layoutX="51.0" layoutY="30.0" text="ID Réservation" style="-fx-text-fill: #333333;" />
-        <Label layoutX="51.0" layoutY="70.0" text="ID Paiement" style="-fx-text-fill: #333333;" />
-        <Label layoutX="51.0" layoutY="110.0" text="Nom Client" style="-fx-text-fill: #333333;" />
-        <Label layoutX="51.0" layoutY="150.0" text="Email" style="-fx-text-fill: #333333;" />
-        <Label layoutX="51.0" layoutY="190.0" text="Date Réservation" style="-fx-text-fill: #333333;" />
-        <Label layoutX="51.0" layoutY="230.0" text="Statut" style="-fx-text-fill: #333333;" />
+        <!-- Labels -->
+        <Label layoutX="51.0" layoutY="30.0" text="Nombre de places" style="-fx-text-fill: #333333;" />
+        <Label layoutX="51.0" layoutY="70.0" text="Type de réservation" style="-fx-text-fill: #333333;" />
+        <Label layoutX="51.0" layoutY="110.0" text="Code de confirmation" style="-fx-text-fill: #333333;" />
+        <Label layoutX="51.0" layoutY="150.0" text="Remarque" style="-fx-text-fill: #333333;" />
+        <Label layoutX="51.0" layoutY="190.0" text="Événement" style="-fx-text-fill: #333333;" />
 
-        <TextField fx:id="txtIdR" layoutX="180.0" layoutY="26.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
-        <TextField fx:id="txtIdP" layoutX="180.0" layoutY="66.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
-        <TextField fx:id="txtNomC" layoutX="180.0" layoutY="106.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
-        <TextField fx:id="txtEmail" layoutX="180.0" layoutY="146.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
-        <TextField fx:id="txtDateR" layoutX="180.0" layoutY="186.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
-        <TextField fx:id="txtStatus" layoutX="180.0" layoutY="226.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
+        <!-- TextFields -->
+        <TextField fx:id="txtNombrePlaces" layoutX="180.0" layoutY="26.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
+        <TextField fx:id="txtTypeReservation" layoutX="180.0" layoutY="66.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
+        <TextField fx:id="txtCodeConfirmation" layoutX="180.0" layoutY="106.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
+        <TextField fx:id="txtRemarque" layoutX="180.0" layoutY="146.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
 
+        <!-- ComboBox for selecting evenement -->
+        <ComboBox fx:id="cmbEvenement" layoutX="180.0" layoutY="186.0" style="-fx-background-color: #E0E0E0; -fx-text-fill: #333333;" />
+
+        <!-- Buttons -->
         <Button layoutX="250.0" layoutY="300.0" mnemonicParsing="false" onAction="#addReservation" text="Ajouter" style="-fx-background-color: green; -fx-text-fill: white;" />
-
-
-        <Button layoutX="400.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToPaiement" text="Paiement"
-                style="-fx-background-color: gray; -fx-text-fill: white;" prefWidth="90.0" />
-
-
+        <Button layoutX="400.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToPaiement" text="Paiement" style="-fx-background-color: gray; -fx-text-fill: white;" prefWidth="90.0" />
     </children>
 </AnchorPane>

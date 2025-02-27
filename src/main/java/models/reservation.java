@@ -1,30 +1,30 @@
 package models;
 
-import java.sql.Date;
-
 public class reservation {
-    private int id_R;
-    private int id_P;          // 🔹 Clé étrangère vers paiement
-    private String nomC;
-    private String email;
-    private Date dateR;
-    private String status;
+    private int id_R;  // Attribut auto-incrémenté
+    private int nombre_places;
+    private String type_reservation;
+    private int code_confirmation;
+    private String remarque;
+    private evenement evenement;  // Nouvel attribut de type Evenement
 
-    public reservation(int id_R, int id_P, String nomC, String email, Date dateR, String status) {
-        this.id_R = id_R;
-        this.id_P = id_P;
-        this.nomC = nomC;
-        this.email = email;
-        this.dateR = dateR;
-        this.status = status;
+    // Constructeur sans id_R, car il est généré par la base de données
+    public reservation(int nombre_places, String type_reservation, int code_confirmation, String remarque, evenement evenement) {
+        this.nombre_places = nombre_places;
+        this.type_reservation = type_reservation;
+        this.code_confirmation = code_confirmation;
+        this.remarque = remarque;
+        this.evenement = evenement;
     }
 
-    public reservation(int id_P, String nomC, String email, Date dateR, String status) {
-        this.id_P = id_P;
-        this.nomC = nomC;
-        this.email = email;
-        this.dateR = dateR;
-        this.status = status;
+    // Constructeur avec id_R pour initialiser à partir de la base de données
+    public reservation(int id_R, int nombre_places, String type_reservation, int code_confirmation, String remarque, evenement evenement) {
+        this.id_R = id_R;
+        this.nombre_places = nombre_places;
+        this.type_reservation = type_reservation;
+        this.code_confirmation = code_confirmation;
+        this.remarque = remarque;
+        this.evenement = evenement;
     }
 
     public int getId_R() {
@@ -35,48 +35,55 @@ public class reservation {
         this.id_R = id_R;
     }
 
-    public int getId_P() {
-        return id_P;
+    public int getNombre_places() {
+        return nombre_places;
     }
 
-    public void setId_P(int id_P) {
-        this.id_P = id_P;
+    public void setNombre_places(int nombre_places) {
+        this.nombre_places = nombre_places;
     }
 
-    public String getNomC() {
-        return nomC;
+    public String getType_reservation() {
+        return type_reservation;
     }
 
-    public void setNomC(String nomC) {
-        this.nomC = nomC;
+    public void setType_reservation(String type_reservation) {
+        this.type_reservation = type_reservation;
     }
 
-    public String getEmail() {
-        return email;
+    public int getCode_confirmation() {
+        return code_confirmation;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCode_confirmation(int code_confirmation) {
+        this.code_confirmation = code_confirmation;
     }
 
-    public Date getDateR() {
-        return dateR;
+    public String getRemarque() {
+        return remarque;
     }
 
-    public void setDateR(Date dateR) {
-        this.dateR = dateR;
+    public void setRemarque(String remarque) {
+        this.remarque = remarque;
     }
 
-    public String getStatus() {
-        return status;
+    public evenement getEvenement() {
+        return evenement;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setEvenement(evenement evenement) {
+        this.evenement = evenement;
     }
 
     @Override
     public String toString() {
-        return "reservation{id_R=" + id_R + ", id_P=" + id_P + ", nomC='" + nomC + "', email='" + email + "', dateR=" + dateR + ", status='" + status + "'}";
+        return "reservation{" +
+                "id_R=" + id_R +  // Affichage de l'id_R
+                ", nombre_places=" + nombre_places +
+                ", type_reservation='" + type_reservation + '\'' +
+                ", code_confirmation=" + code_confirmation +
+                ", remarque='" + remarque + '\'' +
+                ", evenement=" + evenement +  // Affiche l'événement
+                '}';
     }
 }

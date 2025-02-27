@@ -16,18 +16,16 @@ public class PaiementService implements Iservices<paiement> {
 
     @Override
     public void ajouter(paiement p) throws SQLException {
-        // Vérifier si l'ID de réservation existe avant d'insérer
         String checkSql = "SELECT COUNT(*) FROM reservation WHERE id_R = ?";
         try (PreparedStatement checkSt = cnx.prepareStatement(checkSql)) {
             checkSt.setInt(1, p.getId_R());
             ResultSet rs = checkSt.executeQuery();
             if (rs.next() && rs.getInt(1) == 0) {
                 System.out.println("❌ Erreur : id_R " + p.getId_R() + " n'existe pas dans reservation !");
-                return;  // Empêcher l'insertion
+                return;
             }
         }
 
-        // Maintenant, on peut insérer le paiement
         String sql = "INSERT INTO paiement (id_P, id_R, montant, status_P) VALUES (?, ?, ?, ?)";
         try (PreparedStatement st = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             st.setInt(1, p.getId_P());
@@ -50,32 +48,26 @@ public class PaiementService implements Iservices<paiement> {
 
     @Override
     public void modifier(paiement p, String status_P) throws SQLException {
-        // SQL pour mettre à jour uniquement le statut du paiement
         String sql = "UPDATE paiement SET status_P = ? WHERE id_P = ?";
 
         try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
-            // On remplace le statut avec le nouveau statut passé en paramètre
-            stmt.setString(1, status_P);  // Nouveau statut
-            stmt.setInt(2, p.getId_P());  // ID du paiement à modifier
+            stmt.setString(1, status_P);
+            stmt.setInt(2, p.getId_P());
 
-            // Exécution de la requête de mise à jour
             int rowsAffected = stmt.executeUpdate();
 
-            // Si des lignes sont affectées, cela signifie que la mise à jour a réussi
             if (rowsAffected > 0) {
                 System.out.println("✅ Paiement mis à jour avec succès.");
             } else {
                 System.out.println("⚠️ Aucun paiement trouvé avec l'ID " + p.getId_P());
             }
         } catch (SQLException ex) {
-            // Gestion des erreurs SQL
             System.err.println("Erreur lors de la mise à jour du paiement : " + ex.getMessage());
-            throw ex;  // On relance l'exception après l'avoir loggée
+            throw ex;
         }
     }
     @Override
     public int supprimer(int id_P) {
-        // Requête SQL pour supprimer le paiement par id_P
         String sql = "DELETE FROM paiement WHERE id_P = ?";
 
         try (PreparedStatement st = cnx.prepareStatement(sql)) {

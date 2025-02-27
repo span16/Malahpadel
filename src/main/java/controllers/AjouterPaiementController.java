@@ -32,7 +32,6 @@ public class AjouterPaiementController {
 
     @FXML
     private void addPaiement() {
-        // Vérification des champs vides
         if (txtId_P.getText().isEmpty() || txtId_R.getText().isEmpty() || txtMontant.getText().isEmpty() || txtStatus_P.getText().isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Champs manquants", "Veuillez remplir tous les champs.");
             return;
@@ -44,7 +43,6 @@ public class AjouterPaiementController {
             float montant = Float.parseFloat(txtMontant.getText().trim());
             String status_P = txtStatus_P.getText().trim();
 
-            // Vérification des valeurs négatives ou nulles
             if (id_P <= 0 || id_R <= 0) {
                 showAlert(Alert.AlertType.ERROR, "ID invalide", "Les identifiants doivent être des entiers positifs.");
                 return;
@@ -55,21 +53,18 @@ public class AjouterPaiementController {
                 return;
             }
 
-            // Vérification du statut (optionnel : restreindre à certains statuts)
             if (status_P.length() < 3) {
                 showAlert(Alert.AlertType.ERROR, "Statut invalide", "Le statut doit contenir au moins 3 caractères.");
                 return;
             }
 
             paiement p = new paiement(id_P, id_R, montant, status_P);
-            paiementService.ajouter(p); // Appel du service pour l'ajout
+            paiementService.ajouter(p);
 
             showAlert(Alert.AlertType.INFORMATION, "Succès", "✅ Paiement ajouté avec succès !");
 
-            // Appel pour nettoyer les champs
             clearFields();
 
-            // Appel pour naviguer vers l'interface AfficherPaiement
             goToAfficherPaiement();
 
         } catch (NumberFormatException e) {
@@ -79,7 +74,6 @@ public class AjouterPaiementController {
         }
     }
 
-    // Méthode utilitaire pour afficher des alertes
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -88,7 +82,6 @@ public class AjouterPaiementController {
         alert.showAndWait();
     }
 
-    // Méthode utilitaire pour nettoyer les champs après l'ajout
     private void clearFields() {
         txtId_P.clear();
         txtId_R.clear();
@@ -96,10 +89,8 @@ public class AjouterPaiementController {
         txtStatus_P.clear();
     }
 
-    // Méthode pour naviguer vers la scène AfficherPaiement
     private void goToAfficherPaiement() {
         try {
-            // Charger la scène AfficherPaiement
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherPaiement.fxml"));
             Stage stage = (Stage) txtId_P.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));

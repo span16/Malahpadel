@@ -12,7 +12,6 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.AfficherPaiementController">
 
-    <!-- TableView des paiements -->
     <TableView fx:id="paiementTable" layoutX="14.0" layoutY="14.0" prefHeight="300.0" prefWidth="570.0">
         <columns>
             <TableColumn fx:id="idPColumn" text="ID Paiement" prefWidth="100.0">
@@ -38,7 +37,6 @@
         </columns>
     </TableView>
 
-    <!-- Boutons d'action sous la TableView -->
     <Button layoutX="200.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToModifier" text="Modifier"
             style="-fx-background-color: blue; -fx-text-fill: white;" prefWidth="90.0" />
 

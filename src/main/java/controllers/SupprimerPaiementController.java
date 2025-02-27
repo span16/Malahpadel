@@ -15,17 +15,17 @@ import java.sql.SQLException;
 public class SupprimerPaiementController {
 
     @FXML
-    private TextField txtIdP; // Champ pour entrer l'ID du paiement à supprimer
+    private TextField txtIdP;
 
     private final PaiementService paiementService = new PaiementService();
 
         @FXML
         void deletePaiement(ActionEvent event) {
             try {
-                int id_P = Integer.parseInt(txtIdP.getText()); // Récupère l'ID depuis le champ texte
-                PaiementService ps = new PaiementService();    // Crée une instance du service
+                int id_P = Integer.parseInt(txtIdP.getText());
+                PaiementService ps = new PaiementService();
 
-                int rowsDeleted = ps.supprimer(id_P);          // Appelle la méthode supprimer
+                int rowsDeleted = ps.supprimer(id_P);
                 if (rowsDeleted > 0) {
                     System.out.println("✅ Paiement supprimé avec succès !");
                 } else {
@@ -38,7 +38,6 @@ public class SupprimerPaiementController {
         }
 
 
-        // ✅ Méthode pour naviguer vers l'interface d'ajout de paiement
     @FXML
     void goToAjouterPaiement(ActionEvent actionEvent) {
         try {
@@ -46,7 +45,7 @@ public class SupprimerPaiementController {
             Parent root = loader.load();
 
             Stage stage = (Stage) txtIdP.getScene().getWindow();
-            stage.setScene(new Scene(root)); // Charger la scène d'ajout
+            stage.setScene(new Scene(root));
             stage.show();
 
             System.out.println("➡️ Navigation vers AjouterPaiement réussie !");

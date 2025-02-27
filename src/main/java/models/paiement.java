@@ -22,7 +22,6 @@ public class paiement {
         this.status_P = status_P;
     }
 
-    // 🔹 Méthode toString() pour affichage
     @Override
     public String toString() {
         return "Paiement{" +
@@ -33,7 +32,6 @@ public class paiement {
                 '}';
     }
 
-    // 🔹 Getters et Setters
     public int getId_P() {
         return id_P;
     }

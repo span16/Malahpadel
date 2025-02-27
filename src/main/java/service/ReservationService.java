@@ -1,5 +1,6 @@
 package service;
 
+import models.evenement;
 import models.reservation;
 import tools.MyDataBase;
 
@@ -16,56 +17,73 @@ public class ReservationService implements Iservice<reservation> {
 
     @Override
     public void ajouter(reservation r) throws SQLException {
-        String sql = "INSERT INTO reservation (id_P, nomC, email, dateR, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reservation (nombre_places, type_reservation, code_confirmation, remarque, id) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement st = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-        st.setInt(1, r.getId_P());
-        st.setString(2, r.getNomC());
-        st.setString(3, r.getEmail());
-        st.setDate(4, r.getDateR() != null ? new java.sql.Date(r.getDateR().getTime()) : new java.sql.Date(new java.util.Date().getTime()));
-        st.setString(5, r.getStatus());
+        st.setInt(1, r.getNombre_places());
+        st.setString(2, r.getType_reservation());
+        st.setInt(3, r.getCode_confirmation());
+        st.setString(4, r.getRemarque());
+        st.setInt(5, r.getEvenement().getId());  // Utilisation de l'ID de l'événement
 
-        st.executeUpdate();
-        System.out.println("✅ Réservation ajoutée !");
+        int rowsInserted = st.executeUpdate();
+
+        // Récupérer l'ID auto-généré (id_R)
+        if (rowsInserted > 0) {
+            ResultSet generatedKeys = st.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int id_R = generatedKeys.getInt(1);  // Récupère l'ID généré
+                r.setId_R(id_R);  // Associe l'ID à l'objet reservation
+                System.out.println("✅ Réservation ajoutée avec ID " + id_R + " !");
+            }
+        }
     }
 
     @Override
-    public int supprimer(int id) throws SQLException {
-        String sql = "DELETE FROM reservation WHERE id_R = ?";
-        PreparedStatement st = cnx.prepareStatement(sql);
-        st.setInt(1, id);
+    public int supprimer(int code_confirmation) throws SQLException {
+        String query = "DELETE FROM reservation WHERE code_confirmation = ?";
 
-        int rowsDeleted = st.executeUpdate();
+        // Utilisation de la connexion existante de MyDataBase
+        try (Connection connection = MyDataBase.getInstance().getCnx();  // pas de nouvelle ouverture, utilise l'instance existante
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-        if (rowsDeleted > 0) {
-            System.out.println("✅ Réservation avec ID " + id + " supprimée !");
-        } else {
-            System.out.println("⚠️ Aucune réservation trouvée avec l'ID : " + id);
+            // Paramétrage de la requête avec code_confirmation
+            statement.setInt(1, code_confirmation);
+
+            // Exécution de la suppression
+            return statement.executeUpdate();
         }
-        return rowsDeleted;
     }
+
+
 
     @Override
-    public int modifier(reservation r, String nomC) throws SQLException {
-        String sql = "UPDATE reservation SET id_P = ?, nomC = ?, email = ?, dateR = ?, status = ? WHERE nomC = ?";
-        PreparedStatement st = cnx.prepareStatement(sql);
+    public int modifier(int id_R, int nombre_places, String type_reservation, int code_confirmation, String remarque) throws SQLException {
+        String query = "UPDATE reservation SET nombre_places = ?, type_reservation = ?, code_confirmation = ?, remarque = ? WHERE id_R = ?";
 
-        st.setInt(1, r.getId_P());
-        st.setString(2, r.getNomC());
-        st.setString(3, r.getEmail());
-        st.setDate(4, new java.sql.Date(r.getDateR().getTime()));
-        st.setString(5, r.getStatus());
-        st.setString(6, nomC);
+        try (Connection connection = MyDataBase.getInstance().getCnx(); // Utilisation de MyDataBase
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-        int rowsUpdated = st.executeUpdate();
+            // Paramétrage de la requête
+            statement.setInt(1, nombre_places);
+            statement.setString(2, type_reservation);
+            statement.setInt(3, code_confirmation);
+            statement.setString(4, remarque);
+            statement.setInt(5, id_R);
 
-        if (rowsUpdated > 0) {
-            System.out.println("✅ Réservation modifiée !");
-        } else {
-            System.out.println("⚠️ Aucune réservation trouvée avec le nom : " + nomC);
+            // Exécution de la mise à jour
+            return statement.executeUpdate();
         }
-        return rowsUpdated;
     }
+
+
+
+
+
+
+
+
+
 
     @Override
     public List<reservation> recuperer() throws SQLException {
@@ -75,13 +93,17 @@ public class ReservationService implements Iservice<reservation> {
         List<reservation> reservations = new ArrayList<>();
 
         while (rs.next()) {
+            // Suppose que l'ID de l'événement est récupéré
+            int evenementId = rs.getInt("evenement_id");
+            evenement evenement = new evenement(evenementId);  // Créez un événement avec l'ID récupéré
+
             reservation r = new reservation(
-                    rs.getInt("id_R"),
-                    rs.getInt("id_P"),
-                    rs.getString("nomC"),
-                    rs.getString("email"),
-                    rs.getDate("dateR"),
-                    rs.getString("status")
+                    rs.getInt("id_R"),  // Récupération de l'ID auto-généré
+                    rs.getInt("nombre_places"),
+                    rs.getString("type_reservation"),
+                    rs.getInt("code_confirmation"),
+                    rs.getString("remarque"),
+                    evenement  // Associez l'événement à la réservation
             );
             reservations.add(r);
         }
@@ -89,22 +111,16 @@ public class ReservationService implements Iservice<reservation> {
         return reservations;
     }
 
-    public boolean reservationExists(int id_R) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE id_R = ?";
-        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
-            stmt.setInt(1, id_R);
-            ResultSet rs = stmt.executeQuery();
+    public boolean reservationExists(int code_confirmation) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE code_confirmation = ?";
+        PreparedStatement st = cnx.prepareStatement(sql);
+        st.setInt(1, code_confirmation);
 
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        }
-        return false;
+        ResultSet rs = st.executeQuery();
+        rs.next();
+        return rs.getInt(1) > 0;  // Retourne true si une réservation existe avec ce code de confirmation
     }
 
-    public void insert(reservation reservation) {
-
-    }
 
 
 }

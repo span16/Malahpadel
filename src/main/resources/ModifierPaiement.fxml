@@ -7,19 +7,16 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierPaiementController">
     <children>
-        <!-- Labels -->
         <Label layoutX="51.0" layoutY="30.0" text="ID Paiement" />
         <Label layoutX="51.0" layoutY="70.0" text="ID Réservation" />
         <Label layoutX="51.0" layoutY="110.0" text="Montant" />
         <Label layoutX="51.0" layoutY="150.0" text="Statut Paiement" />
 
-        <!-- Text fields avec fx:id cohérents -->
         <TextField fx:id="txtId_P" layoutX="180.0" layoutY="26.0" promptText="ID du paiement" />
         <TextField fx:id="txtId_R" layoutX="180.0" layoutY="66.0" promptText="ID de la réservation" />
         <TextField fx:id="txtMontant" layoutX="180.0" layoutY="106.0" promptText="Montant" />
         <TextField fx:id="txtStatus_P" layoutX="180.0" layoutY="146.0" promptText="Statut du paiement" />
 
-        <!-- Buttons -->
         <Button layoutX="250.0" layoutY="300.0" mnemonicParsing="false" onAction="#modifierPaiement" text="Modifier" />
         <Button fx:id="btnSupprimer" layoutX="150.0" layoutY="300.0" onAction="#goToSupprimer" text="Supprimer" style="-fx-background-color: red; -fx-text-fill: white;" />
     </children>

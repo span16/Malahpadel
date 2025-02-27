@@ -19,9 +19,8 @@ public class ModifierPaiementController {
     @FXML private TextField txtId_R;
     @FXML private TextField txtMontant;
     @FXML private TextField txtStatus_P;
-    @FXML private Button btnSupprimer;  // ✅ AJOUT DE LA DÉCLARATION MANQUANTE
+    @FXML private Button btnSupprimer;
 
-    // ✅ Méthode pour afficher les alertes
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -30,7 +29,6 @@ public class ModifierPaiementController {
         alert.showAndWait();
     }
 
-    // ✅ Méthode pour modifier le paiement
     @FXML
     private void modifierPaiement(ActionEvent actionEvent) {
         try {
@@ -80,7 +78,6 @@ public class ModifierPaiementController {
         }
     }
 
-    // ✅ Méthode pour supprimer le paiement
     @FXML
     private void goToSupprimer(ActionEvent event) {
         try {
@@ -103,7 +100,7 @@ public class ModifierPaiementController {
 
                     if (affectedRows > 0) {
                         showAlert(Alert.AlertType.INFORMATION, "Succès", "Paiement supprimé avec succès !");
-                        Stage stage = (Stage) btnSupprimer.getScene().getWindow(); // ✅ Erreur corrigée
+                        Stage stage = (Stage) btnSupprimer.getScene().getWindow();
                         stage.close();
                     } else {
                         showAlert(Alert.AlertType.WARNING, "Erreur", "Aucun paiement trouvé avec cet ID.");
