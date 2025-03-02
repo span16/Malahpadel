@@ -19,23 +19,30 @@ public class SupprimerPaiementController {
 
     private final PaiementService paiementService = new PaiementService();
 
-        @FXML
-        void deletePaiement(ActionEvent event) {
-            try {
-                int id_P = Integer.parseInt(txtIdP.getText());
-                PaiementService ps = new PaiementService();
+    @FXML
+    void deletePaiement(ActionEvent event) {
+        try {
+            String devise = txtIdP.getText().trim(); // ✅ Récupérer la devise depuis le champ de texte
 
-                int rowsDeleted = ps.supprimer(id_P);
-                if (rowsDeleted > 0) {
-                    System.out.println("✅ Paiement supprimé avec succès !");
-                } else {
-                    System.out.println("⚠️ Aucun paiement trouvé avec l'ID " + id_P);
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Veuillez entrer un ID valide !");
+            if (devise.isEmpty()) {
+                System.out.println("❌ Veuillez entrer une devise valide !");
+                return;
             }
+
+            PaiementService ps = new PaiementService();
+            int rowsDeleted = ps.supprimer(devise);  // ✅ Utilisation correcte de la devise
+
+            if (rowsDeleted > 0) {
+                System.out.println("✅ Paiement(s) supprimé(s) avec succès !");
+            } else {
+                System.out.println("⚠️ Aucun paiement trouvé avec la devise " + devise);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("❌ Erreur SQL lors de la suppression : " + e.getMessage());
         }
+    }
+
 
 
     @FXML

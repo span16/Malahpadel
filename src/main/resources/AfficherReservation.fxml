@@ -3,55 +3,45 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="500.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.AfficherReservationController">
+<AnchorPane prefHeight="500.0" prefWidth="1008.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherReservationController">
 
-    <TableView fx:id="reservationTable" layoutX="14.0" layoutY="14.0" prefHeight="300.0" prefWidth="570.0">
+    <TableView fx:id="reservationTable" layoutX="132.0" layoutY="22.0" prefHeight="300.0" prefWidth="762.0">
         <columns>
-            <TableColumn fx:id="idRColumn" text="ID Réservation" prefWidth="100.0">
+            <TableColumn fx:id="nombrePlacesColumn" prefWidth="179.0" text="Nombre de places">
                 <cellValueFactory>
-                    <PropertyValueFactory property="id_R" />
+                    <PropertyValueFactory property="nombre_places" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="idPColumn" text="ID Paiement" prefWidth="100.0">
+            <TableColumn fx:id="typeReservationColumn" prefWidth="149.0" text="Type de réservation">
                 <cellValueFactory>
-                    <PropertyValueFactory property="id_P" />
+                    <PropertyValueFactory property="type_reservation" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="nomCColumn" text="Nom Client" prefWidth="150.0">
+            <TableColumn fx:id="codeConfirmationColumn" prefWidth="156.0" text="Code de confirmation">
                 <cellValueFactory>
-                    <PropertyValueFactory property="nomC" />
+                    <PropertyValueFactory property="code_confirmation" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="emailColumn" text="Email" prefWidth="150.0">
+            <TableColumn fx:id="remarqueColumn" prefWidth="129.0" text="Remarque">
                 <cellValueFactory>
-                    <PropertyValueFactory property="email" />
+                    <PropertyValueFactory property="remarque" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="dateRColumn" text="Date Réservation" prefWidth="120.0">
+            <TableColumn fx:id="evenementColumn" prefWidth="207.0" text="Événement">
                 <cellValueFactory>
-                    <PropertyValueFactory property="dateR" />
+                    <PropertyValueFactory property="Evenement" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="statusColumn" text="Statut" prefWidth="100.0">
-                <cellValueFactory>
-                    <PropertyValueFactory property="status" />
-                </cellValueFactory>
-            </TableColumn>
+
         </columns>
     </TableView>
 
-    <Button layoutX="200.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToModifier" text="Modifier"
-            style="-fx-background-color: blue; -fx-text-fill: white;" prefWidth="90.0" />
+    <Button layoutX="385.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToModifier" prefWidth="90.0" style="-fx-background-color: blue; -fx-text-fill: white;" text="Modifier" />
 
-    <Button layoutX="400.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToPaiement" text="Paiement"
-            style="-fx-background-color: gray; -fx-text-fill: white;" prefWidth="90.0" />
+    <Button layoutX="571.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToPaiement" prefWidth="90.0" style="-fx-background-color: gray; -fx-text-fill: white;" text="Paiement" />
 
 
 

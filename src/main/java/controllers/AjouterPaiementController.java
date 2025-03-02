@@ -17,34 +17,43 @@ import java.sql.SQLException;
 public class AjouterPaiementController {
 
     @FXML
-    private TextField txtId_P;
-
-    @FXML
-    private TextField txtId_R;
+    private TextField txtId_R; // id_R est une clé étrangère, et donc à saisir ici
 
     @FXML
     private TextField txtMontant;
 
     @FXML
-    private TextField txtStatus_P;
+    private TextField txtMethode_Paiement;
+
+    @FXML
+    private TextField txtCommission;
+
+    @FXML
+    private TextField txtDescription_Paiement;
+
+    @FXML
+    private TextField txtDevise;
 
     private final PaiementService paiementService = new PaiementService();
 
     @FXML
     private void addPaiement() {
-        if (txtId_P.getText().isEmpty() || txtId_R.getText().isEmpty() || txtMontant.getText().isEmpty() || txtStatus_P.getText().isEmpty()) {
+        if (txtId_R.getText().isEmpty() || txtMontant.getText().isEmpty() || txtMethode_Paiement.getText().isEmpty() ||
+                txtCommission.getText().isEmpty() || txtDescription_Paiement.getText().isEmpty() || txtDevise.getText().isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Champs manquants", "Veuillez remplir tous les champs.");
             return;
         }
 
         try {
-            int id_P = Integer.parseInt(txtId_P.getText().trim());
             int id_R = Integer.parseInt(txtId_R.getText().trim());
             float montant = Float.parseFloat(txtMontant.getText().trim());
-            String status_P = txtStatus_P.getText().trim();
+            String methode_Paiement = txtMethode_Paiement.getText().trim();
+            float commission = Float.parseFloat(txtCommission.getText().trim());
+            String description_Paiement = txtDescription_Paiement.getText().trim();
+            String devise = txtDevise.getText().trim();
 
-            if (id_P <= 0 || id_R <= 0) {
-                showAlert(Alert.AlertType.ERROR, "ID invalide", "Les identifiants doivent être des entiers positifs.");
+            if (id_R <= 0) {
+                showAlert(Alert.AlertType.ERROR, "ID invalide", "L'ID de réservation doit être un entier positif.");
                 return;
             }
 
@@ -53,13 +62,14 @@ public class AjouterPaiementController {
                 return;
             }
 
-            if (status_P.length() < 3) {
-                showAlert(Alert.AlertType.ERROR, "Statut invalide", "Le statut doit contenir au moins 3 caractères.");
+            if (commission < 0) {
+                showAlert(Alert.AlertType.ERROR, "Commission invalide", "La commission ne peut pas être négative.");
                 return;
             }
 
-            paiement p = new paiement(id_P, id_R, montant, status_P);
-            paiementService.ajouter(p);
+            // Création de l'objet paiement sans id_P, car c'est auto-incrémenté
+            paiement p = new paiement(id_R, methode_Paiement, commission, description_Paiement, devise);
+            paiementService.ajouter(p); // Ajout dans la base de données
 
             showAlert(Alert.AlertType.INFORMATION, "Succès", "✅ Paiement ajouté avec succès !");
 
@@ -68,10 +78,26 @@ public class AjouterPaiementController {
             goToAfficherPaiement();
 
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur de format", "Veuillez entrer des valeurs numériques valides pour les IDs et le montant.");
+            showAlert(Alert.AlertType.ERROR, "Erreur de format", "Veuillez entrer des valeurs numériques valides pour l'ID, le montant et la commission.");
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur SQL", "❌ Une erreur s'est produite lors de l'ajout du paiement : " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void supprimerPaiement() throws SQLException {
+        if (txtDevise.getText().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Champs manquants", "Veuillez remplir le champ 'Devise'.");
+            return;
+        }
+
+        String devise = txtDevise.getText().trim();
+
+        paiementService.supprimer(devise); // Suppression par devise
+
+        showAlert(Alert.AlertType.INFORMATION, "Succès", "✅ Paiement(s) supprimé(s) avec succès.");
+
+        clearFields();
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
@@ -83,16 +109,18 @@ public class AjouterPaiementController {
     }
 
     private void clearFields() {
-        txtId_P.clear();
         txtId_R.clear();
         txtMontant.clear();
-        txtStatus_P.clear();
+        txtMethode_Paiement.clear();
+        txtCommission.clear();
+        txtDescription_Paiement.clear();
+        txtDevise.clear();
     }
 
     private void goToAfficherPaiement() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherPaiement.fxml"));
-            Stage stage = (Stage) txtId_P.getScene().getWindow();
+            Stage stage = (Stage) txtId_R.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Afficher Paiement");
             stage.show();

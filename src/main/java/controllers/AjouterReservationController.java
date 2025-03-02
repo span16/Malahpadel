@@ -3,54 +3,60 @@ package controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.reservation;
-import models.evenement; // Assurez-vous d'importer la classe Evenement
+import models.Evenement;
 import service.ReservationService;
+import service.EvenementService;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Objects;
-import java.util.regex.Pattern;
 
 public class AjouterReservationController {
 
-    @FXML private TextField txtNombrePlaces;
-    @FXML private TextField txtTypeReservation;
-    @FXML private TextField txtCodeConfirmation;
-    @FXML private TextField txtRemarque;
-    @FXML private TextField txtEvenementId;
+    @FXML
+    private TextField txtNombrePlaces;
+    @FXML
+    private TextField txtTypeReservation;
+    @FXML
+    private TextField txtCodeConfirmation;
+    @FXML
+    private TextField txtRemarque;
+    @FXML
+    private ComboBox<String> comboEvenementNom;  // Utilisation de ComboBox au lieu de txtEvenementNom
 
-    // 🔔 Affiche une alerte avec un message donné
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+    private final EvenementService evenementService = new EvenementService();
+
+    @FXML
+    public void initialize() {
+        try {
+            comboEvenementNom.getItems().addAll(evenementService.getAllEvenementNames());
+        } catch (SQLException e) {
+            System.err.println("Erreur lors du chargement des événements : " + e.getMessage());
+        }
     }
 
     @FXML
     void addReservation(ActionEvent event) {
         // Vérification des champs
         if (txtNombrePlaces.getText().isEmpty() || txtTypeReservation.getText().isEmpty() ||
-                txtCodeConfirmation.getText().isEmpty() || txtRemarque.getText().isEmpty() || txtEvenementId.getText().isEmpty()) {
+                txtCodeConfirmation.getText().isEmpty() || txtRemarque.getText().isEmpty() ||
+                comboEvenementNom.getValue() == null) {  // Vérification du ComboBox
             showAlert("Champs manquants", "Veuillez remplir tous les champs.");
             return;
         }
 
-        int nombrePlaces, codeConfirmation, evenementId;
+        int nombrePlaces, codeConfirmation;
+        String evenementNom = comboEvenementNom.getValue();  // Récupérer le nom de l'événement depuis la ComboBox
+
         try {
             nombrePlaces = Integer.parseInt(txtNombrePlaces.getText());
             codeConfirmation = Integer.parseInt(txtCodeConfirmation.getText());
-            evenementId = Integer.parseInt(txtEvenementId.getText());
-            if (nombrePlaces <= 0 || codeConfirmation <= 0 || evenementId <= 0) {
+
+            if (nombrePlaces <= 0 || codeConfirmation <= 0) {
                 showAlert("Erreur", "Les valeurs doivent être des nombres positifs.");
                 return;
             }
@@ -60,19 +66,23 @@ public class AjouterReservationController {
         }
 
         String typeReservation = txtTypeReservation.getText().trim();
-        if (typeReservation.isEmpty()) {
-            showAlert("Erreur de Type", "Le type de réservation ne peut pas être vide.");
+        String remarque = txtRemarque.getText().trim();
+
+        // Récupérer l'événement par son nom
+        Evenement ev;
+        try {
+            ev = evenementService.getEvenementByNom(evenementNom);
+            if (ev == null) {
+                showAlert("Erreur", "L'événement spécifié n'existe pas.");
+                return;
+            }
+        } catch (SQLException e) {
+            showAlert("Erreur de Base de Données", "Échec de la récupération de l'événement : " + e.getMessage());
             return;
         }
 
-        String remarque = txtRemarque.getText().trim();
-
-        // Créer l'événement avec l'ID fourni
-        evenement ev = new evenement(evenementId);
-
-        // Créer la réservation
+        // Créer la réservation avec l'événement récupéré
         reservation r = new reservation(nombrePlaces, typeReservation, codeConfirmation, remarque, ev);
-
         ReservationService sr = new ReservationService();
 
         try {
@@ -83,6 +93,7 @@ public class AjouterReservationController {
             return;
         }
 
+        // Charger l'affichage des réservations après ajout
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherReservation.fxml"));
             Parent root = loader.load();
@@ -96,28 +107,8 @@ public class AjouterReservationController {
         }
     }
 
-    public void goToModifier(ActionEvent actionEvent) {
-        try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ModifierReservation.fxml")));
-            ((Stage) txtTypeReservation.getScene().getWindow()).setScene(new Scene(root));
-        } catch (IOException e) {
-            showAlert("Erreur de Navigation", "Impossible d'accéder à la modification des réservations.");
-        }
-    }
-
-    public void goToSupprimer(ActionEvent actionEvent) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SupprimerReservation.fxml"));
-            ((Stage) ((Node) actionEvent.getSource()).getScene().getWindow()).setScene(new Scene(root));
-        } catch (IOException e) {
-            showAlert("Erreur de Navigation", "Impossible d'accéder à la suppression des réservations.");
-        }
-    }
-
     @FXML
     public void goToPaiement(ActionEvent actionEvent) {
-        System.out.println("Aller à Paiement");
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterPaiement.fxml"));
             Parent root = loader.load();
@@ -127,5 +118,13 @@ public class AjouterReservationController {
         } catch (IOException e) {
             System.err.println("Erreur lors du chargement de la scène Paiement : " + e.getMessage());
         }
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

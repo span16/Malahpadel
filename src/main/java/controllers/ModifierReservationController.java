@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import models.reservation;
-import models.evenement; // Assurez-vous d'importer la classe Evenement
+import models.Evenement; // Assurez-vous d'importer la classe Evenement
 import service.ReservationService;
 
 import java.io.IOException;

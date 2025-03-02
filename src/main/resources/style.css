@@ -1,102 +1,63 @@
-/* Style général */
-.root {
-    -fx-font-family: "Arial";
-    -fx-background-color: #f5f5f5;
-    -fx-text-fill: #333333;
-}
-
-.container {
-    -fx-max-width: 1200px;
+/* Style général pour l'AnchorPane */
+.anchor-pane {
+    -fx-background-color: #D3D3D3;
     -fx-padding: 20px;
-    -fx-background-color: #ffffff;
-    -fx-border-radius: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 4);
 }
 
-.label-title {
-    -fx-font-size: 24px;
-    -fx-text-fill: #2c3e50;
-    -fx-alignment: center;
-}
-
-/* Section Réservation */
-.reservation-section, .paiement-section {
-    -fx-padding: 20px 0px 40px 0px;
-}
-
-.form-grid {
-    -fx-hgap: 15px;
-    -fx-vgap: 15px;
-}
-
-.form-label {
+/* Style des Labels */
+.label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
 }
 
-.form-input {
-    -fx-pref-width: 100%;
-    -fx-padding: 10px;
-    -fx-border-color: #cccccc;
-    -fx-border-width: 1px;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
+/* Style des TextFields */
+.text-field {
+    -fx-background-color: #E0E0E0;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #B0B0B0;
 }
 
+/* Style des Buttons */
+.button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: #4CAF50; /* Green for 'Réserver' button */
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-margin: 10px;
+}
+
+.button:hover {
+    -fx-background-color: #45A049;
+}
+
+/* Style des TableView */
 .table-view {
-    -fx-border-color: #dddddd;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #B0B0B0;
     -fx-border-width: 1px;
-    -fx-border-style: solid;
 }
 
-.table-view .column-header {
-    -fx-background-color: #3498db;
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: bold;
-}
-
-.table-view .table-row-cell:even {
-    -fx-background-color: #f2f2f2;
-}
-
-.table-view .table-row-cell:hover {
-    -fx-background-color: #e0e0e0;
-}
-
-/* Boutons */
-.btn {
-    -fx-padding: 10px 20px;
-    -fx-background-color: #27ae60;
-    -fx-text-fill: white;
-    -fx-background-radius: 8px;
-    -fx-font-size: 16px;
-    -fx-cursor: hand;
-}
-
-.btn:hover {
-    -fx-background-color: #219150;
-}
-
-.btn-danger {
-    -fx-background-color: #e74c3c;
-}
-
-.btn-danger:hover {
-    -fx-background-color: #c0392b;
-}
-
-/* Alertes */
-.alert {
-    -fx-padding: 10px;
-    -fx-background-color: #f39c12;
-    -fx-text-fill: white;
-    -fx-background-radius: 8px;
+/* Style des TableColumns */
+.table-column {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
     -fx-alignment: center;
 }
 
-.alert-success {
-    -fx-background-color: #2ecc71;
+/* Style pour les boutons de la TableView */
+.button-table {
+    -fx-background-color: #808080;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
 }
 
-.alert-error {
-    -fx-background-color: #e74c3c;
+.button-table:hover {
+    -fx-background-color: #696969;
 }

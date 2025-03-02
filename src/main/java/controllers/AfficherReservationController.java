@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,13 +19,12 @@ import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import service.ReservationService;
 import models.reservation;
-import javafx.event.ActionEvent;
-
+import models.Evenement;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AfficherReservationController implements Initializable {
@@ -33,41 +33,44 @@ public class AfficherReservationController implements Initializable {
     private TableView<reservation> reservationTable;
 
     @FXML
-    private TableColumn<reservation, Integer> idRColumn;
+    private TableColumn<reservation, Integer> nombrePlacesColumn;
 
     @FXML
-    private TableColumn<reservation, Integer> idPColumn;
+    private TableColumn<reservation, String> typeReservationColumn;
 
     @FXML
-    private TableColumn<reservation, String> nomCColumn;
+    private TableColumn<reservation, Integer> codeConfirmationColumn;
 
     @FXML
-    private TableColumn<reservation, String> emailColumn;
+    private TableColumn<reservation, String> remarqueColumn;
 
     @FXML
-    private TableColumn<reservation, java.sql.Date> dateRColumn;
+    private TableColumn<reservation, String> evenementColumn;  // Colonne pour afficher le nom de l'événement
 
     @FXML
-    private TableColumn<reservation, String> statusColumn;
-
-    @FXML
-    private TextField rlist;
+    private TextField rlist; // Champ de texte pour filtrer
 
     private final ReservationService reservationService = new ReservationService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupTableColumns();
-        loadReservations();
+        loadReservations(); // Charger toutes les réservations au début
     }
 
     private void setupTableColumns() {
-        idRColumn.setCellValueFactory(new PropertyValueFactory<>("id_R"));
-        idPColumn.setCellValueFactory(new PropertyValueFactory<>("id_P"));
-        nomCColumn.setCellValueFactory(new PropertyValueFactory<>("nomC"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        dateRColumn.setCellValueFactory(new PropertyValueFactory<>("dateR"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        // Définir les colonnes de la table
+        nombrePlacesColumn.setCellValueFactory(new PropertyValueFactory<>("nombre_places"));
+        typeReservationColumn.setCellValueFactory(new PropertyValueFactory<>("type_reservation"));
+        codeConfirmationColumn.setCellValueFactory(new PropertyValueFactory<>("code_confirmation"));
+        remarqueColumn.setCellValueFactory(new PropertyValueFactory<>("remarque"));
+
+        // Modifier la colonne 'evenementColumn' pour afficher le nom de l'événement
+        evenementColumn.setCellValueFactory(cellData -> {
+            Evenement ev = cellData.getValue().getEvenement(); // Récupère l'objet evenement associé à la réservation
+            // Retourne un SimpleStringProperty qui contient le nom de l'événement
+            return new SimpleStringProperty(ev != null ? ev.getNom() : "Aucun");  // Utilise "Aucun" si ev est null
+        });
     }
 
     public void loadReservations() {
@@ -76,6 +79,28 @@ public class AfficherReservationController implements Initializable {
             reservationTable.setItems(reservations);
         } catch (SQLException e) {
             System.out.println("Erreur lors du chargement des réservations : " + e.getMessage());
+        }
+    }
+
+    // Méthode pour filtrer les réservations en fonction de l'input dans rlist
+    @FXML
+    public void filterReservations() {
+        String filterText = rlist.getText().trim();
+
+        try {
+            ObservableList<reservation> filteredReservations;
+
+            if (filterText.isEmpty()) {
+                // Si le champ est vide, afficher toutes les réservations
+                filteredReservations = FXCollections.observableArrayList(reservationService.recuperer());
+            } else {
+                // Sinon, filtrer les réservations par code_confirmation
+                filteredReservations = FXCollections.observableArrayList(reservationService.filterByCodeConfirmation(filterText));
+            }
+
+            reservationTable.setItems(filteredReservations);
+        } catch (SQLException e) {
+            System.out.println("Erreur lors du filtrage des réservations : " + e.getMessage());
         }
     }
 
@@ -101,9 +126,6 @@ public class AfficherReservationController implements Initializable {
             showError("Erreur de chargement", "Impossible de charger la scène de modification.");
         }
     }
-
-
-
 
     public void goToPaiement(ActionEvent actionEvent) {
         System.out.println("Aller à Paiement");

@@ -1,24 +1,15 @@
 package models;
 
 public class reservation {
-    private int id_R;  // Attribut auto-incrémenté
+    private int id_R;
     private int nombre_places;
     private String type_reservation;
     private int code_confirmation;
     private String remarque;
-    private evenement evenement;  // Nouvel attribut de type Evenement
+    private Evenement evenement;
 
-    // Constructeur sans id_R, car il est généré par la base de données
-    public reservation(int nombre_places, String type_reservation, int code_confirmation, String remarque, evenement evenement) {
-        this.nombre_places = nombre_places;
-        this.type_reservation = type_reservation;
-        this.code_confirmation = code_confirmation;
-        this.remarque = remarque;
-        this.evenement = evenement;
-    }
-
-    // Constructeur avec id_R pour initialiser à partir de la base de données
-    public reservation(int id_R, int nombre_places, String type_reservation, int code_confirmation, String remarque, evenement evenement) {
+    // Constructeur avec tous les attributs
+    public reservation(int id_R, int nombre_places, String type_reservation, int code_confirmation, String remarque, Evenement evenement) {
         this.id_R = id_R;
         this.nombre_places = nombre_places;
         this.type_reservation = type_reservation;
@@ -27,6 +18,17 @@ public class reservation {
         this.evenement = evenement;
     }
 
+    // Constructeur sans id_R
+    public reservation(int nombre_places, String type_reservation, int code_confirmation, String remarque, Evenement evenement) {
+        this.id_R = 0;  // Valeur par défaut pour id_R
+        this.nombre_places = nombre_places;
+        this.type_reservation = type_reservation;
+        this.code_confirmation = code_confirmation;
+        this.remarque = remarque;
+        this.evenement = evenement;
+    }
+
+    // Getters et setters
     public int getId_R() {
         return id_R;
     }
@@ -67,23 +69,11 @@ public class reservation {
         this.remarque = remarque;
     }
 
-    public evenement getEvenement() {
+    public Evenement getEvenement() {
         return evenement;
     }
 
-    public void setEvenement(evenement evenement) {
+    public void setEvenement(Evenement evenement) {
         this.evenement = evenement;
-    }
-
-    @Override
-    public String toString() {
-        return "reservation{" +
-                "id_R=" + id_R +  // Affichage de l'id_R
-                ", nombre_places=" + nombre_places +
-                ", type_reservation='" + type_reservation + '\'' +
-                ", code_confirmation=" + code_confirmation +
-                ", remarque='" + remarque + '\'' +
-                ", evenement=" + evenement +  // Affiche l'événement
-                '}';
     }
 }
