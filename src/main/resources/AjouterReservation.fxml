@@ -28,8 +28,8 @@
         <ComboBox fx:id="comboEvenementNom" layoutX="273.0" layoutY="175.0" promptText="Sélectionner un événement" />
 
         <!-- Buttons -->
-        <Button layoutX="250.0" layoutY="293.0" mnemonicParsing="false" onAction="#addReservation" prefHeight="30.0" prefWidth="82.0" styleClass="button" text="Réserver" />
-        <Button layoutX="393.0" layoutY="293.0" mnemonicParsing="false" onAction="#goToPaiement" prefHeight="30.0" prefWidth="107.0" styleClass="button" text="Payer" />
+        <Button layoutX="273.0" layoutY="293.0" mnemonicParsing="false" onAction="#addReservation" prefHeight="30.0" prefWidth="82.0" styleClass="button" text="Réserver" />
+        <Button layoutX="553.0" layoutY="293.0" mnemonicParsing="false" onAction="#goToPaiement" prefHeight="40.0" prefWidth="99.0" styleClass="button" text="Payer" />
     </children>
 
 </AnchorPane>

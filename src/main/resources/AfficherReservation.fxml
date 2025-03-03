@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
@@ -8,42 +9,48 @@
 
 <AnchorPane prefHeight="500.0" prefWidth="1008.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherReservationController">
 
-    <TableView fx:id="reservationTable" layoutX="132.0" layoutY="22.0" prefHeight="300.0" prefWidth="762.0">
+    <!-- Titre en gras et centré -->
+    <Label layoutX="381.0" layoutY="11.0" prefHeight="43.0" prefWidth="246.0" style="-fx-font-weight: bold; -fx-font-size: 19px; -fx-alignment: center;" text="Listes des réservations" textFill="#1e2475" />
+
+    <!-- TableView avec style amélioré -->
+    <TableView fx:id="reservationTable" layoutX="132.0" layoutY="64.0" prefHeight="300.0" prefWidth="830.0" style="-fx-border-color: #ccc; -fx-border-width: 1px;">
         <columns>
-            <TableColumn fx:id="nombrePlacesColumn" prefWidth="179.0" text="Nombre de places">
+            <TableColumn fx:id="nombrePlacesColumn" prefWidth="179.0" style="-fx-background-color: #f0f0f0;" text="Nombre de places">
                 <cellValueFactory>
                     <PropertyValueFactory property="nombre_places" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="typeReservationColumn" prefWidth="149.0" text="Type de réservation">
+            <TableColumn fx:id="typeReservationColumn" prefWidth="149.0" style="-fx-background-color: #f0f0f0;" text="Type de réservation">
                 <cellValueFactory>
                     <PropertyValueFactory property="type_reservation" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="codeConfirmationColumn" prefWidth="156.0" text="Code de confirmation">
+            <TableColumn fx:id="codeConfirmationColumn" prefWidth="156.0" style="-fx-background-color: #f0f0f0;" text="Code de confirmation">
                 <cellValueFactory>
                     <PropertyValueFactory property="code_confirmation" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="remarqueColumn" prefWidth="129.0" text="Remarque">
+            <TableColumn fx:id="remarqueColumn" prefWidth="129.0" style="-fx-background-color: #f0f0f0;" text="Remarque">
                 <cellValueFactory>
                     <PropertyValueFactory property="remarque" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="evenementColumn" prefWidth="207.0" text="Événement">
+            <TableColumn fx:id="evenementColumn" prefWidth="207.0" style="-fx-background-color: #f0f0f0;" text="Événement">
                 <cellValueFactory>
                     <PropertyValueFactory property="Evenement" />
                 </cellValueFactory>
             </TableColumn>
-
         </columns>
     </TableView>
 
-    <Button layoutX="385.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToModifier" prefWidth="90.0" style="-fx-background-color: blue; -fx-text-fill: white;" text="Modifier" />
+    <!-- Message si la table est vide -->
+    <Label fx:id="emptyTableLabel" layoutX="381.0" layoutY="200.0" style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Aucune réservation trouvée." visible="false" />
 
-    <Button layoutX="571.0" layoutY="330.0" mnemonicParsing="false" onAction="#goToPaiement" prefWidth="90.0" style="-fx-background-color: gray; -fx-text-fill: white;" text="Paiement" />
+    <!-- Boutons stylisés -->
+    <!-- Exemple de bouton dans un fichier FXML -->
+    <Button text="Modifier" onAction="#handleModifierButton" />    <Button fx:id="importerButton" text="Importer PDF" onAction="#onImporterButtonClick"
+            layoutX="50" layoutY="300" />
 
-
-
+    <Button layoutX="598.0" layoutY="382.0" mnemonicParsing="false" onAction="#goToPaiement" prefWidth="120.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Paiement" />
 
 </AnchorPane>

@@ -22,7 +22,7 @@ public class Main {
             // 📝 Création d'une nouvelle réservation
 
             reservation r = new reservation(5, "VIP", 12345, "Aucune remarque", ev);             // évènement lié
-            
+
 
             // Vérifier si la réservation existe avant d'ajouter un paiement
             boolean reservationExiste = rs.reservationExists(r.getCode_confirmation()); // Utilisez rs.reservationExists

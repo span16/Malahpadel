@@ -1,25 +1,34 @@
 package controllers;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import models.Evenement;
 import models.reservation;
-import models.Evenement; // Assurez-vous d'importer la classe Evenement
 import service.ReservationService;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
+
+
 public class ModifierReservationController {
-
+    private int id_R;
     @FXML
-    private TextField txtIdR;
-
+    private TableView<reservation> tableView;  // Déclaration de tableView
     @FXML
     private TextField txtNombrePlaces;
 
@@ -33,38 +42,52 @@ public class ModifierReservationController {
     private TextField txtRemarque;
 
     @FXML
-    private TextField txtEvenementId;
+    private TextField txtNomEvenement;
 
     private ReservationService reservationService = new ReservationService();
 
-    /*@FXML
+    @FXML
     void modifierReservation(ActionEvent event) {
-        // Récupération des valeurs saisies
-        int id_R = Integer.parseInt(txtIdR.getText());  // L'ID de la réservation (auto-incrémenté)
-        int nombrePlaces = Integer.parseInt(txtNombrePlaces.getText());
-        String typeReservation = txtTypeReservation.getText();
-        int codeConfirmation = Integer.parseInt(txtCodeConfirmation.getText());
-        String remarque = txtRemarque.getText();
+        reservation selectedReservation = tableView.getSelectionModel().getSelectedItem();  // Utilisation de tableView
+        if (selectedReservation != null) {
+            int id_R = selectedReservation.getId_R();  // Récupérer l'ID de la réservation sélectionnée
 
-        // Récupérer l'ID de l'événement
-        int evenementId = Integer.parseInt(txtEvenementId.getText());
+            try {
+                // Vérifier que la réservation existe
+                if (reservationService.reservationExists(id_R)) {
+                    // Récupération des valeurs saisies
+                    int nombrePlaces = Integer.parseInt(txtNombrePlaces.getText());
+                    String typeReservation = txtTypeReservation.getText();
+                    int codeConfirmation = Integer.parseInt(txtCodeConfirmation.getText());
+                    String remarque = txtRemarque.getText();
+                    String nomEvenement = txtNomEvenement.getText();  // Récupérer le nom de l'événement
 
-        // Créer l'objet evenement à partir de l'ID
-        evenement ev = new evenement(evenementId);
+                    // Créer un objet Evenement avec le nom de l'événement
+                    Evenement evenement = new Evenement();
+                    evenement.setNom(nomEvenement);
 
-        // Créer la réservation avec les nouvelles valeurs
-        reservation updatedReservation = new reservation(id_R, nombrePlaces, typeReservation, codeConfirmation, remarque, ev);
+                    // Appeler la méthode modifier de ReservationService avec l'objet Evenement
+                    int rowsUpdated = reservationService.modifier(id_R, nombrePlaces, typeReservation, codeConfirmation, remarque, evenement);
 
-        // Appeler la méthode modifier de ReservationService
-        int rowsUpdated = reservationService.modifier(updatedReservation);
-        if (rowsUpdated > 0) {
-            System.out.println("✅ Réservation mise à jour avec succès !");
+                    if (rowsUpdated > 0) {
+                        System.out.println("✅ Réservation mise à jour avec succès !");
+                    } else {
+                        System.out.println("⚠️ Aucune réservation trouvée avec l'ID : " + id_R);
+                    }
+                } else {
+                    showError("Réservation introuvable", "Aucune réservation trouvée avec l'ID : " + id_R);
+                }
+            } catch (NumberFormatException e) {
+                showError("Erreur de format", "Veuillez saisir des valeurs valides.");
+            } catch (SQLException e) {
+                showError("Erreur SQL", "Erreur lors de la mise à jour de la réservation : " + e.getMessage());
+            }
         } else {
-            System.out.println("⚠️ Aucune réservation trouvée avec l'ID : " + id_R);
+            showError("Aucune sélection", "Veuillez sélectionner une réservation à modifier.");
         }
     }
 
-    */public void goToSupprimer(ActionEvent event) {
+    public void goToSupprimer(ActionEvent event) {
         System.out.println("Le bouton a été cliqué !");
 
         try {
@@ -79,6 +102,34 @@ public class ModifierReservationController {
     }
 
     private void showError(String title, String message) {
-        System.out.println(title + ": " + message);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
+
+    public void setReservation(reservation selectedReservation) {
+        // Stocker l'ID de la réservation
+        this.id_R = selectedReservation.getId_R();
+
+        // Remplir les champs avec les valeurs de la réservation sélectionnée
+        txtNombrePlaces.setText(String.valueOf(selectedReservation.getNombre_places()));
+        txtTypeReservation.setText(selectedReservation.getType_reservation());
+        txtCodeConfirmation.setText(String.valueOf(selectedReservation.getCode_confirmation()));
+        txtRemarque.setText(selectedReservation.getRemarque());
+
+        // Récupérer le nom de l'événement via l'objet Evenement
+        if (selectedReservation.getEvenement() != null) {
+            txtNomEvenement.setText(selectedReservation.getEvenement().getNom());
+        } else {
+            txtNomEvenement.setText("Aucun événement associé");
+        }
+    }
+
+
+
+
+
+
 }

@@ -1,5 +1,9 @@
 package controllers;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,22 +13,28 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.control.Alert;
+import javafx.util.Pair;
 import service.ReservationService;
 import models.reservation;
 import models.Evenement;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AfficherReservationController implements Initializable {
@@ -45,31 +55,31 @@ public class AfficherReservationController implements Initializable {
     private TableColumn<reservation, String> remarqueColumn;
 
     @FXML
-    private TableColumn<reservation, String> evenementColumn;  // Colonne pour afficher le nom de l'événement
+    private TableColumn<reservation, String> evenementColumn;
 
     @FXML
-    private TextField rlist; // Champ de texte pour filtrer
+    private TextField rlist;
+
+    @FXML
+    private Button importerButton; // Bouton "Importer PDF"
 
     private final ReservationService reservationService = new ReservationService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupTableColumns();
-        loadReservations(); // Charger toutes les réservations au début
+        loadReservations();
     }
 
     private void setupTableColumns() {
-        // Définir les colonnes de la table
         nombrePlacesColumn.setCellValueFactory(new PropertyValueFactory<>("nombre_places"));
         typeReservationColumn.setCellValueFactory(new PropertyValueFactory<>("type_reservation"));
         codeConfirmationColumn.setCellValueFactory(new PropertyValueFactory<>("code_confirmation"));
         remarqueColumn.setCellValueFactory(new PropertyValueFactory<>("remarque"));
 
-        // Modifier la colonne 'evenementColumn' pour afficher le nom de l'événement
         evenementColumn.setCellValueFactory(cellData -> {
-            Evenement ev = cellData.getValue().getEvenement(); // Récupère l'objet evenement associé à la réservation
-            // Retourne un SimpleStringProperty qui contient le nom de l'événement
-            return new SimpleStringProperty(ev != null ? ev.getNom() : "Aucun");  // Utilise "Aucun" si ev est null
+            Evenement ev = cellData.getValue().getEvenement();
+            return new SimpleStringProperty(ev != null ? ev.getNom() : "Aucun");
         });
     }
 
@@ -82,7 +92,6 @@ public class AfficherReservationController implements Initializable {
         }
     }
 
-    // Méthode pour filtrer les réservations en fonction de l'input dans rlist
     @FXML
     public void filterReservations() {
         String filterText = rlist.getText().trim();
@@ -91,10 +100,8 @@ public class AfficherReservationController implements Initializable {
             ObservableList<reservation> filteredReservations;
 
             if (filterText.isEmpty()) {
-                // Si le champ est vide, afficher toutes les réservations
                 filteredReservations = FXCollections.observableArrayList(reservationService.recuperer());
             } else {
-                // Sinon, filtrer les réservations par code_confirmation
                 filteredReservations = FXCollections.observableArrayList(reservationService.filterByCodeConfirmation(filterText));
             }
 
@@ -148,4 +155,92 @@ public class AfficherReservationController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    @FXML
+    public void onImporterButtonClick() {
+        reservation selectedReservation = reservationTable.getSelectionModel().getSelectedItem();
+
+        if (selectedReservation != null) {
+            genererPDF(
+                    String.valueOf(selectedReservation.getNombre_places()),
+                    selectedReservation.getType_reservation(),
+                    selectedReservation.getRemarque()
+            );
+        } else {
+            showError("Aucune sélection", "Veuillez sélectionner une réservation pour générer un PDF.");
+        }
+    }
+
+    @FXML
+    public void genererPDF(String nombrePlaces, String typeReservation, String remarque) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Enregistrer le PDF");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                PdfWriter writer = new PdfWriter(file.getAbsolutePath());
+                PdfDocument pdfDoc = new PdfDocument(writer);
+                Document document = new Document(pdfDoc);
+
+                document.add(new Paragraph("Confirmation de Réservation"));
+                document.add(new Paragraph("Nombre de place: " + nombrePlaces));
+                document.add(new Paragraph("Type de réservation: " + typeReservation));
+                document.add(new Paragraph("Remarque: " + remarque));
+
+                document.close();
+                System.out.println("PDF généré avec succès !");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void openModificationDialog(reservation reservation) {
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Modifier la réservation");
+        dialog.setHeaderText("Modifier les détails de la réservation");
+
+        // Set the button types
+        ButtonType saveButtonType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        // Create the fields
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField detailsField = new TextField(reservation.getDetails());
+        TextField autreChampField = new TextField(reservation.getAutreChamp());
+
+        grid.add(new Label("Détails:"), 0, 0);
+        grid.add(detailsField, 1, 0);
+        grid.add(new Label("Autre champ:"), 0, 1);
+        grid.add(autreChampField, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Convert the result to a pair of values when the save button is clicked
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                return new Pair<>(detailsField.getText(), autreChampField.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        result.ifPresent(newValues -> {
+            reservation.setDetails(newValues.getKey());
+            reservation.setAutreChamp(newValues.getValue());
+            reservationTableView.refresh();
+        });
+    }
+
+
+
+
+
 }

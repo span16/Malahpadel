@@ -5,28 +5,29 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierReservationController">
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<AnchorPane prefHeight="400.0" prefWidth="860.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierReservationController">
     <children>
         <!-- Labels -->
-        <Label layoutX="51.0" layoutY="30.0" text="ID Réservation" />
-        <Label layoutX="51.0" layoutY="70.0" text="ID Paiement" />
-        <Label layoutX="51.0" layoutY="110.0" text="Nom Client" />
-        <Label layoutX="51.0" layoutY="150.0" text="Email" />
-        <Label layoutX="51.0" layoutY="190.0" text="Date Réservation" />
-        <Label layoutX="51.0" layoutY="230.0" text="Statut" />
+        <Label layoutX="83.0" layoutY="30.0" text="Nombre de places" />
+        <Label layoutX="637.0" layoutY="30.0" text="Type de réservation" />
+        <Label layoutX="83.0" layoutY="102.0" text="Code de confirmation" />
+        <Label layoutX="652.0" layoutY="111.0" text="Remarque" />
+        <Label layoutX="219.0" layoutY="182.0" text="Nom de l'événement" />
 
         <!-- Text fields -->
-        <TextField fx:id="txtIdR" layoutX="180.0" layoutY="26.0" />
-        <TextField fx:id="txtIdP" layoutX="180.0" layoutY="66.0" />
-        <TextField fx:id="txtNomC" layoutX="180.0" layoutY="106.0" />
-        <TextField fx:id="txtEmail" layoutX="180.0" layoutY="146.0" />
-        <TextField fx:id="txtDateR" layoutX="180.0" layoutY="186.0" />
-        <TextField fx:id="txtStatus" layoutX="180.0" layoutY="226.0" />
+        <TextField fx:id="txtNombrePlaces" layoutX="230.0" layoutY="26.0" />
+        <TextField fx:id="txtTypeReservation" layoutX="459.0" layoutY="26.0" />
+        <TextField fx:id="txtCodeConfirmation" layoutX="231.0" layoutY="98.0" />
+        <TextField fx:id="txtRemarque" layoutX="459.0" layoutY="107.0" />
+        <TextField fx:id="txtNomEvenement" layoutX="344.0" layoutY="178.0" />
+        <TableView fx:id="tableView" layoutX="50.0" layoutY="250.0" prefHeight="200.0" prefWidth="500.0">
 
-        <!-- Button -->
-        <Button layoutX="250.0" layoutY="300.0" mnemonicParsing="false" onAction="#modifierReservation" text="Modifier" />
+        </TableView>
 
-        <Button layoutX="150.0" layoutY="300.0" mnemonicParsing="false" onAction="#goToSupprimer" text="Supprimer" style="-fx-background-color: red; -fx-text-fill: white;" />
-
+        <!-- Buttons -->
+        <Button layoutX="219.0" layoutY="279.0" mnemonicParsing="false" onAction="#modifierReservation" prefHeight="34.0" prefWidth="133.0" text="Modifier" />
+        <Button layoutX="396.0" layoutY="279.0" mnemonicParsing="false" onAction="#goToSupprimer" prefHeight="34.0" prefWidth="125.0" style="-fx-background-color: red; -fx-text-fill: white;" text="Supprimer" />
     </children>
 </AnchorPane>
