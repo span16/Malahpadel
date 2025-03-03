@@ -5,21 +5,24 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterPaiementController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterPaiementController">
     <children>
-        <Label layoutX="51.0" layoutY="58.0" text="ID Paiement" />
-        <Label layoutX="51.0" layoutY="131.0" text="ID Reservation" />
-        <Label layoutX="51.0" layoutY="218.0" text="Montant" />
-        <Label layoutX="51.0" layoutY="290.0" text="Status" />
+        <!-- Labels pour les nouveaux attributs -->
 
-        <TextField fx:id="txtId_P" layoutX="128.0" layoutY="54.0" />
-        <TextField fx:id="txtId_R" layoutX="128.0" layoutY="127.0" />
-        <TextField fx:id="txtMontant" layoutX="128.0" layoutY="214.0" />
-        <TextField fx:id="txtStatus_P" layoutX="128.0" layoutY="290.0" />
+        <Label layoutX="51.0" layoutY="58.0" text="Méthode de Paiement" />
+        <Label layoutX="51.0" layoutY="131.0" text="Commission" />
+        <Label layoutX="51.0" layoutY="218.0" text="Description du Paiement" />
+        <Label layoutX="51.0" layoutY="290.0" text="Devise" />
 
-        <Button layoutX="347.0" layoutY="350.0" mnemonicParsing="false" onAction="#addPaiement" text="Ajouter" />
+        <!-- TextFields pour les nouveaux attributs -->
+        <TextField fx:id="txtId_R" layoutX="200.0" layoutY="54.0" />
 
+        <TextField fx:id="txtMethode_Paiement" layoutX="200.0" layoutY="54.0" />
+        <TextField fx:id="txtCommission" layoutX="200.0" layoutY="127.0" />
+        <TextField fx:id="txtDescription_Paiement" layoutX="200.0" layoutY="214.0" />
+        <TextField fx:id="txtDevise" layoutX="200.0" layoutY="290.0" />
 
-
+        <!-- Bouton pour ajouter le paiement -->
+        <Button layoutX="361.0" layoutY="329.0" onAction="#addPaiement" prefHeight="25.0" prefWidth="97.0" text="payer" />
     </children>
 </AnchorPane>

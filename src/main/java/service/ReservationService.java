@@ -48,18 +48,26 @@ public class ReservationService implements Iservice<reservation> {
     }
 
     @Override
-    public int modifier(int id_R, int nombre_places, String type_reservation, int code_confirmation, String remarque, Evenement evenement) throws SQLException {
-        String query = "UPDATE reservation SET nombre_places = ?, type_reservation = ?, code_confirmation = ?, remarque = ?, nom = ? WHERE id_R = ?";
-        try (PreparedStatement statement = cnx.prepareStatement(query)) {
-            statement.setInt(1, nombre_places);
-            statement.setString(2, type_reservation);
-            statement.setInt(3, code_confirmation);
-            statement.setString(4, remarque);
-            statement.setString(5, evenement.getNom());  // Utiliser le nom de l'événement
-            statement.setInt(6, id_R);  // Utiliser l'ID pour identifier la réservation à mettre à jour
-            return statement.executeUpdate();
-        }
+    public int modifier(reservation reservation) throws SQLException {
+        return 0;
     }
+
+
+    @Override
+    public int modifier(int id_R, int nombrePlaces, String typeReservation, int codeConfirmation, String remarque, Evenement evenement) throws SQLException {
+        String query = "UPDATE reservation SET nombre_places = ?, type_reservation = ?, code_confirmation = ?, remarque = ?, nom = ? WHERE id_R = ?";
+        PreparedStatement pstmt = MyDataBase.getInstance().getCnx().prepareStatement(query);
+
+        pstmt.setInt(1, nombrePlaces);
+        pstmt.setString(2, typeReservation);
+        pstmt.setInt(3, codeConfirmation);
+        pstmt.setString(4, remarque);
+        pstmt.setString(5, evenement.getNom()); // Vérifie que getEvenement() ne renvoie pas null !
+        pstmt.setInt(6, id_R);
+
+        return pstmt.executeUpdate();
+    }
+
     @Override
     public List<reservation> recuperer() throws SQLException {
         String sql = "SELECT id_R, nombre_places, type_reservation, code_confirmation, remarque, nom FROM reservation";

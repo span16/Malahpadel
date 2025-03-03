@@ -4,10 +4,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="500.0" prefWidth="1008.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherReservationController">
+<AnchorPane prefHeight="481.0" prefWidth="1048.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherReservationController">
 
     <!-- Titre en gras et centré -->
     <Label layoutX="381.0" layoutY="11.0" prefHeight="43.0" prefWidth="246.0" style="-fx-font-weight: bold; -fx-font-size: 19px; -fx-alignment: center;" text="Listes des réservations" textFill="#1e2475" />
@@ -35,11 +36,7 @@
                     <PropertyValueFactory property="remarque" />
                 </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="evenementColumn" prefWidth="207.0" style="-fx-background-color: #f0f0f0;" text="Événement">
-                <cellValueFactory>
-                    <PropertyValueFactory property="Evenement" />
-                </cellValueFactory>
-            </TableColumn>
+            <TableColumn fx:id="evenementColumn" prefWidth="207.0" style="-fx-background-color: #f0f0f0;" text="Événement" />
         </columns>
     </TableView>
 
@@ -47,10 +44,13 @@
     <Label fx:id="emptyTableLabel" layoutX="381.0" layoutY="200.0" style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Aucune réservation trouvée." visible="false" />
 
     <!-- Boutons stylisés -->
-    <!-- Exemple de bouton dans un fichier FXML -->
-    <Button text="Modifier" onAction="#handleModifierButton" />    <Button fx:id="importerButton" text="Importer PDF" onAction="#onImporterButtonClick"
-            layoutX="50" layoutY="300" />
+    <Button layoutX="50" layoutY="400" onAction="#onModifierButtonClick" text="Modifier" />
+    <Button layoutX="598.0" layoutY="382.0" mnemonicParsing="false" onAction="#goToPaiement" prefWidth="120.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="payer maintenant" />
 
-    <Button layoutX="598.0" layoutY="382.0" mnemonicParsing="false" onAction="#goToPaiement" prefWidth="120.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Paiement" />
+    <!-- Champ de recherche et bouton Filtrer -->
+    <TextField fx:id="rlist" layoutX="132.0" layoutY="400.0" prefHeight="25.0" prefWidth="210.0" promptText="Rechercher par code de confirmation" />
+    <Button layoutX="358.0" layoutY="400.0" onAction="#filterReservations" text="Filtrer" />
+    <Button fx:id="importerButton" layoutX="50.0" layoutY="436.0" onAction="#onImporterButtonClick" text="Importer PDF" />
+
 
 </AnchorPane>

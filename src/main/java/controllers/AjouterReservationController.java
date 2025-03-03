@@ -110,18 +110,7 @@ public class AjouterReservationController {
         }
     }
 
-    @FXML
-    public void goToPaiement(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterPaiement.fxml"));
-            Parent root = loader.load();
 
-            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-        } catch (IOException e) {
-            System.err.println("Erreur lors du chargement de la scène Paiement : " + e.getMessage());
-        }
-    }
 
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
