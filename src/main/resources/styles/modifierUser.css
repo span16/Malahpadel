@@ -1,0 +1,62 @@
+/* Applique un fond clair à la fenêtre */
+VBox {
+    -fx-background-color: #4b6e7c;
+    -fx-padding: 20px;
+    -fx-border-radius: 10px;
+}
+
+/* Style du titre */
+.title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Style des champs de texte */
+.input-field {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 7px;
+    -fx-font-size: 14px;
+}
+
+/* Effet au survol des champs */
+.input-field:hover {
+    -fx-border-color: #007bff;
+}
+
+/* Style du bouton Modifier */
+.modifier-button {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-padding: 7px 15px;
+}
+
+/* Effet au survol du bouton Modifier */
+.modifier-button:hover {
+    -fx-background-color: #218838;
+}
+
+/* Style du bouton Annuler */
+.annuler-button {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-padding: 7px 15px;
+}
+
+/* Effet au survol du bouton Annuler */
+.annuler-button:hover {
+    -fx-background-color: #c82333;
+}
+
+/* Alignement des boutons */
+HBox {
+    -fx-alignment: center;
+}

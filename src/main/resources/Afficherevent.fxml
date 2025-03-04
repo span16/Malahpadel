@@ -29,9 +29,9 @@
         </TableView>
 
         <!-- Boutons -->
-        <Button layoutX="180.0" layoutY="400.0" onAction="#retourAjouterEvent" styleClass="custom-button" text="Retour" />
-        <Button layoutX="300.0" layoutY="400.0" onAction="#modifierEvent" text="Modifier" />
-        <Button fx:id="btnSupprimer" layoutX="420.0" layoutY="430.0" text="Supprimer" onAction="#supprimerEvent"/>
+        <Button layoutX="133.0" layoutY="400.0" onAction="#retourAjouterEvent" prefHeight="42.0" prefWidth="109.0" styleClass="custom-button" text="Retour" />
+        <Button layoutX="300.0" layoutY="400.0" onAction="#modifierEvent" prefHeight="26.0" prefWidth="80.0" text="Modifier" />
+        <Button fx:id="btnSupprimer" layoutX="300.0" layoutY="442.0" onAction="#supprimerEvent" prefHeight="26.0" prefWidth="80.0" text="Supprimer" />
 
     </children>
 </AnchorPane>

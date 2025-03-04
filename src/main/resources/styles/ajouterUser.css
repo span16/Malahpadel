@@ -1,0 +1,52 @@
+
+/* Arrière-plan avec une image */
+.background {
+    -fx-background-image: url("../Image/bgsignin.jpg");  /* Remplace ce chemin par celui de ton image */
+    -fx-background-size: cover;  /* Optionnel : pour que l'image couvre tout l'espace */
+    -fx-background-position: center center;  /* Optionnel : centrer l'image */
+}
+
+
+/* Appliquer un style au champ de texte */
+.input-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+}
+
+/* Appliquer un effet de focus */
+.input-field:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 2px;
+}
+
+/* Style du bouton */
+.general-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px 12px;
+}
+
+/* Effet au survol */
+.general-button:hover {
+    -fx-background-color: #0056b3;
+}
+
+/* Style du label */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* Style du titre */
+.sign-in-title {
+    -fx-font-size: 40px;
+    -fx-text-fill: #1e1e1e;
+    -fx-font-weight: bold;
+    -fx-padding: 20px 0;
+}

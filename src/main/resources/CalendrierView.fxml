@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.CalendrierController" spacing="10" alignment="CENTER">
+    <DatePicker fx:id="datePicker" onAction="#loadEvents"/>
+    <TableView fx:id="eventTable" prefWidth="600" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="colNom" text="Nom de l'événement" prefWidth="200"/>
+            <TableColumn fx:id="colDate" text="Date" prefWidth="200"/>
+            <TableColumn fx:id="colPartie" text="Partie" prefWidth="200"/>
+        </columns>
+    </TableView>
+</VBox>

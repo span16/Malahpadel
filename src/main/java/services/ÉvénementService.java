@@ -61,7 +61,7 @@ public class ÉvénementService implements IService<Événement> {
 
     @Override
     public void modifier(Événement p, String nom) throws SQLException {
-
+        // Méthode non implémentée
     }
 
     // ✅ Modifier un événement (avec vérification de l'existence)
@@ -94,12 +94,12 @@ public class ÉvénementService implements IService<Événement> {
 
     @Override
     public void modifier(Terrain t) throws SQLException {
-
+        // Méthode non implémentée
     }
 
     @Override
     public void modifier(Terrain t, int id) throws SQLException {
-
+        // Méthode non implémentée
     }
 
     // ✅ Vérifier si un événement existe
@@ -135,7 +135,6 @@ public class ÉvénementService implements IService<Événement> {
                 e.setDate(rs.getDate("date"));
 
                 int terrainId = rs.getInt("terrain_id");
-
                 // ✅ Récupérer l'objet Terrain via son ID
                 Terrain terrain = recupererTerrainParId(terrainId);
                 e.setTerrain(terrain);
@@ -172,6 +171,33 @@ public class ÉvénementService implements IService<Événement> {
             }
         } catch (SQLException ex) {
             System.err.println("❌ Erreur lors de la récupération du terrain : " + ex.getMessage());
+            throw ex;
+        }
+        return null;
+    }
+
+    // ✅ Récupérer un événement par ID
+    public Événement recupererParId(int id) throws SQLException {
+        String sql = "SELECT * FROM événement WHERE id = ?";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setInt(1, id);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    Événement e = new Événement();
+                    e.setId(rs.getInt("id"));
+                    e.setNom(rs.getString("nom"));
+                    e.setType(TypeV.valueOf(rs.getString("type")));
+                    e.setDate(rs.getDate("date"));
+
+                    int terrainId = rs.getInt("terrain_id");
+                    Terrain terrain = recupererTerrainParId(terrainId);
+                    e.setTerrain(terrain);
+
+                    return e;
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println("❌ Erreur lors de la récupération de l'événement par ID : " + ex.getMessage());
             throw ex;
         }
         return null;

@@ -1,0 +1,36 @@
+.profil-card {
+    -fx-background-color: #00ffff;
+    -fx-border-radius: 15px;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 2, 2);
+}
+
+.avatar-circle {
+    -fx-border-radius: 50%;
+    -fx-border-width: 2px;
+    -fx-border-color: #999;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 0);
+}
+
+.profil-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+}
+
+.button-modify {
+    -fx-background-color: #3a8edb;
+    -fx-text-fill: white;
+    -fx-padding: 8px;
+    -fx-border-radius: 5px;
+}
+
+.button-delete {
+    -fx-background-color: #d9534f;
+    -fx-text-fill: white;
+    -fx-padding: 8px;
+    -fx-border-radius: 5px;
+}

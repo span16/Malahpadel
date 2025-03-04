@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterEquipeController" xmlns="http://javafx.com/javafx/8.0.171" prefHeight="400.0" prefWidth="450.0">
+    <children>
+        <!-- Inclusion de la Navbar -->
+        <fx:include source="Navbar.fxml" layoutX="0" layoutY="0" />
+
+        <!-- Contenu pour Ajouter Équipe -->
+        <VBox alignment="CENTER" spacing="10.0" layoutX="10.0" layoutY="50.0" prefHeight="350.0" prefWidth="430.0">
+            <children>
+                <Label text="Nom de l'Équipe:" />
+                <TextField fx:id="txtNomEquipe" promptText="Entrez le nom de l'équipe" />
+
+                <Label text="Email Joueur 1:" />
+                <ComboBox fx:id="comboJoueur1" promptText="Sélectionnez l'email du joueur 1" />
+
+                <Label text="Email Joueur 2:" />
+                <ComboBox fx:id="comboJoueur2" promptText="Sélectionnez l'email du joueur 2" />
+
+                <Button fx:id="btnAjouter" text="Ajouter Équipe" onAction="#ajouterEquipe" />
+                <Button fx:id="btnAnnuler" text="Annuler" onAction="#fermerFenetre" />
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
