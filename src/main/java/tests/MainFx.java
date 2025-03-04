@@ -17,7 +17,7 @@ public class MainFx extends Application {
     public void start(Stage primaryStage) {
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/views/AjouterUser.fxml"));
+                getClass().getResource("/views/Home.fxml"));
 
         try {
             Parent root = loader.load();

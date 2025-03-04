@@ -9,29 +9,26 @@ public class User {
     private String email;
     private String mdp;
     private String etat;
-    private String fonction;
+    private Role fonction;
 
-    public User( int age, int cin, String nom, String prenom, String email, String mdp, String etat, String fonction) {
-
-        this.age = age;
-        this.cin = cin;
+    // Constructor complet
+    public User(String nom, String prenom, String email, String mdp, int age, int cin, Role fonction) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.mdp = mdp;
-        this.etat = etat;
+        this.age = age;
+        this.cin = cin;
         this.fonction = fonction;
     }
 
-    public User(String nom, String prenom, String email, int cin, int age) {
+    // Autre constructeur par défaut
+    public User() {}
 
+    public User(int age, int cin, String nom, String prenom, String email, String mdp, String etat, Role fonction) {
     }
 
-    public User() {
-
-    }
-
-
+    // Getters et setters
     public int getId() {
         return id;
     }
@@ -96,14 +93,11 @@ public class User {
         this.etat = etat;
     }
 
-    public String getFonction() {
+    public Role getFonction() {
         return fonction;
     }
 
-    public void setFonction(String fonction) {
+    public void setFonction(Role fonction) {
         this.fonction = fonction;
     }
-
-
-    }
-
+}

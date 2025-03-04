@@ -94,7 +94,7 @@ public class AjouterProfil {
         try {
             System.out.println("Vérification de l'existence de l'utilisateur avec ID : " + userId);
 
-            if (!userService.checkUserExists(userId)) {
+            if (!userService.userExists(userId)) {
                 showAlert("Erreur", "L'utilisateur sélectionné n'existe pas !");
                 return;
             }

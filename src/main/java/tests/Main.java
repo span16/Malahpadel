@@ -1,4 +1,5 @@
 package tests;
+import models.Role;
 import models.User;
 import models.Profil;
 import services.UserService;
@@ -77,7 +78,8 @@ public class Main {
         System.out.print("Etat : ");
         String etat = scanner.nextLine();
         System.out.print("Fonction : ");
-        String fonction = scanner.nextLine();
+        Role fonction = Role.valueOf(scanner.nextLine()); // Cela crée une erreur
+
 
         User user = new User(age, cin, nom, prenom, email, mdp, etat, fonction);
         try {
@@ -173,7 +175,7 @@ public class Main {
             System.out.print("Nouvel état : ");
             String etat = scanner.nextLine();
             System.out.print("Nouvelle fonction : ");
-            String fonction = scanner.nextLine();
+            Role fonction = Role.valueOf(scanner.nextLine());
 
             User updatedUser = new User(age, cin, nom, prenom, email, mdp, etat, fonction);
             updatedUser.setId(userToUpdate.getId());

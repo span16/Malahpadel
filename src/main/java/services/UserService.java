@@ -1,26 +1,33 @@
 package services;
 
+import models.Role;
 import models.User;
 import tools.MyDataBase;
-import java.util.ArrayList;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 import java.sql.*;
-import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UserService implements Iuser <User>
-{
+public class UserService implements Iuser<User> {
     private Connection cnx;
-    public UserService(){
+
+    public UserService() {
         cnx = MyDataBase.getInstance().getCnx();
     }
 
-
+    // Vérifier si l'email existe déjà
+    public boolean emailExists(String email) throws SQLException {
+        String query = "SELECT COUNT(*) FROM User WHERE email = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            return rs.getInt(1) > 0;
+        }
+    }
 
     @Override
     public void ajouter1(User p) throws SQLException {
-        String sql = "INSERT INTO User ( age, cin, nom, prenom, email, mdp, etat, fonction) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO User (age, cin, nom, prenom, email, mdp, etat, fonction) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement st = cnx.prepareStatement(sql);
 
         st.setInt(1, p.getAge());
@@ -30,57 +37,62 @@ public class UserService implements Iuser <User>
         st.setString(5, p.getEmail());
         st.setString(6, p.getMdp());
         st.setString(7, p.getEtat());
-        st.setString(8, p.getFonction());
+
+        // Si fonction est null, on l'initialise ici avant d'utiliser 'name()'
+        if (p.getFonction() == null) {
+            p.setFonction(Role.USER);  // Assurez-vous que "USER" est un rôle valide dans votre enum
+        }
+
+        // Utiliser name() ici pour la conversion du rôle en chaîne
+        st.setString(8, p.getFonction().name()); // Convertir l'énum en chaîne ici
 
         st.executeUpdate();
         System.out.println("Utilisateur ajouté avec succès !");
     }
-@Override
-    public void modifier(User user, String ancienEmail) throws SQLException {
-    String sql = "UPDATE user SET nom = ?, prenom = ?, age = ?, cin = ?, email = ?, mdp = ?, etat = ?, fonction = ? WHERE email = ?";
-
-    try (PreparedStatement st = cnx.prepareStatement(sql)) {
-        st.setString(1, user.getNom());
-        st.setString(2, user.getPrenom());
-        st.setInt(3, user.getAge());
-        st.setInt(4, user.getCin());
-        st.setString(5, user.getEmail());
-        st.setString(6, user.getMdp());
-        st.setString(7, user.getEtat());
-        st.setString(8, user.getFonction());
-        st.setString(9, ancienEmail); // Condition WHERE sur l'ancien email
-
-        int affectedRows = st.executeUpdate();
-
-        if (affectedRows > 0) {
-            System.out.println("✅ Utilisateur modifié avec succès !");
-        } else {
-            System.out.println("⚠️ Aucun utilisateur trouvé avec l'email : " + ancienEmail);
-        }
-    } catch (SQLException ex) {
-        System.err.println("❌ Erreur lors de la modification de l'utilisateur : " + ex.getMessage());
-        throw ex;
-    }
-    }
-
-
-
 
 
     @Override
-    public void Delete(int id) throws SQLException
-    {String sql = "DELETE FROM User WHERE id = ?";
+    public void modifier(User user, String ancienEmail) throws SQLException {
+        String sql = "UPDATE User SET nom = ?, prenom = ?, age = ?, cin = ?, email = ?, mdp = ?, etat = ?, fonction = ? WHERE email = ?";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setString(1, user.getNom());
+            st.setString(2, user.getPrenom());
+            st.setInt(3, user.getAge());
+            st.setInt(4, user.getCin());
+            st.setString(5, user.getEmail());
+            st.setString(6, user.getMdp());
+            st.setString(7, user.getEtat());
+
+            // Utiliser name() pour la conversion de l'énum en chaîne
+            st.setString(8, user.getFonction().name()); // Convertir l'énum en chaîne
+            st.setString(9, ancienEmail); // Condition WHERE sur l'ancien email
+
+            int affectedRows = st.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("✅ Utilisateur modifié avec succès !");
+            } else {
+                System.out.println("⚠️ Aucun utilisateur trouvé avec l'email : " + ancienEmail);
+            }
+        } catch (SQLException ex) {
+            System.err.println("❌ Erreur lors de la modification de l'utilisateur : " + ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Override
+    public void Delete(int id) throws SQLException {
+        String sql = "DELETE FROM User WHERE id = ?";
         PreparedStatement st = cnx.prepareStatement(sql);
         st.setInt(1, id);
-
         int rowsDeleted = st.executeUpdate();
 
         if (rowsDeleted > 0) {
-            System.out.println(" Réservation avec ID " + id + " supprimée avec succès !");
+            System.out.println("Utilisateur avec ID " + id + " supprimé avec succès !");
         } else {
-            System.out.println("⚠️ Aucune réservation trouvée avec l'ID : " + id);
+            System.out.println("⚠️ Aucun utilisateur trouvé avec l'ID : " + id);
         }
     }
+
     @Override
     public List<User> recuperer() throws SQLException {
         String sql = "SELECT * FROM User";
@@ -90,7 +102,7 @@ public class UserService implements Iuser <User>
 
         while (rs.next()) {
             User p = new User();
-            p.setId(rs.getInt("id")); // **Ajoute cette ligne pour récupérer l'ID**
+            p.setId(rs.getInt("id"));
             p.setAge(rs.getInt("age"));
             p.setCin(rs.getInt("cin"));
             p.setNom(rs.getString("nom"));
@@ -98,40 +110,85 @@ public class UserService implements Iuser <User>
             p.setEmail(rs.getString("email"));
             p.setMdp(rs.getString("mdp"));
             p.setEtat(rs.getString("etat"));
-            p.setFonction(rs.getString("fonction"));
 
-            System.out.println("Utilisateur chargé : ID=" + p.getId() + ", Nom=" + p.getNom());
+            // Convertir la chaîne en Role
+            p.setFonction(Role.fromString(rs.getString("fonction"))); // Conversion correcte ici
+
             users.add(p);
         }
         return users;
     }
 
-    public boolean checkUserExists(int userId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM user WHERE id = ?";
-        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
-            stmt.setInt(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0; // Retourne vrai si l'utilisateur existe
-                }
-            }
-        }
-        return false; // Si aucune ligne n'est trouvée
-    }
-
-
-
-    // Méthode pour vérifier si un utilisateur existe par ID
+    @Override
     public boolean userExists(int userId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM User WHERE id = ?";
         try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0; // Vérifie si l'utilisateur existe
+        }
+    }
+
+    public User getUserByEmail(String email) throws SQLException {
+        String query = "SELECT * FROM User WHERE email = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0;
+                User user = new User(
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("email"),
+                        rs.getString("mdp"),
+                        rs.getInt("age"),
+                        rs.getInt("cin"),
+                        Role.fromString(rs.getString("fonction")) // Conversion correcte ici
+                );
+                return user;
             }
         }
-        return false;
+        return null;
     }
-}
+    public void updateUserEtat(int userId, String newEtat) throws SQLException {
+        String sql = "UPDATE User SET etat = ? WHERE id = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setString(1, newEtat);  // Mettre à jour l'état
+            stmt.setInt(2, userId);  // Spécifier l'ID de l'utilisateur
+            stmt.executeUpdate();
+            System.out.println("État de l'utilisateur mis à jour avec succès !");
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour de l'état : " + e.getMessage());
+            throw e;
+        }
+    }
 
+    public List<User> searchUsers(String keyword) throws SQLException {
+        String sql = "SELECT * FROM User WHERE LOWER(nom) LIKE ? OR LOWER(prenom) LIKE ? OR LOWER(email) LIKE ?";
+        PreparedStatement st = cnx.prepareStatement(sql);
+        String pattern = "%" + keyword.toLowerCase() + "%";
+        st.setString(1, pattern);
+        st.setString(2, pattern);
+        st.setString(3, pattern);
+
+        ResultSet rs = st.executeQuery();
+        List<User> users = new ArrayList<>();
+
+        while (rs.next()) {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setNom(rs.getString("nom"));
+            user.setPrenom(rs.getString("prenom"));
+            user.setAge(rs.getInt("age"));
+            user.setCin(rs.getInt("cin"));
+            user.setEmail(rs.getString("email"));
+            user.setMdp(rs.getString("mdp"));
+            user.setEtat(rs.getString("etat"));
+            user.setFonction(Role.fromString(rs.getString("fonction")));
+            users.add(user);
+        }
+
+        return users;
+    }
+
+
+}

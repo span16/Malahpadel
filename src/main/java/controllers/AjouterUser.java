@@ -34,6 +34,8 @@ public class AjouterUser {
 
     @FXML
     private TextField txtCin;
+    @FXML
+    private TextField txtfonction;
 
     @FXML
     private Button addBtn;
@@ -42,6 +44,11 @@ public class AjouterUser {
 
     private final UserService userService = new UserService();
 
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
     // Méthode d'ajout de l'utilisateur
     @FXML
     public void addUser(ActionEvent event) {
@@ -49,6 +56,24 @@ public class AjouterUser {
         if (txtNom.getText().isEmpty() || txtPrenom.getText().isEmpty() || txtEmail.getText().isEmpty() ||
                 txtAge.getText().isEmpty() || txtCin.getText().isEmpty()) {
             showAlert("Erreur", "Tous les champs sont obligatoires !");
+            return;
+        }
+
+        // Vérifier que l'email est valide
+        String email = txtEmail.getText();
+        if (!isValidEmail(email)) {
+            showAlert("Erreur", "L'email n'est pas valide !");
+            return;
+        }
+
+        // Vérifier que l'email est unique
+        try {
+            if (userService.emailExists(email)) {
+                showAlert("Erreur", "L'email est déjà utilisé !");
+                return;
+            }
+        } catch (SQLException e) {
+            showAlert("Erreur SQL", "Erreur lors de la vérification de l'email : " + e.getMessage());
             return;
         }
 
@@ -82,7 +107,6 @@ public class AjouterUser {
         try {
             String nom = txtNom.getText();
             String prenom = txtPrenom.getText();
-            String email = txtEmail.getText();
 
             // Créer un nouvel objet User
             User user = new User();
@@ -91,9 +115,9 @@ public class AjouterUser {
             user.setEmail(email);
             user.setAge(age);
             user.setCin(cin);
-            user.setMdp("default123"); // Mot de passe par défaut
-            user.setEtat("Actif"); // Par défaut
-            user.setFonction("Utilisateur"); // Par défaut
+           // user.setMdp("default123"); // Mot de passe par défaut
+          //  user.setEtat("Actif"); // Par défaut
+          //  user.setFonction("Utilisateur"); // Par défaut
 
             // Ajouter l'utilisateur à la base de données
             userService.ajouter1(user);

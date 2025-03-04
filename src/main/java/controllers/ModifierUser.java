@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import models.Role;
 import models.User;
 import services.UserService;
 
@@ -31,7 +32,7 @@ public class ModifierUser {
         ageField.setText(String.valueOf(user.getAge()));
         mdpField.setText(user.getMdp());
         etatField.setText(user.getEtat());
-        fonctionField.setText(user.getFonction());
+        fonctionField.setText(String.valueOf(user.getFonction()));
     }
 
     public void setOnUpdateSuccess(Runnable runnable) {
@@ -54,7 +55,7 @@ public class ModifierUser {
             user.setAge(Integer.parseInt(ageField.getText()));
             user.setMdp(mdpField.getText());
             user.setEtat(etatField.getText());
-            user.setFonction(fonctionField.getText());
+            user.setFonction(Role.valueOf(fonctionField.getText()));
 
             userService.modifier(user, user.getEmail());
 
