@@ -3,12 +3,15 @@ package services;
 import models.Role;
 import models.User;
 import tools.MyDataBase;
+import utils.EmailSender;
+
+import java.security.SecureRandom;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class UserService implements Iuser<User> {
     private Connection cnx;
+    private final Map<String, String> passwordResetTokens = new HashMap<>();
 
     public UserService() {
         cnx = MyDataBase.getInstance().getCnx();
@@ -129,26 +132,30 @@ public class UserService implements Iuser<User> {
         }
     }
 
-    public User getUserByEmail(String email) throws SQLException {
+
+    public User getUserByEmail(String email) {
         String query = "SELECT * FROM User WHERE email = ?";
         try (PreparedStatement stmt = cnx.prepareStatement(query)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
-                User user = new User(
+                return new User(
                         rs.getString("nom"),
                         rs.getString("prenom"),
                         rs.getString("email"),
                         rs.getString("mdp"),
                         rs.getInt("age"),
                         rs.getInt("cin"),
-                        Role.fromString(rs.getString("fonction")) // Conversion correcte ici
+                        Role.fromString(rs.getString("fonction"))
                 );
-                return user;
             }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération de l'utilisateur : " + e.getMessage());
         }
-        return null;
+        return null; // Retourne null si l'utilisateur n'est pas trouvé
     }
+
     public void updateUserEtat(int userId, String newEtat) throws SQLException {
         String sql = "UPDATE User SET etat = ? WHERE id = ?";
         try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
@@ -191,4 +198,117 @@ public class UserService implements Iuser<User> {
     }
 
 
+    public boolean sendResetEmail(String email) {
+        User user = getUserByEmail(email);
+        if (user == null) {
+            System.out.println("⚠️ Aucun utilisateur trouvé avec cet email.");
+            return false;
+        }
+
+        // Génération du token sécurisé
+        String token = generateSecureToken();
+
+        // Définir l'expiration (par ex. 15 minutes)
+        Timestamp expirationTime = new Timestamp(System.currentTimeMillis() + 15 * 60 * 1000);
+
+        // Enregistrer le token et l'expiration en base
+        try {
+            String sql = "UPDATE User SET reset_token = ?, token_expiration = ? WHERE email = ?";
+            try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+                stmt.setString(1, token);
+                stmt.setTimestamp(2, expirationTime);
+                stmt.setString(3, email);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de l'enregistrement du token : " + e.getMessage());
+            return false;
+        }
+
+        // Envoi de l'email avec le token
+        String message = "Bonjour,\n\nVotre code de réinitialisation est : " + token +
+                "\n\nVeuillez copier ce code dans l'interface de réinitialisation de l'application.";
+
+        return EmailSender.sendEmail(email, "Réinitialisation de mot de passe", message);
+    }
+
+    /**
+     * Vérifie que le token fourni correspond bien à celui stocké pour l'email donné.
+     */
+    public boolean verifyToken(String email, String token) {
+        String sql = "SELECT reset_token, token_expiration FROM User WHERE email = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String storedToken = rs.getString("reset_token");
+                Timestamp expirationTime = rs.getTimestamp("token_expiration");
+
+                if (storedToken == null || expirationTime == null) {
+                    System.out.println("❌ Aucun token enregistré.");
+                    return false;
+                }
+
+                // Vérifier si le token est expiré
+                Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+                if (currentTime.after(expirationTime)) {
+                    System.out.println("❌ Token expiré.");
+                    return false;
+                }
+
+                // Vérifier que le token saisi correspond
+                return storedToken.equals(token);
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la vérification du token : " + e.getMessage());
+        }
+        return false;
+    }
+
+
+    /**
+     * Réinitialise le mot de passe si le token est valide.
+     */
+    public boolean resetPassword(String email, String newPassword, String token) {
+        if (!verifyToken(email, token)) {
+            System.out.println("❌ Token invalide ou expiré.");
+            return false;
+        }
+
+        try {
+            String hashedPassword = hashPassword(newPassword);
+
+            String sql = "UPDATE User SET mdp = ?, reset_token = NULL, token_expiration = NULL WHERE email = ?";
+            try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+                stmt.setString(1, hashedPassword);
+                stmt.setString(2, email);
+                stmt.executeUpdate();
+            }
+
+            System.out.println("✅ Mot de passe mis à jour avec succès !");
+            return true;
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la mise à jour du mot de passe : " + e.getMessage());
+        }
+        return false;
+    }
+
+
+    /**
+     * Génère un token sécurisé pour la réinitialisation.
+     */
+    private String generateSecureToken() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
+    /**
+     * Hash le mot de passe en utilisant BCrypt.
+     */
+    private String hashPassword(String password) {
+        return org.mindrot.jbcrypt.BCrypt.hashpw(password, org.mindrot.jbcrypt.BCrypt.gensalt(12));
+    }
 }

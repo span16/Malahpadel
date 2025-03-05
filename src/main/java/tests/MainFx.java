@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import utils.EmailSender;
 
 import java.io.IOException;
 
@@ -12,6 +13,8 @@ public class MainFx extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+   // boolean success = EmailSender.sendEmail("destinataire@gmail.com", "Test", "Ceci est un test d'envoi d'email.");
+
 
     @Override
     public void start(Stage primaryStage) {

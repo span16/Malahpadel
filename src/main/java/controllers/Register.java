@@ -1,7 +1,5 @@
 package controllers;
 
-
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -12,6 +10,7 @@ import models.Role;
 import models.User;
 import services.UserService;
 import javafx.event.ActionEvent;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 
@@ -52,7 +51,7 @@ public class Register {
             return;
         }
 
-        // Vérification des autres champs comme l'email et l'âge
+        // Vérification des autres champs comme l'email et l'âge (à compléter si besoin)
 
         try {
             String nom = txtNom.getText();
@@ -62,6 +61,9 @@ public class Register {
             int cin = Integer.parseInt(txtCin.getText());
             String password = txtmdp.getText();
 
+            // Hachage du mot de passe avec BCrypt
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+
             // Créer un nouvel objet User
             User user = new User();
             user.setNom(nom);
@@ -69,7 +71,7 @@ public class Register {
             user.setEmail(email);
             user.setAge(age);
             user.setCin(cin);
-            user.setMdp(password);
+            user.setMdp(hashedPassword); // On stocke le mot de passe haché
             user.setEtat("Actif");
 
             // Initialiser 'fonction' avec un rôle par défaut
@@ -85,6 +87,8 @@ public class Register {
 
         } catch (SQLException e) {
             showAlert("Erreur SQL", "Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
+        } catch (NumberFormatException e) {
+            showAlert("Erreur", "L'âge et le CIN doivent être des nombres !");
         }
     }
 

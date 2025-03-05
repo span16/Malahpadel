@@ -16,7 +16,7 @@
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="696.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Admin">
    <children>
-      <AnchorPane prefHeight="568.0" prefWidth="696.0">
+      <AnchorPane prefHeight="545.0" prefWidth="716.0">
          <children>
             <BorderPane layoutX="-14.0" prefHeight="530.0" prefWidth="696.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0">
                <top>
@@ -29,7 +29,7 @@
                <left>
                   <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="492.0" prefWidth="162.0" BorderPane.alignment="CENTER">
                      <children>
-                        <AnchorPane layoutY="14.0" prefHeight="490.0" prefWidth="190.0" style="-fx-background-color: #435bb5;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane layoutY="-6.0" prefHeight="496.0" prefWidth="151.0" style="-fx-background-color: #435bb5;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="-6.0">
                            <children>
                               <ImageView fitHeight="64.0" fitWidth="67.0" layoutX="60.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
