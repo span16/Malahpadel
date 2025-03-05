@@ -7,13 +7,14 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Modifierevent">
+<AnchorPane prefHeight="560.0" prefWidth="959.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Modifierevent">
     <children>
-        <Label layoutX="50.0" layoutY="30.0" text="Nom de l'Événement" />
-        <TextField fx:id="txtNom" layoutX="180.0" layoutY="26.0" />
+        <fx:include source="Navbar.fxml" />
+        <Label layoutX="43.0" layoutY="39.0" text="Nom de l'Événement" />
+        <TextField fx:id="txtNom" layoutX="180.0" layoutY="35.0" />
 
-        <Label layoutX="50.0" layoutY="80.0" text="Type d'Événement" />
-        <ComboBox fx:id="comboType" layoutX="180.0" layoutY="76.0" />
+        <Label layoutX="50.0" layoutY="89.0" text="Type d'Événement" />
+        <ComboBox fx:id="comboType" layoutX="199.0" layoutY="85.0" />
 
         <Label layoutX="50.0" layoutY="130.0" text="Date" />
         <DatePicker fx:id="datePicker" layoutX="180.0" layoutY="126.0" />
@@ -21,7 +22,11 @@
         <Label layoutX="50.0" layoutY="180.0" text="Terrain" />
         <ComboBox fx:id="comboTerrain" layoutX="180.0" layoutY="176.0" />
 
-        <Button fx:id="btnModifier" layoutX="150.0" layoutY="240.0" text="Modifier" />
-        <Button fx:id="btnAnnuler" layoutX="250.0" layoutY="240.0" text="Annuler" />
+        <!-- Nouveau champ pour l'URL de l'image -->
+        <Label layoutX="50.0" layoutY="230.0" text="Image URL" />
+        <TextField fx:id="txtImageUrl" layoutX="180.0" layoutY="226.0" />
+
+        <Button fx:id="btnModifier" layoutX="150.0" layoutY="280.0" text="Modifier" />
+        <Button fx:id="btnAnnuler" layoutX="250.0" layoutY="280.0" text="Annuler" />
     </children>
 </AnchorPane>

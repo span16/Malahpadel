@@ -40,14 +40,15 @@ public class ServiceEmploiDuTemps implements IEmploiDuTemps {
 
     @Override
     public void modifier(EmploiDuTemps edt) throws SQLException {
-        String sql = "UPDATE emploidutemps SET Date = ?, partie = ?, id_Événement = ?, id_equipe = ?, equipe_2 = ? WHERE id_emplois = ?";
+        String sql = "UPDATE emploidutemps SET Date = ?, partie = ?, id_Événement = ?, id_equipe = ?, equipe_2 = ?, google_event_id = ? WHERE id_emplois = ?";
         try (PreparedStatement st = cnx.prepareStatement(sql)) {
             st.setDate(1, new java.sql.Date(edt.getDate().getTime()));
             st.setInt(2, edt.getPartie());
             st.setInt(3, edt.getEvenement().getId());
             st.setInt(4, edt.getEquipe1().getEquipeId());
             st.setInt(5, edt.getEquipe2().getEquipeId());
-            st.setInt(6, edt.getId());
+            st.setString(6, edt.getGoogleEventId()); // Mise à jour de l'ID Google
+            st.setInt(7, edt.getId());
             int rowsUpdated = st.executeUpdate();
             if (rowsUpdated == 0) {
                 throw new SQLException("Aucun emploi du temps trouvé avec l'ID " + edt.getId());
@@ -86,6 +87,8 @@ public class ServiceEmploiDuTemps implements IEmploiDuTemps {
                 EquipeService eqService = new EquipeService();
                 edt.setEquipe1(eqService.recupererParId(idEq1));
                 edt.setEquipe2(eqService.recupererParId(idEq2));
+                // Récupération de l'ID Google s'il existe
+                edt.setGoogleEventId(rs.getString("google_event_id"));
                 liste.add(edt);
             }
         }
@@ -112,6 +115,7 @@ public class ServiceEmploiDuTemps implements IEmploiDuTemps {
                     EquipeService eqService = new EquipeService();
                     edt.setEquipe1(eqService.recupererParId(idEq1));
                     edt.setEquipe2(eqService.recupererParId(idEq2));
+                    edt.setGoogleEventId(rs.getString("google_event_id"));
                 }
             }
         }
@@ -138,14 +142,25 @@ public class ServiceEmploiDuTemps implements IEmploiDuTemps {
             // Ajout dans la base
             ajouter(edt);
             emplois.add(edt);
-            // Insertion dans Google Calendar
+            // Insertion dans Google Calendar et mise à jour de l'ID dans la base
             try {
-                GoogleCalendarService.addEventToGoogleCalendar(edt);
+                String googleId = GoogleCalendarService.addEventToGoogleCalendar(edt);
+                edt.setGoogleEventId(googleId);
+                updateGoogleEventId(edt.getId(), googleId);
             } catch (IOException | GeneralSecurityException e) {
-                // Vous pouvez gérer l'erreur ici (par exemple, loguer l'erreur)
                 e.printStackTrace();
             }
         }
         return emplois;
+    }
+
+    // Méthode privée pour mettre à jour l'ID Google dans la base
+    private void updateGoogleEventId(int edtId, String googleEventId) throws SQLException {
+        String sql = "UPDATE emploidutemps SET google_event_id = ? WHERE id_emplois = ?";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setString(1, googleEventId);
+            st.setInt(2, edtId);
+            st.executeUpdate();
+        }
     }
 }

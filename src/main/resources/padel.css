@@ -1,0 +1,79 @@
+/* ======== Fond principal ======== */
+.background {
+    /* Vérifiez que le chemin vers l'image est correct */
+    -fx-background-image: url("/IMAGE/lundi.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+/* ======== Titre principal ======== */
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 5, 0, 0, 0);
+    -fx-padding: 10px 0;
+}
+
+/* ======== Labels génériques ======== */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 4, 0, 0, 0);
+}
+
+/* ======== Champs de texte / Combobox / DatePicker ======== */
+.text-field,
+.combo-box,
+.date-picker {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-padding: 6px 10px;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-prompt-text-fill: #888888;
+    -fx-effect: innershadow(one-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 0);
+}
+
+/* ======== Boutons ======== */
+.btn-primary {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 2px;
+    -fx-cursor: hand;
+}
+.btn-primary:hover {
+    -fx-background-color: #27ae60;
+}
+
+.btn-secondary {
+    -fx-background-color: #3498db;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 2px;
+    -fx-cursor: hand;
+}
+.btn-secondary:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* ======== TableView si besoin (exemple) ======== */
+.table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-border-color: #2e86c1;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}

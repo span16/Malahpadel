@@ -36,16 +36,34 @@ public class Navbar {
         switchScene("/Afficherterrain.fxml", event);
     }
 
-    // Méthode pour naviguer vers la page d'ajout d'un emploi du temps
     @FXML
     private void goToAddEmploiDuTemps(ActionEvent event) throws IOException {
         switchScene("/AjouterEmploiDuTemps.fxml", event);
     }
 
-    // Méthode pour naviguer vers la page d'affichage (Calendrier) de l'emploi du temps
     @FXML
     private void showEmploiDuTemps(ActionEvent event) throws IOException {
         switchScene("/CalendrierView.fxml", event);
+    }
+
+    // Bouton existant pour la modification d'événement
+    @FXML
+    private void goToModifyEvent() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/Modifierevent.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Modifier Événement");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Nouvelle méthode pour modifier l'emploi du temps
+    @FXML
+    private void goToModifyEmploiDuTemps(ActionEvent event) throws IOException {
+        switchScene("/ModifierEmploiDuTemps.fxml", event);
     }
 
     private void switchScene(String fxmlFile, ActionEvent event) throws IOException {

@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -40,6 +41,17 @@ public class Ajouterevent {
     public void initialize() {
         initTypeVComboBox();
         initTerrainComboBox();
+        // Désactiver les dates passées dans le DatePicker
+        datePicker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                if (date.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;");
+                }
+            }
+        });
     }
 
     private void initTypeVComboBox() {
@@ -73,13 +85,23 @@ public class Ajouterevent {
         TypeV type = comboType.getValue();
         LocalDate localDate = datePicker.getValue();
         Terrain terrain = comboTerrain.getValue();
-        String imageUrl = txtImageUrl.getText(); // Récupérer le lien de l'image
+        String imageUrl = txtImageUrl.getText();
 
+        // Vérifier que tous les champs sont remplis
         if (nom.isEmpty() || type == null || localDate == null || terrain == null || imageUrl.isEmpty()) {
             System.out.println("Veuillez remplir tous les champs.");
+            showAlert("Champs incomplets", "Veuillez remplir tous les champs avant de valider.");
             return;
         }
 
+        // Vérifier que la date n'est pas antérieure à aujourd'hui
+        if (localDate.isBefore(LocalDate.now())) {
+            System.out.println("La date choisie est dans le passé.");
+            showAlert("Date invalide", "Vous ne pouvez pas choisir une date antérieure à aujourd'hui.");
+            return;
+        }
+
+        // Conversion de la LocalDate en java.sql.Date
         Date date = java.sql.Date.valueOf(localDate);
         // Créer l'événement avec l'image
         Événement evenement = new Événement(nom, type, date, terrain, imageUrl);
@@ -89,14 +111,11 @@ public class Ajouterevent {
             serviceÉvénement.ajouter(evenement);
             System.out.println("Événement ajouté avec succès.");
 
-            // Ajout immédiat dans la liste d'affichage
+            // Ajout immédiat dans la liste d'affichage (si vous utilisez cette méthode dans votre interface)
             Afficherevnet.ajouterEvenement(evenement);
 
             // Afficher une alerte pour confirmation
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-            alert.setTitle("Ajout réussi");
-            alert.setContentText("Événement ajouté avec succès !");
-            alert.showAndWait();
+            showAlert("Ajout réussi", "Événement ajouté avec succès !");
 
             // Redirection automatique vers Afficherevent.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Afficherevent.fxml"));
@@ -108,6 +127,15 @@ public class Ajouterevent {
 
         } catch (IOException | SQLException e) {
             System.err.println("Erreur lors de l'ajout de l'événement : " + e.getMessage());
+            showAlert("Erreur", "Impossible d'ajouter l'événement : " + e.getMessage());
         }
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

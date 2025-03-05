@@ -12,4 +12,6 @@
     <Button text="Ajouter Équipe" onAction="#goToAddEquipe" styleClass="button" />
     <Button text="Ajouter Emploi du Temps" onAction="#goToAddEmploiDuTemps" styleClass="button" />
     <Button text="Afficher Emploi du Temps" onAction="#showEmploiDuTemps" styleClass="button" />
+    <Button text="Modifier Événement" onAction="#goToModifyEvent" styleClass="button" />
+    <Button text="ModifierEmploiduTemps" onAction="#goToModifyEmploiDuTemps" styleClass="button" />
 </HBox>

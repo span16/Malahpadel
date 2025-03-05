@@ -40,6 +40,7 @@ public class Afficherterrain {
 
     @FXML
     public void initialize() {
+        // Configuration des colonnes
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colAdresse.setCellValueFactory(new PropertyValueFactory<>("adresse"));
         colPrix.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createObjectBinding(() ->
@@ -49,12 +50,23 @@ public class Afficherterrain {
         colHeureFermeture.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createObjectBinding(() ->
                 formatTime(cellData.getValue().getHeureFermeture())));
 
+        // Charger les terrains depuis la base de données
+        chargerTerrains();
+
+        // Affecter la liste au TableView
         tableTerrains.setItems(listeTerrains);
     }
 
-    // ✅ Ajouter un terrain dans la liste affichée
-    public static void ajouterTerrain(Terrain terrain) {
-        listeTerrains.add(terrain);
+    /**
+     * Charge l'ensemble des terrains depuis la base de données et met à jour la liste affichée.
+     */
+    private void chargerTerrains() {
+        try {
+            listeTerrains.clear();
+            listeTerrains.addAll(terrainService.recuperer());
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors du chargement des terrains : " + e.getMessage());
+        }
     }
 
     private String formatTime(Time time) {
@@ -75,7 +87,11 @@ public class Afficherterrain {
 
             Modifierterrain controller = loader.getController();
             controller.setTerrain(selectedTerrain);
-            controller.setOnUpdateSuccess(() -> tableTerrains.refresh());
+            controller.setOnUpdateSuccess(() -> {
+                // Rechargez la liste des terrains après modification
+                chargerTerrains();
+                tableTerrains.refresh();
+            });
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -105,9 +121,9 @@ public class Afficherterrain {
         confirmation.showAndWait().ifPresent(response -> {
             if (response == btnOui) {
                 try {
-                    terrainService.supprimer(selectedTerrain); // ✅ Suppression de la base de données
-                    listeTerrains.remove(selectedTerrain); // ✅ Suppression de la liste affichée
-                    tableTerrains.refresh(); // ✅ Rafraîchir l'affichage
+                    terrainService.supprimer(selectedTerrain); // Suppression dans la base de données
+                    listeTerrains.remove(selectedTerrain);      // Suppression dans la liste affichée
+                    tableTerrains.refresh();                     // Rafraîchir l'affichage
                     showAlert(Alert.AlertType.INFORMATION, "Succès", "Terrain supprimé avec succès !");
                 } catch (SQLException e) {
                     showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la suppression du terrain : " + e.getMessage());
@@ -122,5 +138,13 @@ public class Afficherterrain {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    /**
+     * Méthode statique pour ajouter un terrain à la liste affichée.
+     * Elle sera appelée par la page d'ajout de terrain.
+     */
+    public static void ajouterTerrain(Terrain terrain) {
+        listeTerrains.add(terrain);
     }
 }

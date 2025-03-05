@@ -4,13 +4,16 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Afficherevnet">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@styles.css"
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.Afficherevnet">
     <children>
-        <!-- Inclusion de la Navbar (vérifiez que Navbar.fxml est dans le bon répertoire) -->
+        <!-- Inclusion de la Navbar (vérifiez que Navbar.fxml est au bon emplacement) -->
         <fx:include source="Navbar.fxml" />
 
         <!-- WebView pour afficher Google Maps à droite -->
@@ -25,8 +28,20 @@
         <!-- Bouton Retour -->
         <Button layoutX="204.0" layoutY="60.0" onAction="#retourAjouterEvent" text="Retour" />
 
+        <!-- Zone de recherche par nom -->
+        <TextField fx:id="txtRecherche" layoutX="14.0" layoutY="520.0"
+                   promptText="Rechercher un événement..." prefWidth="300.0" />
+
+        <!-- Bouton pour lancer la recherche -->
+        <Button layoutX="320.0" layoutY="520.0" onAction="#rechercherEvenements"
+                text="Rechercher" />
+
+        <!-- Bouton pour trier par ordre alphabétique -->
+        <Button layoutX="400.0" layoutY="520.0" onAction="#trierAlphabetique"
+                text="Trier A-Z" />
+
         <!-- ScrollPane contenant le FlowPane pour les cartes d'événements -->
-        <ScrollPane fx:id="scrollPane" layoutX="14.0" layoutY="96.0" prefHeight="444.0" prefWidth="550.0">
+        <ScrollPane fx:id="scrollPane" layoutX="14.0" layoutY="96.0" prefHeight="410.0" prefWidth="550.0">
             <content>
                 <FlowPane fx:id="flowPane" hgap="20.0" prefWrapLength="500.0" vgap="20.0" />
             </content>

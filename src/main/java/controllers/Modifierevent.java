@@ -12,16 +12,25 @@ import javafx.collections.FXCollections;
 import javafx.util.StringConverter;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Modifierevent {
 
-    @FXML private TextField txtNom;
-    @FXML private ComboBox<TypeV> comboType;
-    @FXML private DatePicker datePicker;
-    @FXML private ComboBox<Terrain> comboTerrain;
-    @FXML private Button btnModifier;
-    @FXML private Button btnAnnuler;
+    @FXML
+    private TextField txtNom;
+    @FXML
+    private ComboBox<TypeV> comboType;
+    @FXML
+    private DatePicker datePicker;
+    @FXML
+    private ComboBox<Terrain> comboTerrain;
+    // Nouveau champ pour l'image
+    @FXML
+    private TextField txtImageUrl;
+
+    @FXML
+    private Button btnModifier;
+    @FXML
+    private Button btnAnnuler;
 
     private ÉvénementService événementService = new ÉvénementService();
     private Événement événement;
@@ -32,7 +41,7 @@ public class Modifierevent {
         txtNom.setText(événement.getNom());
         comboType.setValue(événement.getType());
 
-        // Correction : Convertir java.sql.Date en LocalDate sans erreur
+        // Conversion de java.sql.Date en LocalDate
         if (événement.getDate() != null) {
             datePicker.setValue(((java.sql.Date) événement.getDate()).toLocalDate());
         } else {
@@ -40,6 +49,8 @@ public class Modifierevent {
         }
 
         comboTerrain.setValue(événement.getTerrain());
+        // Remplir le champ image avec l'URL actuelle
+        txtImageUrl.setText(événement.getImageUrl());
     }
 
     public void setOnUpdateSuccess(Runnable runnable) {
@@ -50,6 +61,18 @@ public class Modifierevent {
     public void initialize() {
         comboType.setItems(FXCollections.observableArrayList(TypeV.values()));
         initTerrainComboBox();
+
+        // Désactiver les dates passées dans le DatePicker (similaire à l'ajout)
+        datePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                if (date.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;");
+                }
+            }
+        });
 
         btnModifier.setOnAction(event -> modifierÉvénement());
         btnAnnuler.setOnAction(event -> fermerFenetre());
@@ -64,7 +87,6 @@ public class Modifierevent {
                 public String toString(Terrain terrain) {
                     return terrain != null ? terrain.getNom() : "";
                 }
-
                 @Override
                 public Terrain fromString(String string) {
                     return comboTerrain.getItems().stream()
@@ -80,10 +102,13 @@ public class Modifierevent {
 
     private void modifierÉvénement() {
         try {
+            // Vérification simple : vous pouvez ajouter ici une validation similaire pour la date si nécessaire
             événement.setNom(txtNom.getText());
             événement.setType(comboType.getValue());
             événement.setDate(java.sql.Date.valueOf(datePicker.getValue()));
             événement.setTerrain(comboTerrain.getValue());
+            // Mise à jour de l'image via le champ txtImageUrl
+            événement.setImageUrl(txtImageUrl.getText());
 
             événementService.modifier(événement, événement.getId());
 

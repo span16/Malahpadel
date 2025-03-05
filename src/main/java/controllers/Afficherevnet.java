@@ -1,6 +1,7 @@
 package controllers;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -27,11 +28,13 @@ public class Afficherevnet {
     @FXML
     private WebView mapView; // WebView pour la carte Google Maps
     @FXML
-    private ComboBox<TypeV> comboFiltreType; // ComboBox pour filtrer par type (ex: TOURNOIS, MATCH)
+    private ComboBox<TypeV> comboFiltreType; // ComboBox pour filtrer par type
     @FXML
     private FlowPane flowPane; // FlowPane qui contiendra les cartes d'événements
     @FXML
     private ScrollPane scrollPane; // Pour permettre le scroll si nécessaire
+    @FXML
+    private TextField txtRecherche; // Champ de recherche (correspond à fx:id="txtRecherche")
 
     private ÉvénementService eventService;
 
@@ -87,7 +90,7 @@ public class Afficherevnet {
         vbox.setStyle("-fx-border-color: #ccc; -fx-padding: 10; -fx-background-color: #f9f9f9;");
         vbox.setPrefWidth(120);
 
-        // Optionnel : Afficher l'image associée à l'événement
+        // Afficher l'image associée à l'événement (si disponible)
         ImageView imgEvt = new ImageView();
         imgEvt.setFitWidth(100);
         imgEvt.setFitHeight(80);
@@ -156,9 +159,46 @@ public class Afficherevnet {
         });
     }
 
+    // Méthode appelée par le bouton "Retour"
     @FXML
     void retourAjouterEvent() {
         MainFX.switchToAjouterevent();
+    }
+
+    // Méthode pour rechercher des événements par nom (appelée depuis le FXML)
+    @FXML
+    void rechercherEvenements(ActionEvent event) {
+        String motCle = txtRecherche.getText();
+        if (motCle == null || motCle.trim().isEmpty()) {
+            // Si le champ est vide, on affiche tous les événements
+            afficherEvenementsFiltres();
+            return;
+        }
+        try {
+            List<Événement> events = eventService.rechercherParNom(motCle);
+            flowPane.getChildren().clear();
+            for (Événement evt : events) {
+                VBox carte = creerCarteEvenement(evt);
+                flowPane.getChildren().add(carte);
+            }
+        } catch (SQLException ex) {
+            System.out.println("❌ Erreur lors de la recherche des événements : " + ex.getMessage());
+        }
+    }
+
+    // Méthode pour trier les événements par ordre alphabétique (appelée depuis le FXML)
+    @FXML
+    void trierAlphabetique(ActionEvent event) {
+        try {
+            List<Événement> events = eventService.trierParAlphabet();
+            flowPane.getChildren().clear();
+            for (Événement evt : events) {
+                VBox carte = creerCarteEvenement(evt);
+                flowPane.getChildren().add(carte);
+            }
+        } catch (SQLException ex) {
+            System.out.println("❌ Erreur lors du tri alphabétique : " + ex.getMessage());
+        }
     }
 
     // Méthode statique pour un éventuel ajout immédiat (non utilisée ici)

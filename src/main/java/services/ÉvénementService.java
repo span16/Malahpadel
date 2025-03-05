@@ -138,13 +138,69 @@ public class ÉvénementService implements IService<Événement> {
                 Terrain terrain = recupererTerrainParId(terrainId);
                 e.setTerrain(terrain);
 
-                // Récupère l'URL de l'image
                 e.setImageUrl(rs.getString("image_url"));
-
                 événements.add(e);
             }
         } catch (SQLException ex) {
             System.err.println("❌ Erreur lors de la récupération des événements : " + ex.getMessage());
+            throw ex;
+        }
+        return événements;
+    }
+
+    // Méthode pour rechercher des événements dont le nom contient un mot-clé (insensible à la casse)
+    public List<Événement> rechercherParNom(String motCle) throws SQLException {
+        String sql = "SELECT * FROM événement WHERE LOWER(nom) LIKE ?";
+        List<Événement> événements = new ArrayList<>();
+
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setString(1, "%" + motCle.toLowerCase() + "%");
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    Événement e = new Événement();
+                    e.setId(rs.getInt("id"));
+                    e.setNom(rs.getString("nom"));
+                    e.setType(TypeV.valueOf(rs.getString("type")));
+                    e.setDate(rs.getDate("date"));
+
+                    int terrainId = rs.getInt("terrain_id");
+                    Terrain terrain = recupererTerrainParId(terrainId);
+                    e.setTerrain(terrain);
+
+                    e.setImageUrl(rs.getString("image_url"));
+                    événements.add(e);
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println("❌ Erreur lors de la recherche des événements : " + ex.getMessage());
+            throw ex;
+        }
+        return événements;
+    }
+
+    // Récupère la liste des événements triée par ordre alphabétique (selon le nom)
+    public List<Événement> trierParAlphabet() throws SQLException {
+        String sql = "SELECT * FROM événement ORDER BY nom ASC";
+        List<Événement> événements = new ArrayList<>();
+
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                Événement e = new Événement();
+                e.setId(rs.getInt("id"));
+                e.setNom(rs.getString("nom"));
+                e.setType(TypeV.valueOf(rs.getString("type")));
+                e.setDate(rs.getDate("date"));
+
+                int terrainId = rs.getInt("terrain_id");
+                Terrain terrain = recupererTerrainParId(terrainId);
+                e.setTerrain(terrain);
+
+                e.setImageUrl(rs.getString("image_url"));
+                événements.add(e);
+            }
+        } catch (SQLException ex) {
+            System.err.println("❌ Erreur lors du tri des événements : " + ex.getMessage());
             throw ex;
         }
         return événements;

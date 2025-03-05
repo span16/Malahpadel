@@ -12,5 +12,12 @@ public interface IEmploiDuTemps {
     List<EmploiDuTemps> recuperer() throws SQLException;
 
     // Renommez ceci pour correspondre à "recupererParId" dans l'implémentation
-    EmploiDuTemps recupererParId(int id) throws SQLException;
+    default EmploiDuTemps recupererParId() throws SQLException {
+        return recupererParId(0);
+    }
+
+    // Renommez ceci pour correspondre à "recupererParId" dans l'implémentation
+    default EmploiDuTemps recupererParId(int id) throws SQLException {
+        return null;
+    }
 }
