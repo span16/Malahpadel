@@ -16,24 +16,23 @@ public class ÉvénementService implements IService<Événement> {
         cnx = MyDataBase.getInstance().getCnx();
     }
 
-    // ✅ Ajouter un événement et récupérer l'ID après l'insertion
+    // Ajoute un événement et récupère l'ID généré
     @Override
     public void ajouter(Événement e) throws SQLException {
-        String sql = "INSERT INTO événement (nom, type, terrain_id, date) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO événement (nom, type, terrain_id, date, image_url) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement st = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             st.setString(1, e.getNom());
             st.setString(2, e.getType().name());
             st.setInt(3, e.getTerrain() != null ? e.getTerrain().getId() : 0);
             st.setDate(4, e.getDate() != null ? new java.sql.Date(e.getDate().getTime()) : null);
+            st.setString(5, e.getImageUrl());
             st.executeUpdate();
 
-            // ✅ Récupérer l'ID généré
             try (ResultSet rs = st.getGeneratedKeys()) {
                 if (rs.next()) {
                     e.setId(rs.getInt(1));
                 }
             }
-
             System.out.println("✅ Événement ajouté avec ID : " + e.getId());
         } catch (SQLException ex) {
             System.err.println("❌ Erreur lors de l'ajout de l'événement : " + ex.getMessage());
@@ -41,7 +40,7 @@ public class ÉvénementService implements IService<Événement> {
         }
     }
 
-    // ✅ Supprimer un événement
+    // Supprime un événement
     @Override
     public void supprimer(Événement e) throws SQLException {
         String sql = "DELETE FROM événement WHERE id = ?";
@@ -64,7 +63,7 @@ public class ÉvénementService implements IService<Événement> {
         // Méthode non implémentée
     }
 
-    // ✅ Modifier un événement (avec vérification de l'existence)
+    // Modifier un événement (avec vérification d'existence)
     @Override
     public void modifier(Événement e, int id) throws SQLException {
         if (!existe(id)) {
@@ -72,13 +71,14 @@ public class ÉvénementService implements IService<Événement> {
             return;
         }
 
-        String sql = "UPDATE événement SET nom = ?, type = ?, date = ?, terrain_id = ? WHERE id = ?";
+        String sql = "UPDATE événement SET nom = ?, type = ?, date = ?, terrain_id = ?, image_url = ? WHERE id = ?";
         try (PreparedStatement st = cnx.prepareStatement(sql)) {
             st.setString(1, e.getNom());
             st.setString(2, e.getType().name());
             st.setDate(3, e.getDate() != null ? new java.sql.Date(e.getDate().getTime()) : null);
             st.setInt(4, e.getTerrain() != null ? e.getTerrain().getId() : 0);
-            st.setInt(5, id);
+            st.setString(5, e.getImageUrl());
+            st.setInt(6, id);
 
             int affectedRows = st.executeUpdate();
             if (affectedRows > 0) {
@@ -93,16 +93,16 @@ public class ÉvénementService implements IService<Événement> {
     }
 
     @Override
-    public void modifier(Terrain t) throws SQLException {
+    public void modifier(models.Terrain t) throws SQLException {
         // Méthode non implémentée
     }
 
     @Override
-    public void modifier(Terrain t, int id) throws SQLException {
+    public void modifier(models.Terrain t, int id) throws SQLException {
         // Méthode non implémentée
     }
 
-    // ✅ Vérifier si un événement existe
+    // Vérifie si un événement existe
     public boolean existe(int id) throws SQLException {
         String sql = "SELECT COUNT(*) FROM événement WHERE id = ?";
         try (PreparedStatement st = cnx.prepareStatement(sql)) {
@@ -119,7 +119,7 @@ public class ÉvénementService implements IService<Événement> {
         return false;
     }
 
-    // ✅ Récupérer la liste des événements avec l'objet Terrain
+    // Récupère la liste des événements avec l'objet Terrain et l'image
     @Override
     public List<Événement> recuperer() throws SQLException {
         String sql = "SELECT * FROM événement";
@@ -135,9 +135,11 @@ public class ÉvénementService implements IService<Événement> {
                 e.setDate(rs.getDate("date"));
 
                 int terrainId = rs.getInt("terrain_id");
-                // ✅ Récupérer l'objet Terrain via son ID
                 Terrain terrain = recupererTerrainParId(terrainId);
                 e.setTerrain(terrain);
+
+                // Récupère l'URL de l'image
+                e.setImageUrl(rs.getString("image_url"));
 
                 événements.add(e);
             }
@@ -145,14 +147,13 @@ public class ÉvénementService implements IService<Événement> {
             System.err.println("❌ Erreur lors de la récupération des événements : " + ex.getMessage());
             throw ex;
         }
-
         return événements;
     }
 
-    // ✅ Récupérer un terrain par ID
+    // Récupère un terrain par son ID
     private Terrain recupererTerrainParId(int terrainId) throws SQLException {
         if (terrainId == 0) {
-            return null; // ✅ Si pas de terrain, retourner `null`
+            return null;
         }
 
         String sql = "SELECT * FROM terrain WHERE id = ?";
@@ -176,7 +177,7 @@ public class ÉvénementService implements IService<Événement> {
         return null;
     }
 
-    // ✅ Récupérer un événement par ID
+    // Récupère un événement par son ID
     public Événement recupererParId(int id) throws SQLException {
         String sql = "SELECT * FROM événement WHERE id = ?";
         try (PreparedStatement st = cnx.prepareStatement(sql)) {
@@ -193,6 +194,7 @@ public class ÉvénementService implements IService<Événement> {
                     Terrain terrain = recupererTerrainParId(terrainId);
                     e.setTerrain(terrain);
 
+                    e.setImageUrl(rs.getString("image_url"));
                     return e;
                 }
             }

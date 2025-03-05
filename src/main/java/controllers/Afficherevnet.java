@@ -1,142 +1,168 @@
 package controllers;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import models.TypeV;
 import models.Événement;
 import services.ÉvénementService;
 import tests.MainFX;
 
-import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Afficherevnet {
 
     @FXML
-    private TableView<Événement> tableEvenements;
+    private WebView mapView; // WebView pour la carte Google Maps
     @FXML
-    private TableColumn<Événement, String> colNom;
+    private ComboBox<TypeV> comboFiltreType; // ComboBox pour filtrer par type (ex: TOURNOIS, MATCH)
     @FXML
-    private TableColumn<Événement, String> colType;
+    private FlowPane flowPane; // FlowPane qui contiendra les cartes d'événements
     @FXML
-    private TableColumn<Événement, String> colDate;
-    @FXML
-    private TableColumn<Événement, String> colTerrain;
-    @FXML
-    private ImageView imageView; // Ajout de l'image pour le fond
-    @FXML
-    private Button btnModifier; // Bouton pour modifier l'événement
+    private ScrollPane scrollPane; // Pour permettre le scroll si nécessaire
 
-    private static final ObservableList<Événement> listeEvenements = FXCollections.observableArrayList();
+    private ÉvénementService eventService;
 
     @FXML
     public void initialize() {
-        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        eventService = new ÉvénementService();
 
-        // ✅ Affichage correct du nom du terrain
-        colTerrain.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(
-                        cellData.getValue().getTerrain().getNom()));
+        // Initialisation du filtre par type
+        comboFiltreType.setItems(FXCollections.observableArrayList(TypeV.values()));
+        comboFiltreType.setOnAction(e -> afficherEvenementsFiltres());
 
-        tableEvenements.setItems(listeEvenements);
+        // Affichage initial de tous les événements
+        afficherEvenementsFiltres();
 
-        // ✅ Chargement sécurisé de l'image
-        try {
-            String imagePath = getClass().getResource("/IMAGE/pngtree-cartoon-sports-equipment-green-tennis-ball-png-image_344065.jpg").toExternalForm();
-            if (imagePath != null) {
-                imageView.setImage(new Image(imagePath));
-            } else {
-                System.out.println("⚠ L'image n'a pas été trouvée !");
-            }
-        } catch (Exception e) {
-            System.out.println("⚠ Erreur de chargement de l'image : " + e.getMessage());
-        }
+        // Charger la carte Google Maps pour "Paris" par défaut
+        afficherCarte("Paris");
     }
 
-    public static void ajouterEvenement(Événement event) {
-        listeEvenements.add(event);
-    }
-
-    // ✅ Méthode pour modifier un événement sélectionné
-    @FXML
-    void modifierEvent() {
-        Événement selectedEvent = tableEvenements.getSelectionModel().getSelectedItem();
-        if (selectedEvent == null) {
-            showAlert(Alert.AlertType.WARNING, "Sélection requise", "Veuillez sélectionner un événement à modifier.");
+    // Charge la carte Google Maps dans le WebView pour l'adresse spécifiée
+    private void afficherCarte(String adresse) {
+        if (mapView == null) {
+            System.out.println("❌ WebView (mapView) est null !");
             return;
         }
+        WebEngine webEngine = mapView.getEngine();
+        String googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=" + adresse.replace(" ", "+");
+        webEngine.load(googleMapsUrl);
+    }
 
+    // Récupère et affiche les événements en fonction du type sélectionné
+    private void afficherEvenementsFiltres() {
+        flowPane.getChildren().clear();
+        TypeV typeSelectionne = comboFiltreType.getValue();
+        try {
+            List<Événement> allEvents = eventService.recuperer();
+            if (typeSelectionne != null) {
+                allEvents = allEvents.stream()
+                        .filter(evt -> evt.getType() == typeSelectionne)
+                        .collect(Collectors.toList());
+            }
+            for (Événement evt : allEvents) {
+                VBox carte = creerCarteEvenement(evt);
+                flowPane.getChildren().add(carte);
+            }
+        } catch (SQLException ex) {
+            System.out.println("❌ Erreur récupération événements : " + ex.getMessage());
+        }
+    }
+
+    // Crée une "carte" (VBox) pour afficher un événement
+    private VBox creerCarteEvenement(Événement evt) {
+        VBox vbox = new VBox(5);
+        vbox.setStyle("-fx-border-color: #ccc; -fx-padding: 10; -fx-background-color: #f9f9f9;");
+        vbox.setPrefWidth(120);
+
+        // Optionnel : Afficher l'image associée à l'événement
+        ImageView imgEvt = new ImageView();
+        imgEvt.setFitWidth(100);
+        imgEvt.setFitHeight(80);
+        if (evt.getImageUrl() != null && !evt.getImageUrl().isEmpty()) {
+            try {
+                Image img = new Image(evt.getImageUrl(), true);
+                imgEvt.setImage(img);
+            } catch (Exception e) {
+                System.out.println("⚠ Impossible de charger l'image : " + e.getMessage());
+            }
+        }
+
+        Label lblNom = new Label("Nom : " + evt.getNom());
+        Label lblDate = new Label("Date : " + evt.getDate());
+        Label lblType = new Label("Type : " + evt.getType());
+        Label lblTerrain = new Label("Terrain : " +
+                (evt.getTerrain() != null ? evt.getTerrain().getNom() : "Aucun"));
+
+        Button btnModifier = new Button("Modifier");
+        btnModifier.setOnAction(e -> modifierEvenement(evt));
+
+        Button btnSupprimer = new Button("Supprimer");
+        btnSupprimer.setOnAction(e -> supprimerEvenement(evt));
+
+        vbox.getChildren().addAll(imgEvt, lblNom, lblDate, lblType, lblTerrain, btnModifier, btnSupprimer);
+        return vbox;
+    }
+
+    // Ouvre la fenêtre de modification pour l'événement sélectionné
+    private void modifierEvenement(Événement evt) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modifierevent.fxml"));
             Parent root = loader.load();
-
             Modifierevent controller = loader.getController();
-            controller.setÉvénement(selectedEvent);
-            controller.setOnUpdateSuccess(() -> {
-                tableEvenements.refresh(); // Rafraîchir la table après modification
-            });
+            controller.setÉvénement(evt);
+            controller.setOnUpdateSuccess(() -> afficherEvenementsFiltres());
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Modifier Événement");
             stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
-    // ✅ Bouton retour vers la page d'ajout
-    @FXML
-    void retourAjouterEvent() {
-        MainFX.switchToAjouterevent();
-    }
-
-    // ✅ Méthode pour afficher des alertes
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-    @FXML
-    void supprimerEvent() {
-        Événement selectedEvent = tableEvenements.getSelectionModel().getSelectedItem();
-        if (selectedEvent == null) {
-            showAlert(Alert.AlertType.WARNING, "Sélection requise", "Veuillez sélectionner un événement à supprimer.");
-            return;
-        }
-
+    // Supprime l'événement après confirmation
+    private void supprimerEvenement(Événement evt) {
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Confirmation de suppression");
         confirmation.setHeaderText(null);
-        confirmation.setContentText("Voulez-vous vraiment supprimer l'événement " + selectedEvent.getNom() + " ?");
-        ButtonType btnOui = new ButtonType("Oui");
+        confirmation.setContentText("Voulez-vous vraiment supprimer l'événement " + evt.getNom() + " ?");
+        ButtonType btnOui = new ButtonType("Oui", ButtonBar.ButtonData.OK_DONE);
         ButtonType btnNon = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
         confirmation.getButtonTypes().setAll(btnOui, btnNon);
 
         confirmation.showAndWait().ifPresent(response -> {
             if (response == btnOui) {
                 try {
-                    ÉvénementService événementService = new ÉvénementService();
-                    événementService.supprimer(selectedEvent); // ✅ Suppression de la base de données
-                    listeEvenements.remove(selectedEvent); // ✅ Suppression de la liste affichée
-                    tableEvenements.refresh(); // ✅ Rafraîchir l'affichage
-                    showAlert(Alert.AlertType.INFORMATION, "Succès", "Événement supprimé avec succès !");
-                } catch (SQLException e) {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la suppression de l'événement : " + e.getMessage());
+                    eventService.supprimer(evt);
+                    afficherEvenementsFiltres();
+                } catch (SQLException ex) {
+                    System.out.println("❌ Erreur lors de la suppression : " + ex.getMessage());
                 }
             }
         });
+    }
+
+    @FXML
+    void retourAjouterEvent() {
+        MainFX.switchToAjouterevent();
+    }
+
+    // Méthode statique pour un éventuel ajout immédiat (non utilisée ici)
+    public static void ajouterEvenement(Événement event) {
+        // Dans cette version, l'affichage se recharge entièrement via afficherEvenementsFiltres()
     }
 }

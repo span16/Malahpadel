@@ -5,24 +5,25 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Ajouterevent">
     <children>
-        <!-- Navbar integration -->
         <fx:include source="Navbar.fxml" />
-
-        <!-- Form Fields -->
         <Label layoutX="50.0" layoutY="60.0" text="Nom de l'Événement" />
         <TextField fx:id="txtNom" layoutX="180.0" layoutY="56.0" />
+
         <Label layoutX="50.0" layoutY="110.0" text="Type d'Événement" />
         <ComboBox fx:id="comboType" layoutX="180.0" layoutY="106.0" />
+
         <Label layoutX="50.0" layoutY="160.0" text="Date" />
         <DatePicker fx:id="datePicker" layoutX="180.0" layoutY="156.0" />
+
         <Label layoutX="50.0" layoutY="210.0" text="Terrain" />
         <ComboBox fx:id="comboTerrain" layoutX="180.0" layoutY="206.0" />
 
-        <!-- Submit Button -->
-        <Button layoutX="220.0" layoutY="260.0" mnemonicParsing="false" onAction="#addEvenement" text="Ajouter Événement" styleClass="submit-button" />
+        <Label layoutX="50.0" layoutY="260.0" text="Lien de l'image" />
+        <TextField fx:id="txtImageUrl" layoutX="180.0" layoutY="256.0" />
+
+        <Button layoutX="220.0" layoutY="310.0" mnemonicParsing="false" onAction="#addEvenement" text="Ajouter Événement" styleClass="submit-button" />
     </children>
 </AnchorPane>

@@ -32,6 +32,9 @@ public class Ajouterevent {
     private DatePicker datePicker;
     @FXML
     private ComboBox<Terrain> comboTerrain;
+    // Nouveau champ pour le lien de l'image
+    @FXML
+    private TextField txtImageUrl;
 
     @FXML
     public void initialize() {
@@ -52,10 +55,11 @@ public class Ajouterevent {
                 public String toString(Terrain terrain) {
                     return terrain != null ? terrain.getNom() : "";
                 }
-
                 @Override
                 public Terrain fromString(String string) {
-                    return comboTerrain.getItems().stream().filter(t -> t.getNom().equals(string)).findFirst().orElse(null);
+                    return comboTerrain.getItems().stream()
+                            .filter(t -> t.getNom().equals(string))
+                            .findFirst().orElse(null);
                 }
             });
         } catch (SQLException e) {
@@ -69,34 +73,36 @@ public class Ajouterevent {
         TypeV type = comboType.getValue();
         LocalDate localDate = datePicker.getValue();
         Terrain terrain = comboTerrain.getValue();
+        String imageUrl = txtImageUrl.getText(); // Récupérer le lien de l'image
 
-        if (nom.isEmpty() || type == null || localDate == null || terrain == null) {
+        if (nom.isEmpty() || type == null || localDate == null || terrain == null || imageUrl.isEmpty()) {
             System.out.println("Veuillez remplir tous les champs.");
             return;
         }
 
         Date date = java.sql.Date.valueOf(localDate);
-        Événement evenement = new Événement(nom, type, date, terrain);
+        // Créer l'événement avec l'image
+        Événement evenement = new Événement(nom, type, date, terrain, imageUrl);
 
         ÉvénementService serviceÉvénement = new ÉvénementService();
         try {
             serviceÉvénement.ajouter(evenement);
             System.out.println("Événement ajouté avec succès.");
 
-            // ✅ Ajout immédiat dans la liste d'affichage
+            // Ajout immédiat dans la liste d'affichage
             Afficherevnet.ajouterEvenement(evenement);
 
-            // ✅ Afficher une alerte pour confirmation
+            // Afficher une alerte pour confirmation
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             alert.setTitle("Ajout réussi");
             alert.setContentText("Événement ajouté avec succès !");
             alert.showAndWait();
 
-            // ✅ Redirection automatique vers Afficherevent.fxml
+            // Redirection automatique vers Afficherevent.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Afficherevent.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) txtNom.getScene().getWindow(); // Obtenir la fenêtre actuelle
-            stage.setScene(new Scene(root)); // Changer de scène
+            Stage stage = (Stage) txtNom.getScene().getWindow();
+            stage.setScene(new Scene(root));
             stage.setTitle("Liste des événements");
             stage.show();
 
