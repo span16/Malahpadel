@@ -15,7 +15,9 @@ import javafx.stage.Stage;
 import models.Role;
 import models.User;
 import services.UserService;
+import utils.SessionManager;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -116,11 +118,14 @@ public class Admin implements Initializable {
         // Initialisation de la navigation : afficher "Home" par défaut
         homeform.setVisible(true);
         useform.setVisible(false);
-
+        User currentUser = SessionManager.getInstance().getCurrentUser();
         // Optionnel : afficher le message de bienvenue dans le Label "nom"
         // Par exemple, si vous avez stocké l'utilisateur connecté dans une session :
         // nom.setText("Bienvenue, " + SessionManager.getCurrentUser().getNom());
-
+        if (currentUser != null) {
+            // Afficher "Welcome, [Nom]" dans le label
+            nom.setText("Welcome, " + currentUser.getNom());
+        }
         // Initialisation des colonnes du TableView
         col_nom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         col_prenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
@@ -147,6 +152,7 @@ public class Admin implements Initializable {
             }
         });
     }
+
     private void setupSearch() {
         // Ajoutez un listener sur txtSearch pour déclencher la recherche dès que l'utilisateur tape
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -176,8 +182,11 @@ public class Admin implements Initializable {
     @FXML
     private void logoutAction() {
         System.out.println("Déconnexion en cours...");
+
+        SessionManager.getInstance().clearSession();
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Home.fxml"));
             Parent root = loader.load();
             Scene loginScene = new Scene(root);
             Stage stage = (Stage) logout.getScene().getWindow();
@@ -376,10 +385,12 @@ public class Admin implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(emailRegex);
     }
+
     @FXML
     private void filterUsers() {
         String filterRole = filterChoiceBox.getValue();
@@ -416,4 +427,5 @@ public class Admin implements Initializable {
                 u1.getNom().compareToIgnoreCase(u2.getNom())
         );
     }
+
 }

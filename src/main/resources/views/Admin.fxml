@@ -36,11 +36,12 @@
                                     <Image url="@../Image/admin.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="nom" layoutX="45.0" layoutY="93.0" prefHeight="18.0" prefWidth="93.0" style="-fx-background-color: #d6d1ae;" text="Welcome," textFill="WHITE" />
+                              <Label fx:id="nom" layoutX="14.0" layoutY="93.0" prefHeight="18.0" prefWidth="124.0" style="-fx-background-color: #d6d1ae;" text="Welcome," textFill="WHITE" />
                               <Line endX="64.5" layoutX="98.0" layoutY="129.0" startX="-100.0" />
                               <Button fx:id="homeBtn" layoutX="44.0" layoutY="152.0" mnemonicParsing="false" onAction="#showHome" prefHeight="30.0" prefWidth="95.0" style="-fx-background-color: #a5acd4;" text="Home" />
 
                               <Button fx:id="userBtn" layoutX="44.0" layoutY="195.0" mnemonicParsing="false" onAction="#showUser" prefHeight="30.0" prefWidth="95.0" style="-fx-background-color: #a5acd4;" text="User" />
+                              <Button fx:id="logout" layoutX="34.0" layoutY="436.0" mnemonicParsing="false" onAction="#logoutAction" text="logout" />
 
                                </children>
                         </AnchorPane>

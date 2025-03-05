@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 import models.User;
 import services.UserService;
 import org.mindrot.jbcrypt.BCrypt;
+import utils.SessionManager;
+
 import java.io.IOException;
 
 public class LoginController {
@@ -51,6 +53,7 @@ public class LoginController {
             // Vérification du mot de passe via BCrypt.checkpw()
             if (BCrypt.checkpw(password, user.getMdp())) {
                 showAlert("Succès", "Connexion réussie !");
+                SessionManager.getInstance().setCurrentUser(user);
                 System.out.println("Rôle de l'utilisateur : " + user.getFonction());
                 redirectToPage(user);
             } else {
