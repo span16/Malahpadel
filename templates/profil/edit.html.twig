@@ -1,0 +1,18 @@
+{# templates/profil/edit.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Profil{% endblock %}
+
+{% block body %}
+    <h1>Modifier Profil</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.avatar) }}
+        {{ form_row(form.bio) }}
+        {{ form_row(form.preferences) }}
+        <button class="btn btn-primary" type="submit">Sauvegarder les modifications</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_profil_show', {'id': profil.id}) }}" class="btn btn-secondary">Retour</a>
+{% endblock %}

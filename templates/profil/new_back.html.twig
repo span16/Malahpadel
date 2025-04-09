@@ -1,0 +1,36 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Créer un nouveau profil{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Créer un nouveau profil</h4>
+        </div>
+        <div class="card-body bg-dark">
+          {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+            <div class="col-12">
+              {{ form_label(form.avatar, 'Avatar', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.avatar, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.avatar) }}
+            </div>
+            <div class="col-12">
+              {{ form_label(form.bio, 'Bio', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.bio, {'attr': {'class': 'form-control', 'placeholder': 'Votre bio...'}}) }}
+              {{ form_errors(form.bio) }}
+            </div>
+            {# Ajouter d'autres champs si nécessaire #}
+            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+              <button type="submit" class="btn btn-success">Créer</button>
+              <a href="{{ path('app_user_dashboard') }}" class="btn btn-secondary">Retour au Dashboard</a>
+            </div>
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

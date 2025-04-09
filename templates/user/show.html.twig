@@ -1,0 +1,83 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Détails de l'utilisateur{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Détails de l'utilisateur</h1>
+
+    <!-- Section : Détails de base -->
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th>ID</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ user.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ user.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Fonction</th>
+                <td>{{ user.fonction }}</td>
+            </tr>
+            <tr>
+                <th>État</th>
+                <td>{{ user.etat }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <!-- Section : Profil -->
+    <h2>Profil</h2>
+
+    {% if user.profil is not null %}
+        <!-- Si l'utilisateur a déjà un profil : on l'affiche -->
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    {% if user.profil.avatar %}
+                        <img src="{{ asset('uploads/avatars/' ~ user.profil.avatar) }}"
+                             class="img-fluid rounded-start"
+                             alt="Avatar de {{ user.nom }}">
+                    {% else %}
+                        <img src="{{ asset('assets/images/faces/face15.jpg') }}"
+                             class="img-fluid rounded-start"
+                             alt="Avatar par défaut">
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Bio</h5>
+                        <p class="card-text">{{ user.profil.bio|default('Aucune bio renseignée') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Si l'utilisateur n'a pas de profil -->
+        <p class="text-muted">Aucun profil disponible pour cet utilisateur.</p>
+        {% if app.user and app.user.id == user.id %}
+            <!-- On autorise la création seulement si c'est l'utilisateur connecté lui-même -->
+            <a href="{{ path('app_profil_new') }}" class="btn btn-sm btn-success">Créer un profil</a>
+        {% endif %}
+    {% endif %}
+
+    <!-- Boutons d'action en bas de page -->
+    <div class="d-flex gap-2 mt-3">
+        <a href="{{ path('app_user_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-primary">Modifier</a>
+        {{ include('user/_delete_form.html.twig', {'user': user}) }}
+    </div>
+</div>
+{% endblock %}

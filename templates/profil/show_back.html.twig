@@ -1,0 +1,37 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Mon Profil - Back Office{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">Mon Profil</h3>
+      <a href="{{ path('app_user_dashboard') }}" class="btn btn-light btn-sm">⬅ Retour</a>
+    </div>
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+          {% if profil.avatar %}
+            <img src="{{ asset('uploads/avatars/' ~ profil.avatar) }}" alt="Avatar de {{ profil.user.nom }}" class="img-fluid rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
+          {% else %}
+            <img src="{{ asset('assets/images/faces/face15.jpg') }}" alt="Avatar par défaut" class="img-fluid rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
+          {% endif %}
+        </div>
+        <div class="col-md-9">
+          <h4 class="fw-bold">{{ profil.user.nom }} {{ profil.user.prenom }}</h4>
+          <p><strong>Email :</strong> {{ profil.user.email }}</p>
+          <p><strong>Fonction :</strong> {{ profil.user.fonction }}</p>
+          <p><strong>État :</strong> {{ profil.user.etat }}</p>
+          <hr>
+          <p><strong>Bio :</strong> {{ profil.bio|default("Aucune bio renseignée") }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-end">
+      <a href="{{ path('app_profil_edit_back', {'id': profil.id}) }}" class="btn btn-primary me-2">Modifier</a>
+      {{ include('profil/_delete_form.html.twig', {profil: profil}) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

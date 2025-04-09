@@ -1,0 +1,33 @@
+{# templates/profil/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil #{{ profil.id }}{% endblock %}
+
+{% block body %}
+   
+
+    <div>
+        <p><strong>Avatar :</strong></p>
+       {% if profil.avatar %}
+    <img src="{{ asset('uploads/avatars/' ~ profil.avatar) }}" alt="Avatar" width="100">
+{% else %}
+            <span>Aucun avatar</span>
+        {% endif %}
+    </div>
+
+    <div>
+        <p><strong>Bio :</strong> {{ profil.bio ? profil.bio : 'Non définie' }}</p>
+    </div>
+
+    <div>
+        <p><strong>Préférences :</strong> {{ profil.preferences ? profil.preferences : 'Non définies' }}</p>
+    </div>
+
+    <a href="{{ path('app_profil_edit', {'id': profil.id}) }}" class="btn btn-warning">Modifier</a>
+    <form method="post" action="{{ path('app_profil_delete', {'id': profil.id}) }}" style="display:inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ profil.id) }}">
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+    </form>
+    <a href="{{ path('app_profil_index') }}" class="btn btn-secondary">Retour</a>
+{% endblock %}

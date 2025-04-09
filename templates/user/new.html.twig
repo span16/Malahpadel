@@ -1,0 +1,84 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Créer un nouvel utilisateur{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Créer un nouvel utilisateur</h4>
+        </div>
+        <div class="card-body bg-dark">
+          {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+
+            <!-- Exemple : Nom -->
+            <div class="col-md-6">
+              {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom'}}) }}
+              {{ form_errors(form.nom) }}
+            </div>
+
+            <!-- Exemple : Prénom -->
+            <div class="col-md-6">
+              {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le prénom'}}) }}
+              {{ form_errors(form.prenom) }}
+            </div>
+
+            <!-- Exemple : Age -->
+            <div class="col-md-6">
+              {{ form_label(form.age, 'Âge', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.age, {'attr': {'class': 'form-control', 'placeholder': 'Ex. 25'}}) }}
+              {{ form_errors(form.age) }}
+            </div>
+
+            <!-- Exemple : Email -->
+            <div class="col-md-6">
+              {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'exemple@mail.com'}}) }}
+              {{ form_errors(form.email) }}
+            </div>
+
+            <!-- Exemple : Mot de passe -->
+            <div class="col-md-6">
+              {{ form_label(form.mdp, 'Mot de passe', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.mdp, {'attr': {'class': 'form-control', 'placeholder': 'Choisissez un mot de passe'}}) }}
+              {{ form_errors(form.mdp) }}
+            </div>
+
+            <!-- Exemple : CIN -->
+            <div class="col-md-6">
+              {{ form_label(form.cin, 'CIN', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.cin, {'attr': {'class': 'form-control', 'placeholder': 'Ex. 12345678'}}) }}
+              {{ form_errors(form.cin) }}
+            </div>
+
+            <!-- Exemple : État -->
+            <div class="col-md-6">
+              {{ form_label(form.etat, 'État', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.etat, {'attr': {'class': 'form-control', 'placeholder': 'Actif / Inactif'}}) }}
+              {{ form_errors(form.etat) }}
+            </div>
+
+            <!-- Exemple : Fonction -->
+            <div class="col-md-6">
+              {{ form_label(form.fonction, 'Fonction', {'label_attr': {'class': 'form-label text-white'}}) }}
+              {{ form_widget(form.fonction, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.fonction) }}
+            </div>
+
+            <!-- Boutons -->
+            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+              <button type="submit" class="btn btn-success">Créer</button>
+              <a href="{{ path('app_user_dashboard') }}" class="btn btn-secondary">Retour à la liste</a>
+            </div>
+
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -3,3 +3,14 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+
+# config/routes.yaml
+app_home:
+  path: /home
+  controller: App\Controller\HomeController::index
+
+
+app_profil_show:
+    path: /profil/{id}
+    controller: App\Controller\ProfilController::show
