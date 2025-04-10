@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Produits | MALAH PADEL{% endblock %}
+
+{% block body %}
+<!-- Hero Start -->
+<div class="container-fluid hero-header bg-light py-5 mb-5">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-3 animated slideInDown">Nos Produits</h1>
+                <p class="animated slideInDown">Découvrez notre sélection exclusive d'équipements de padel</p>
+            </div>
+            <div class="col-lg-6 text-end">
+                <div class="btn-group me-3">
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-sort me-1"></i>
+                        {% if app.request.query.get('sort') == 'prix_asc' %}
+                            Prix croissant
+                        {% else %}
+                            Prix décroissant
+                        {% endif %}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item {% if app.request.query.get('sort') == 'prix_desc' %}active{% endif %}" 
+                              href="{{ path('app_produit_index', {'sort': 'prix_desc'}) }}">Prix décroissant</a></li>
+                        <li><a class="dropdown-item {% if app.request.query.get('sort') == 'prix_asc' %}active{% endif %}" 
+                              href="{{ path('app_produit_index', {'sort': 'prix_asc'}) }}">Prix croissant</a></li>
+                    </ul>
+                </div>
+                <a href="{{ path('app_produit_new') }}" class="btn btn-primary px-4 py-2">
+                    <i class="fas fa-plus me-2"></i>Ajouter un produit
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+<!-- Products Section -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <h2 class="display-6 mb-5">Nos Derniers Produits</h2>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            {% for produit in produits %}
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="product-item bg-light rounded overflow-hidden h-100">
+                    <div class="position-relative overflow-hidden" style="height: 250px;">
+                        {% if produit.imageProduit %}
+                        <img class="img-fluid w-100 h-100" src="{{ asset('uploads/produits/' ~ produit.imageProduit) }}" 
+                             alt="{{ produit.nomProduit }}" style="object-fit: cover;">
+                        {% else %}
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-secondary">
+                            <i class="fas fa-image fa-4x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <div class="product-overlay">
+                            <a class="btn btn-square btn-primary rounded-circle mx-1" 
+                               href="{{ path('app_produit_show', {'id_produit': produit.idProduit}) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a class="btn btn-square btn-primary rounded-circle mx-1" 
+                               href="{{ path('app_produit_edit', {'id_produit': produit.idProduit}) }}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4">
+                        <h5 class="mb-2">{{ produit.nomProduit }}</h5>
+                        <span class="text-primary mb-0">{{ produit.prix|number_format(2, ',', ' ') }} €</span>
+                        <div class="mt-2">
+                            <span class="badge bg-{{ produit.stock > 10 ? 'success' : (produit.stock > 0 ? 'warning text-dark' : 'danger') }}">
+                                Stock: {{ produit.stock }}
+                            </span>
+                            <span class="badge bg-info ms-1">{{ produit.categorie }}</span>
+                        </div>
+                        <div class="d-flex justify-content-center mt-3">
+    <a href="{{ path('app_produit_show', {'id_produit': produit.idProduit}) }}" 
+       class="btn btn-outline-primary me-2">
+        Voir détails
+    </a>
+    {% if produit.stock > 0 %}
+        <form action="{{ path('app_panier_add', {'id': produit.idProduit}) }}" method="post">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-cart-plus me-1"></i>Ajouter
+            </button>
+        </form>
+    {% else %}
+        <button class="btn btn-secondary" disabled>
+            <i class="fas fa-cart-plus me-1"></i>Indisponible
+        </button>
+    {% endif %}
+</div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">Aucun produit disponible pour le moment</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

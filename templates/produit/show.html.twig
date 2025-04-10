@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nomProduit }} | MALAH PADEL{% endblock %}
+
+{% block body %}
+<!-- Hero Start -->
+<div class="container-fluid hero-header bg-light py-5 mb-5">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-3 animated slideInDown">{{ produit.nomProduit }}</h1>
+                <a href="{{ path('app_produit_index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+<!-- Product Detail Section -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                {% if produit.imageProduit %}
+                    <img class="img-fluid rounded"
+                         src="{{ asset('uploads/produits/' ~ produit.imageProduit) }}"
+                         alt="{{ produit.nomProduit }}"
+                         style="max-height: 500px; object-fit: cover;">
+                {% else %}
+                    <div class="w-100 d-flex align-items-center justify-content-center bg-secondary p-5">
+                        <i class="fas fa-image fa-4x text-white"></i>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-6">
+                <h2 class="mb-4">{{ produit.nomProduit }}</h2>
+                <h4 class="text-primary mb-4">{{ produit.prix|number_format(2, ',', ' ') }} €</h4>
+
+                <div class="mb-4">
+                    <span class="badge bg-{{ produit.stock > 10 ? 'success' : (produit.stock > 0 ? 'warning text-dark' : 'danger') }} me-2">
+                        Stock: {{ produit.stock }}
+                    </span>
+                    <span class="badge bg-info">{{ produit.categorie }}</span>
+                </div>
+
+                <p class="mb-4">{{ produit.description ?? 'Aucune description disponible' }}</p>
+
+                <div class="d-flex gap-2">
+                    <a href="{{ path('app_produit_edit', {'id_produit': produit.idProduit}) }}"
+                       class="btn btn-primary px-4">
+                        <i class="fas fa-edit me-2"></i>Modifier
+                    </a>
+
+                    <form method="post"
+                          action="{{ path('app_produit_delete', {'id_produit': produit.idProduit}) }}"
+                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.idProduit) }}">
+                        <button class="btn btn-danger px-4">
+                            <i class="fas fa-trash me-2"></i>Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

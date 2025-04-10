@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Emploidutemps index{% endblock %}
+
+{% block body %}
+    <h1>Emploidutemps index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id_emplois</th>
+                <th>Date</th>
+                <th>Partie</th>
+                <th>Google_event_id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for emploidutemp in emploidutemps %}
+            <tr>
+                <td>{{ emploidutemp.idEmplois }}</td>
+                <td>{{ emploidutemp.Date ? emploidutemp.Date|date('Y-m-d') : '' }}</td>
+                <td>{{ emploidutemp.partie }}</td>
+                <td>{{ emploidutemp.googleEventId }}</td>
+                <td>
+                    <a href="{{ path('app_emploidutemps_show', {'id_emplois': emploidutemp.id_emplois}) }}">show</a>
+                    <a href="{{ path('app_emploidutemps_edit', {'id_emplois': emploidutemp.id_emplois}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_emploidutemps_new') }}">Create new</a>
+{% endblock %}

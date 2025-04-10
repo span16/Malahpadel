@@ -1,0 +1,20 @@
+<div class="col-md-6 col-lg-4 mb-4">
+    <div class="reservation-item p-3 shadow-sm rounded">
+        <h5 class="text-primary">{{ reservation.nom }}</h5>
+        <p><strong>Type :</strong> {{ reservation.type_reservation }}</p>
+        <p><strong>Places :</strong> {{ reservation.nombrePlaces }}</p>
+        <p><strong>Code :</strong> {{ reservation.codeConfirmation }}</p>
+        {% if reservation.remarque %}
+            <p><small>{{ reservation.remarque }}</small></p>
+        {% endif %}
+        <div class="d-flex justify-content-between mt-2">
+            <button class="btn btn-sm btn-outline-primary edit-btn" 
+                    data-id="{{ reservation.id }}" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#editModal">
+                <i class="fas fa-edit"></i> Modifier
+            </button>
+            {{ include('reservation/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>

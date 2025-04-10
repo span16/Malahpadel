@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Réservations{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="h5 mb-0">Nouvelle Réservation</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {
+                        'attr': {
+                            'class': 'needs-validation',
+                            'novalidate': 'novalidate'
+                        }
+                    }) }}
+                    
+                    <div class="row g-3">
+                        <div class="col-12">
+                            {{ form_row(form.nom, {
+                                'label': 'Événement *',
+                                'attr': {'class': 'form-select'},
+                                'label_attr': {'class': 'form-label fw-bold'}
+                            }) }}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            {{ form_row(form.typeReservation, {
+                                'label': 'Type *',
+                                'attr': {'class': 'form-control'},
+                                'label_attr': {'class': 'form-label fw-bold'}
+                            }) }}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            {{ form_row(form.nombrePlaces, {
+                                'label': 'Places *',
+                                'attr': {'class': 'form-control', 'min': 1},
+                                'label_attr': {'class': 'form-label fw-bold'}
+                            }) }}
+                        </div>
+                        
+                        <div class="col-12">
+                            {{ form_row(form.remarque, {
+                                'label': 'Remarques',
+                                'attr': {'class': 'form-control', 'rows': 2},
+                                'label_attr': {'class': 'form-label fw-bold'},
+                                'required': false
+                            }) }}
+                        </div>
+                        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save me-2"></i> Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="h5 mb-0">Liste des Réservations</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Événement</th>
+                                    <th>Type</th>
+                                    <th>Places</th>
+                                    <th>Code</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reservation in reservations %}
+                                <tr>
+                                    <td>{{ reservation.nom }}</td>
+                                    <td>{{ reservation.typeReservation }}</td>
+                                    <td>{{ reservation.nombrePlaces }}</td>
+                                    <td>{{ reservation.codeConfirmation }}</td>
+                                    <td>
+                                        <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="post" 
+                                              action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" 
+                                              class="d-inline"
+                                              onsubmit="return confirm('Confirmer la suppression ?')">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">Aucune réservation trouvée</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

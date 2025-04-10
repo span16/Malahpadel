@@ -1,0 +1,67 @@
+{% for compagne in compagnes %}
+<div class="col-lg-4 col-md-6">
+    <div class="campaign-card bg-light">
+        <div class="text-center p-3 border-bottom">
+            {% if compagne.logoCompagne %}
+                <img src="{{ asset('uploads/logos/' ~ compagne.logoCompagne) }}" class="campaign-logo img-fluid" alt="Logo {{ compagne.nomSponsor }}">
+            {% else %}
+                <div class="campaign-logo d-flex align-items-center justify-content-center">
+                    <i class="fas fa-image fa-3x text-secondary"></i>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="p-4">
+            <h5 class="mb-3">{{ compagne.nomSponsor }}</h5>
+            
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Tarif :</span>
+                <strong>{{ compagne.tarifs|number_format(2, ',', ' ') }} €</strong>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Période :</span>
+                <span>
+                    {{ compagne.dateDebut|date('d/m/Y') }} - {{ compagne.dateFin|date('d/m/Y') }}
+                </span>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">Statut :</span>
+                <span class="status-badge status-{{ compagne.status }}">
+                    {{ compagne.status|capitalize }}
+                </span>
+            </div>
+            
+            {% if compagne.produit %}
+            <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">Produit :</span>
+                <span>{{ compagne.produit.nomProduit }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Type :</span>
+                <span>{{ compagne.typeMarketing }}</span>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('app_compagne_show', {'idCompagne': compagne.idCompagne}) }}" 
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-eye me-1"></i> Détails
+                </a>
+                <a href="{{ path('app_compagne_edit', {'idCompagne': compagne.idCompagne}) }}" 
+                   class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-edit me-1"></i> Modifier
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="col-12">
+    <div class="alert alert-info text-center">
+        Aucune campagne trouvée avec ces critères
+    </div>
+</div>
+{% endfor %}

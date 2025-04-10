@@ -1,0 +1,564 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Réservation | MALAH-PADEL{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('vendors/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
+    <style>
+        /* ========== GENERAL STYLES ========== */
+        body {
+            background-color: #f5f7fa;
+        }
+        
+        /* ========== FORM HEADER STYLES ========== */
+        .form-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .form-main-title {
+            color: #2C3E50;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        .form-sub-title {
+            color: #3498DB;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        /* ========== FORM + IMAGE LAYOUT ========== */
+        .form-image-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .form-wrapper {
+            flex: 2;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .image-wrapper {
+            flex: 1;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        .event-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            object-fit: cover;
+            max-height: 450px;
+        }
+        
+        /* ========== FORM ELEMENTS STYLES ========== */
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #34495E;
+            font-size: 0.95rem;
+        }
+        .form-control, .form-select {
+            border-radius: 6px;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3498DB;
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        .invalid-feedback {
+            font-size: 0.85rem;
+        }
+        .form-check-label {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        /* ========== BUTTONS STYLES ========== */
+        .btn-primary {
+            background-color: #3498DB;
+            border-color: #3498DB;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #2980B9;
+            border-color: #2980B9;
+            transform: translateY(-2px);
+        }
+        .btn-light {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        /* ========== TABLE STYLES ========== */
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .table thead th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+            background-color: #2C3E50;
+            color: white;
+            padding: 15px;
+        }
+        .table td {
+            vertical-align: middle;
+            padding: 12px 15px;
+        }
+        .badge {
+            font-weight: 600;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        /* ========== RESPONSIVE ADJUSTMENTS ========== */
+        @media (max-width: 992px) {
+            .form-image-container {
+                flex-direction: column;
+            }
+            .image-wrapper {
+                order: -1;
+                margin-bottom: 25px;
+                max-width: 100%;
+            }
+            .form-wrapper {
+                width: 100%;
+            }
+        }
+        
+        /* ========== UTILITY STYLES ========== */
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            display: inline-block;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .export-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    {% if form is defined and form is not null %}
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <!-- Form Header -->
+                <div class="form-header">
+                    <h1 class="form-main-title">Nouvelle réservation</h1>
+                    <p class="form-sub-title">Réserver vos places pour l'événement</p>
+                </div>
+                
+                <!-- Form + Image Container -->
+                <div class="form-image-container">
+                    <!-- Form Wrapper -->
+                    <div class="form-wrapper">
+                        <!-- Flash Messages -->
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success alert-dismissible fade show mb-4">
+                                <i class="fas fa-check-circle me-2"></i> {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                        
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger alert-dismissible fade show mb-4">
+                                <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+
+                        <!-- Form Start -->
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal needs-validation', 'novalidate': 'novalidate'}}) }}
+                            <div class="row g-3">
+                                <!-- Event Name -->
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        {{ form_label(form.nom, "Nom de l'événement *", {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.nom, {
+                                            'attr': {
+                                                'class': 'form-select' ~ (form.nom.vars.errors|length ? ' is-invalid' : ''),
+                                                'placeholder': 'Choisissez un événement'
+                                            }
+                                        }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.nom) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Reservation Type -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_label(form.typeReservation, "Type de réservation *", {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.typeReservation, {
+                                            'attr': {
+                                                'class': 'form-select' ~ (form.typeReservation.vars.errors|length ? ' is-invalid' : ''),
+                                                'placeholder': 'Choisissez un type'
+                                            }
+                                        }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.typeReservation) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Number of Places -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_label(form.nombrePlaces, "Nombre de places *", {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.nombrePlaces, {
+                                            'attr': {
+                                                'class': 'form-control' ~ (form.nombrePlaces.vars.errors|length ? ' is-invalid' : ''),
+                                                'placeholder': 'Nombre de places',
+                                                'min': 1
+                                            }
+                                        }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.nombrePlaces) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Remarks -->
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        {{ form_label(form.remarque, "Remarques (optionnel)", {'label_attr': {'class': 'form-label'}}) }}
+                                        {{ form_widget(form.remarque, {
+                                            'attr': {
+                                                'class': 'form-control' ~ (form.remarque.vars.errors|length ? ' is-invalid' : ''),
+                                                'placeholder': 'Informations supplémentaires...',
+                                                'style': 'height: 100px'
+                                            }
+                                        }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.remarque) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Terms and Conditions -->
+                                <div class="col-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="conditions" required>
+                                        <label class="form-check-label" for="conditions">
+                                            J'accepte les <a href="#" class="text-primary">conditions générales</a> *
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Vous devez accepter les conditions générales
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="col-12">
+                                    <button class="btn btn-primary me-2" type="submit">
+                                        <i class="fas fa-save me-2"></i> {{ button_label|default('Enregistrer') }}
+                                    </button>
+                                    <a href="{{ path('admin_reservation_index') }}" class="btn btn-light">
+                                        <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+                                    </a>
+                                </div>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                    
+                    <!-- Image Wrapper -->
+                    <div class="image-wrapper">
+                        <img src="{{ asset('images/paddel.jpg') }}" alt="Événement paddel" class="event-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if show_list is not defined or show_list %}
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">Liste des réservations ({{ total_reservations }})</h4>
+                    <div class="d-flex">
+                        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Rechercher..." style="width: 200px; margin-right: 10px;">
+                        <button class="btn btn-primary btn-sm" id="exportBtn">
+                            <i class="fas fa-file-export me-1"></i> Exporter
+                            <span class="export-spinner"></span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped" id="reservationsTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="text-center">ID</th>
+                                <th>Événement</th>
+                                <th class="text-center">Type</th>
+                                <th class="text-center">Places</th>
+                                <th>Remarque</th>
+                                <th class="text-center">Code</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                            <tr>
+                                <td class="text-center">{{ reservation.id }}</td>
+                                <td>{{ reservation.nom }}</td>
+                                <td class="text-center">
+                                    <span class="badge 
+                                        {% if reservation.typeReservation == 'tournoi' %}bg-success
+                                        {% elseif reservation.typeReservation == 'groupe' %}bg-info
+                                        {% elseif reservation.typeReservation == 'simple' %}bg-primary
+                                        {% else %}bg-secondary
+                                        {% endif %}">
+                                        {{ reservation.typeReservation }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-warning text-dark">{{ reservation.nombrePlaces }}</span>
+                                </td>
+                                <td>
+                                    {% if reservation.remarque %}
+                                        <span class="text-truncate" title="{{ reservation.remarque }}">
+                                            {{ reservation.remarque|length > 30 ? reservation.remarque|slice(0, 30) ~ '...' : reservation.remarque }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">Aucune remarque</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark">{{ reservation.codeConfirmation }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="action-buttons">
+                                        <a href="{{ path('admin_reservation_edit', {'id': reservation.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="post" 
+                                              action="{{ path('admin_reservation_delete', {'id': reservation.id}) }}" 
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation?');"
+                                              class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                            <button class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">Aucune réservation trouvée</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {% if reservations|length > 0 %}
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        Affichage de <b>{{ reservations|length }}</b> réservation(s) sur <b>{{ total_reservations }}</b>
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Précédent</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Suivant</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('vendors/typeahead.js/typeahead.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/file-upload.js') }}"></script>
+    <script src="{{ asset('js/typeahead.js') }}"></script>
+    <script src="{{ asset('js/select2.js') }}"></script>
+    
+    <script>
+        // Auto-close alerts after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            });
+        }, 5000);
+
+        // Form validation
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    const conditionsCheckbox = document.getElementById('conditions');
+                    if (!conditionsCheckbox.checked) {
+                        conditionsCheckbox.classList.add('is-invalid');
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else {
+                        conditionsCheckbox.classList.remove('is-invalid');
+                    }
+
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+        
+        // Initialize select2
+        $(document).ready(function() {
+            $('.form-select').select2({
+                theme: 'bootstrap'
+            });
+        });
+
+        // Client-side search
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#reservationsTable tbody tr');
+            
+            rows.forEach(row => {
+                const rowText = Array.from(row.cells)
+                    .map(cell => {
+                        const badge = cell.querySelector('.badge');
+                        return badge ? badge.textContent.trim() : cell.textContent.trim();
+                    })
+                    .join(' ')
+                    .toLowerCase();
+                
+                row.style.display = rowText.includes(searchTerm) ? '' : 'none';
+            });
+            
+            updateDisplayCount();
+        });
+
+        // Data export
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            const btn = this;
+            const spinner = btn.querySelector('.export-spinner');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#reservationsTable tbody tr');
+            
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            
+            let dataToExport = [];
+            
+            const headers = [
+                'ID', 
+                'Événement', 
+                'Type', 
+                'Places', 
+                'Remarque', 
+                'Code'
+            ];
+            dataToExport.push(headers.join(','));
+            
+            rows.forEach(row => {
+                if (row.style.display !== 'none') {
+                    const rowData = Array.from(row.cells)
+                        .slice(0, -1)
+                        .map(cell => {
+                            const badge = cell.querySelector('.badge');
+                            let text = badge ? badge.textContent.trim() : cell.textContent.trim();
+                            
+                            if (text.includes('"') || text.includes(',')) {
+                                text = `"${text.replace(/"/g, '""')}"`;
+                            }
+                            
+                            return text;
+                        });
+                    
+                    dataToExport.push(rowData.join(','));
+                }
+            });
+            
+            const csvContent = dataToExport.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `reservations_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => {
+                spinner.style.display = 'none';
+                btn.disabled = false;
+            }, 500);
+        });
+
+        // Update displayed count
+        function updateDisplayCount() {
+            const visibleRows = document.querySelectorAll('#reservationsTable tbody tr:not([style*="display: none"])').length;
+            const totalRows = document.querySelectorAll('#reservationsTable tbody tr').length;
+            const countElement = document.querySelector('.text-muted');
+            
+            if (countElement) {
+                countElement.innerHTML = `Affichage de <b>${visibleRows}</b> réservation(s) sur <b>${totalRows}</b>`;
+            }
+        }
+    </script>
+{% endblock %}

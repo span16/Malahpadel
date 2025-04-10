@@ -1,0 +1,707 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Réclamations | MALAH-PADEL{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('vendors/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style2.css') }}">
+    <style>
+        /* ========== GENERAL STYLES ========== */
+        body {
+            background-color: #f5f7fa;
+        }
+        
+        /* ========== FORM HEADER STYLES ========== */
+        .form-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .form-main-title {
+            color: #2C3E50;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        .form-sub-title {
+            color: #3498DB;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        /* ========== FORM STYLES ========== */
+        .form-wrapper {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        
+        /* ========== FORM ELEMENTS STYLES ========== */
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #34495E;
+            font-size: 0.95rem;
+        }
+        .form-control, .form-select {
+            border-radius: 6px;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3498DB;
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        .invalid-feedback {
+            font-size: 0.85rem;
+        }
+        
+        /* ========== BUTTONS STYLES ========== */
+        .btn-primary {
+            background-color: #3498DB;
+            border-color: #3498DB;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #2980B9;
+            border-color: #2980B9;
+            transform: translateY(-2px);
+        }
+        
+        /* ========== TABLE STYLES ========== */
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .table thead th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+            background-color: #2C3E50;
+            color: white;
+            padding: 15px;
+        }
+        .table td {
+            vertical-align: middle;
+            padding: 12px 15px;
+        }
+        .badge {
+            font-weight: 600;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+        }
+        .badge-new {
+            background-color: #FFC107;
+            color: #212529;
+        }
+        .badge-in-progress {
+            background-color: #17A2B8;
+            color: white;
+        }
+        .badge-resolved {
+            background-color: #28A745;
+            color: white;
+        }
+        .badge-rejected {
+            background-color: #DC3545;
+            color: white;
+        }
+        
+        /* ========== UTILITY STYLES ========== */
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            display: inline-block;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .export-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ========== STATS CARDS ========== */
+        .stats-card {
+            border-left: 3px solid;
+            transition: all 0.3s;
+        }
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stats-card-primary {
+            border-left-color: #3498DB;
+        }
+        .stats-card-warning {
+            border-left-color: #FFC107;
+        }
+        .stats-card-info {
+            border-left-color: #17A2B8;
+        }
+        .stats-card-success {
+            border-left-color: #28A745;
+        }
+        .stats-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .stats-icon-primary {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498DB;
+        }
+        .stats-icon-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #FFC107;
+        }
+        .stats-icon-info {
+            background-color: rgba(23, 162, 184, 0.1);
+            color: #17A2B8;
+        }
+        .stats-icon-success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28A745;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    {% if form is defined and form is not null %}
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <!-- Form Header -->
+                <div class="form-header">
+                    <h1 class="form-main-title">{{ form_title|default('Nouvelle réclamation') }}</h1>
+                    <p class="form-sub-title">Enregistrer une réclamation ou une demande d'annulation</p>
+                </div>
+                
+                <!-- Form Wrapper -->
+                <div class="form-wrapper">
+                    <!-- Flash Messages -->
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show mb-4">
+                            <i class="fas fa-check-circle me-2"></i> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                    
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show mb-4">
+                            <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Form Start -->
+                    {{ form_start(form, {'attr': {'class': 'form-horizontal needs-validation', 'novalidate': 'novalidate'}}) }}
+                        <div class="row g-3">
+                            <!-- Date Field -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.date, "Date de réclamation *", {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.date, {
+                                        'attr': {
+                                            'class': 'form-control' ~ (form.date.vars.errors|length ? ' is-invalid' : '')
+                                        }
+                                    }) }}
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(form.date) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- State Field -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.etat, "État *", {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.etat, {
+                                        'attr': {
+                                            'class': 'form-select' ~ (form.etat.vars.errors|length ? ' is-invalid' : '')
+                                        }
+                                    }) }}
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(form.etat) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reason Field -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    {{ form_label(form.raison, "Raison *", {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.raison, {
+                                        'attr': {
+                                            'class': 'form-control' ~ (form.raison.vars.errors|length ? ' is-invalid' : ''),
+                                            'rows': 5,
+                                            'placeholder': 'Décrivez la raison de votre réclamation...'
+                                        }
+                                    }) }}
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(form.raison) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reservation Field (if included) -->
+                            {% if form.reservation is defined %}
+                            <div class="col-12">
+                                <div class="form-group">
+                                    {{ form_label(form.reservation, "Réservation associée", {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.reservation, {
+                                        'attr': {
+                                            'class': 'form-select' ~ (form.reservation.vars.errors|length ? ' is-invalid' : '')
+                                        }
+                                    }) }}
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(form.reservation) }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Buttons -->
+                            <div class="col-12">
+                                <button class="btn btn-primary me-2" type="submit">
+                                    <i class="fas fa-save me-2"></i> {{ button_label|default('Enregistrer') }}
+                                </button>
+                                <a href="{{ path('admin_reclamation_index') }}" class="btn btn-light">
+                                    <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+                                </a>
+                            </div>
+
+
+                            <p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </p>
+
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if show_list is not defined or show_list %}
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <!-- Header with search and export -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="card-title mb-0">Gestion des Réclamations</h4>
+                        <small class="text-muted">Liste complète des réclamations enregistrées</small>
+                    </div>
+                    <div class="d-flex">
+                        <div class="input-group me-3" style="width: 250px;">
+                            <span class="input-group-text bg-transparent"><i class="fas fa-search"></i></span>
+                            <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Rechercher...">
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-sm" id="exportBtn">
+                                <i class="fas fa-file-export me-1"></i> Exporter
+                                <span class="export-spinner"></span>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" 
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="visually-hidden">Options d'export</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#" id="exportCSV">CSV</a></li>
+                                <li><a class="dropdown-item" href="#" id="exportPDF">PDF</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats cards row -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card stats-card stats-card-primary">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted fw-normal">Total</h6>
+                                        <h4 class="mb-0">{{ total_reclamations }}</h4>
+                                    </div>
+                                    <div class="stats-icon stats-icon-primary">
+                                        <i class="fas fa-list"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card stats-card-warning">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted fw-normal">Nouvelles</h6>
+                                        <h4 class="mb-0">{{ reclamations|filter(r => r.etat == 'Nouvelle')|length }}</h4>
+                                    </div>
+                                    <div class="stats-icon stats-icon-warning">
+                                        <i class="fas fa-exclamation"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card stats-card-info">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted fw-normal">En cours</h6>
+                                        <h4 class="mb-0">{{ reclamations|filter(r => r.etat == 'En cours')|length }}</h4>
+                                    </div>
+                                    <div class="stats-icon stats-icon-info">
+                                        <i class="fas fa-spinner"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card stats-card-success">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted fw-normal">Résolues</h6>
+                                        <h4 class="mb-0">{{ reclamations|filter(r => r.etat == 'Résolue')|length }}</h4>
+                                    </div>
+                                    <div class="stats-icon stats-icon-success">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reclamations table -->
+                <div class="table-responsive">
+                    <table class="table table-hover" id="reclamationsTable">
+                        <thead>
+                            <tr class="table-light">
+                                <th class="text-center" width="80">ID</th>
+                                <th>Date</th>
+                                <th>Raison</th>
+                                <th class="text-center">État</th>
+                                <th class="text-center">Réservation</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reclamation in reclamations %}
+                            <tr>
+                                <td class="text-center fw-bold">#{{ reclamation.id }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded p-2 me-3">
+                                            <i class="fas fa-calendar-day text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">{{ reclamation.date ? reclamation.date|date('d/m/Y') : '' }}</div>
+                                            <small class="text-muted">{{ reclamation.date ? reclamation.date|date('H:i') : '' }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-comment-dots text-muted"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-truncate" style="max-width: 250px;" 
+                                                 title="{{ reclamation.raison }}">
+                                                {{ reclamation.raison|length > 30 ? reclamation.raison|slice(0, 30) ~ '...' : reclamation.raison }}
+                                            </div>
+                                            {% if reclamation.reservation %}
+                                            <small class="text-muted">
+                                                <i class="fas fa-link me-1"></i> Réservation #{{ reclamation.reservation.id }}
+                                            </small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill py-2 px-3 
+                                        {% if reclamation.etat == 'Nouvelle' %}bg-warning text-dark
+                                        {% elseif reclamation.etat == 'En cours' %}bg-info
+                                        {% elseif reclamation.etat == 'Résolue' %}bg-success
+                                        {% else %}bg-danger
+                                        {% endif %}">
+                                        <i class="fas 
+                                            {% if reclamation.etat == 'Nouvelle' %}fa-exclamation
+                                            {% elseif reclamation.etat == 'En cours' %}fa-spinner
+                                            {% elseif reclamation.etat == 'Résolue' %}fa-check
+                                            {% else %}fa-times
+                                            {% endif %} me-1"></i>
+                                        {{ reclamation.etat }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {% if reclamation.reservation %}
+                                        <a href="#" class="badge bg-light text-dark">
+                                            <i class="fas fa-ticket-alt me-1"></i> #{{ reclamation.reservation.id }}
+                                        </a>
+                                    {% else %}
+                                        <span class="badge bg-light text-muted">Aucune</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" 
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            Actions
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('admin_reclamation_edit', {'id': reclamation.id}) }}">
+                                                    <i class="fas fa-edit me-2 text-primary"></i> Modifier
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#">
+                                                    <i class="fas fa-eye me-2 text-info"></i> Voir détails
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <form method="post" 
+                                                      action="{{ path('admin_reclamation_delete', {'id': reclamation.id}) }}"
+                                                      onsubmit="return confirm('Confirmer la suppression ?')">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reclamation.id) }}">
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="fas fa-trash-alt me-2"></i> Supprimer
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">Aucune réclamation trouvée</h5>
+                                        <p class="text-muted small">Créez votre première réclamation</p>
+                                        <a href="{{ path('admin_reclamation_new') }}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-plus me-1"></i> Ajouter une réclamation
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination and info -->
+                {% if reclamations|length > 0 %}
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="text-muted">
+                        Affichage de <b>{{ reclamations|length }}</b> réclamation(s) sur <b>{{ total_reclamations }}</b>
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('vendors/typeahead.js/typeahead.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/file-upload.js') }}"></script>
+    <script src="{{ asset('js/typeahead.js') }}"></script>
+    <script src="{{ asset('js/select2.js') }}"></script>
+    
+    <script>
+        // Auto-close alerts after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            });
+        }, 5000);
+
+        // Form validation
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+        
+        // Initialize select2
+        $(document).ready(function() {
+            $('.form-select').select2({
+                theme: 'bootstrap'
+            });
+        });
+
+        // Client-side search
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#reclamationsTable tbody tr');
+            
+            rows.forEach(row => {
+                const rowText = Array.from(row.cells)
+                    .map(cell => {
+                        const badge = cell.querySelector('.badge');
+                        return badge ? badge.textContent.trim() : cell.textContent.trim();
+                    })
+                    .join(' ')
+                    .toLowerCase();
+                
+                row.style.display = rowText.includes(searchTerm) ? '' : 'none';
+            });
+            
+            updateDisplayCount();
+        });
+
+        // Data export
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            const btn = this;
+            const spinner = btn.querySelector('.export-spinner');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#reclamationsTable tbody tr');
+            
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            
+            let dataToExport = [];
+            
+            const headers = [
+                'ID', 
+                'Date', 
+                'Raison', 
+                'État', 
+                'Réservation'
+            ];
+            dataToExport.push(headers.join(','));
+            
+            rows.forEach(row => {
+                if (row.style.display !== 'none') {
+                    const rowData = Array.from(row.cells)
+                        .slice(0, -1)
+                        .map(cell => {
+                            const badge = cell.querySelector('.badge');
+                            let text = badge ? badge.textContent.trim() : cell.textContent.trim();
+                            
+                            if (text.includes('"') || text.includes(',')) {
+                                text = `"${text.replace(/"/g, '""')}"`;
+                            }
+                            
+                            return text;
+                        });
+                    
+                    dataToExport.push(rowData.join(','));
+                }
+            });
+            
+            const csvContent = dataToExport.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `reclamations_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => {
+                spinner.style.display = 'none';
+                btn.disabled = false;
+            }, 500);
+        });
+
+        // Update displayed count
+        function updateDisplayCount() {
+            const visibleRows = document.querySelectorAll('#reclamationsTable tbody tr:not([style*="display: none"])').length;
+            const totalRows = document.querySelectorAll('#reclamationsTable tbody tr').length;
+            const countElement = document.querySelector('.text-muted');
+            
+            if (countElement) {
+                countElement.innerHTML = `Affichage de <b>${visibleRows}</b> réclamation(s) sur <b>${totalRows}</b>`;
+            }
+        }
+    </script>
+{% endblock %}

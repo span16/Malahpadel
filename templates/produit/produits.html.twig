@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Produits - MALAH PADEL{% endblock %}
+
+{% block body %}
+<!-- Hero Start -->
+<div class="container-fluid hero-header bg-light py-5 mb-5">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-3 animated slideInDown">Nos Produits</h1>
+                <p class="animated slideInDown">Découvrez notre sélection exclusive d'équipements de padel</p>
+            </div>
+            <div class="col-lg-6 animated fadeIn">
+                <img class="img-fluid animated pulse infinite" src="{{ asset('img/logo.png') }}" alt="Padel">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+<!-- Products Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <h2 class="display-6 mb-5">Nos Derniers Produits</h2>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            {% for produit in produits %}
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="product-item bg-light rounded overflow-hidden">
+                    <div class="position-relative overflow-hidden">
+                        <img class="img-fluid w-100" src="{{ asset('uploads/produits/' ~ produit.imageProduit) }}" alt="{{ produit.nomProduit }}">
+                        <div class="product-overlay">
+                            <a class="btn btn-square btn-primary rounded-circle mx-1" href="{{ path('app_produit_show', {'id_produit': produit.idProduit}) }}">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a class="btn btn-square btn-primary rounded-circle mx-1" href="{{ path('app_produit_edit', {'id_produit': produit.idProduit}) }}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4">
+                        <h5 class="mb-2">{{ produit.nomProduit }}</h5>
+                        <span class="text-primary mb-0">{{ produit.prix|number_format(2, ',', ' ') }} €</span>
+                        <div class="mt-2">
+                            <span class="badge bg-{{ produit.stock > 10 ? 'success' : (produit.stock > 0 ? 'warning text-dark' : 'danger') }}">
+                                Stock: {{ produit.stock }}
+                            </span>
+                            <span class="badge bg-info ms-1">{{ produit.categorie }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">Aucun produit disponible pour le moment</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Products End -->
+{% endblock %}

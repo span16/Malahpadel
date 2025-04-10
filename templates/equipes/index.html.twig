@@ -1,0 +1,40 @@
+{% extends 'Back.html.twig' %}
+
+{% block title %}Liste des équipes{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Liste des équipes</h2>
+                    <div class="row">
+                        {% for equipe in equipes %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 d-flex flex-column">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ equipe.nomEquipe }}</h5>
+                                        <p class="card-text">
+                                            <strong>Joueur 1 :</strong> {{ equipe.joueur1.prenom }} {{ equipe.joueur1.nom }}<br>
+                                            <strong>Joueur 2 :</strong> {{ equipe.joueur2.prenom }} {{ equipe.joueur2.nom }}
+                                        </p>
+                                        <div class="mt-auto">
+                                            <span class="badge bg-secondary">ID: {{ equipe.equipeId }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-12">
+                                <p class="text-center">Aucune équipe trouvée.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a href="{{ path('equipe_ajouter') }}" class="btn btn-primary mt-3">Ajouter une équipe</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

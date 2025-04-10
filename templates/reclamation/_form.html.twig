@@ -1,0 +1,25 @@
+{{ form_start(form) }}
+    <div class="mb-3">
+        {{ form_label(form.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.raison, 'Raison', {'label_attr': {'class': 'form-label'}}) }}
+        {% if is_cancellation %}
+            {{ form_widget(form.raison, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Veuillez expliquer pourquoi vous annulez cette réservation...'
+                }
+            }) }}
+        {% else %}
+            {{ form_widget(form.raison, {'attr': {'class': 'form-control'}}) }}
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.etat, 'État', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.etat, {'attr': {'class': 'form-control'}}) }}
+    </div>
+{{ form_end(form) }}

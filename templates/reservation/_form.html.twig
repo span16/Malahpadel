@@ -1,0 +1,79 @@
+{# _form.html.twig #}
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+<div class="row g-3">
+    {# Nom de l'événement #}
+    <div class="col-12">
+        <div class="form-floating">
+            {{ form_widget(form.nom, {
+                'attr': {
+                    'class': 'form-select' ~ (form.nom.vars.valid ? '' : ' is-invalid'),
+                    'placeholder': ' ',
+                    'required': true
+                }
+            }) }}
+            {{ form_label(form.nom, 'Nom de l\'événement *') }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.nom)|striptags }}
+            </div>
+        </div>
+    </div>
+
+    {# Type de réservation #}
+    <div class="col-md-6">
+        <div class="form-floating">
+            {{ form_widget(form.typeReservation, {
+                'attr': {
+                    'class': 'form-control' ~ (form.typeReservation.vars.valid ? '' : ' is-invalid'),
+                    'placeholder': ' ',
+                    'required': true
+                }
+            }) }}
+            {{ form_label(form.typeReservation, 'Type de réservation *') }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.typeReservation)|striptags }}
+            </div>
+        </div>
+    </div>
+
+    {# Nombre de places #}
+    <div class="col-md-6">
+        <div class="form-floating">
+            {{ form_widget(form.nombrePlaces, {
+                'attr': {
+                    'class': 'form-control' ~ (form.nombrePlaces.vars.valid ? '' : ' is-invalid'),
+                    'placeholder': ' ',
+                    'min': 1,
+                    'required': true
+                }
+            }) }}
+            {{ form_label(form.nombrePlaces, 'Nombre de places *') }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.nombrePlaces)|striptags }}
+            </div>
+        </div>
+    </div>
+
+    {# Remarques #}
+    <div class="col-12">
+        <div class="form-floating">
+            {{ form_widget(form.remarque, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': ' ',
+                    'style': 'height: 100px'
+                }
+            }) }}
+            {{ form_label(form.remarque, 'Remarques') }}
+        </div>
+    </div>
+
+    {# Bouton de soumission #}
+    <div class="col-12">
+        <button class="btn btn-primary w-100 py-3" type="submit">
+            <i class="fas fa-calendar-check me-2"></i> Confirmer la réservation
+        </button>
+    </div>
+</div>
+
+{{ form_end(form) }}

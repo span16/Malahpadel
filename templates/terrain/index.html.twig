@@ -1,0 +1,42 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Liste des terrains{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Liste des terrains</h2>
+
+    <a href="{{ path('app_terrain_new') }}" class="btn btn-success mb-3">Ajouter un terrain</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Prix par personne</th>
+                <th>Heure d'ouverture</th>
+                <th>Heure de fermeture</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for terrain in terrains %}
+                <tr>
+                    <td>{{ terrain.nom }}</td>
+                    <td>{{ terrain.adresse }}</td>
+                    <td>{{ terrain.prixParPersonne }}</td>
+                    <td>{{ terrain.heureOuverture }}</td>
+                    <td>{{ terrain.heureFermeture }}</td>
+                    <td>
+                        <a href="{{ path('app_terrain_edit', {'id': terrain.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        <form method="post" action="{{ path('app_terrain_delete', {'id': terrain.id}) }}" style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ terrain.id) }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

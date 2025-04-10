@@ -20,5 +20,18 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['email' => $email]);
     }
+     /**
+     * Retourne les utilisateurs qui ne sont dans aucune équipe.
+     */
+    public function findUsersNotInEquipes(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.equipesJoueur1', 'eq1')
+            ->leftJoin('u.equipesJoueur2', 'eq2')
+            ->where('eq1 IS NULL')
+            ->andWhere('eq2 IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }
 

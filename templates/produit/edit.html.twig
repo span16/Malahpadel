@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Produit{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        #imagePreview {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            }
+            
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Modifier le produit</h1>
+
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+        {{ form_row(form.nom_produit) }}
+        {{ form_row(form.categorie) }}
+        {{ form_row(form.prix) }}
+        {{ form_row(form.stock) }}
+        {{ form_row(form.description) }}
+        
+        <div class="form-group">
+            {{ form_label(form.image_produit) }}
+            {{ form_widget(form.image_produit, {'attr': {'onchange': 'previewImage(this)'}}) }}
+            <img id="imagePreview" 
+                 src="{{ asset('uploads/produits/' ~ produit.imageProduit) }}" 
+                 class="img-thumbnail"
+                 alt="Image actuelle">
+            <small class="form-text text-muted">Laisser vide pour conserver l'image actuelle</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_produit_index') }}" class="btn btn-secondary mt-3">
+        Retour à la liste
+    </a>
+</div>
+{% endblock %}

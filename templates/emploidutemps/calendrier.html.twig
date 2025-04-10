@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier des matchs{% endblock %}
+
+
+
+
+{% block body %}
+    <h2 class="text-center">Calendrier des matchs</h2>
+    <div id="calendar"></div>
+{% endblock %}
+
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+
+            const calendar = new window.FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
+                },
+                events: '{{ path("emploi_du_temps_api") }}'
+            });
+
+            calendar.render();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mallah Padel - Réservation{% endblock %}
+
+  {% block body %}
+    <!-- Header Start -->
+    <div class="container-fluid bg-breadcrumb">
+        <div class="container text-center py-5" style="max-width: 900px;">
+            <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Votre Réservation</h4>
+            <ol class="breadcrumb d-flex justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item active text-primary">Réservation</li>
+            </ol>    
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Reservation Form Start -->
+    <div class="container-fluid reservation-form py-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="section-title text-start">
+                        <h4 class="text-primary">Réservez votre court</h4>
+                        <h1 class="display-5 mb-4">Faites votre réservation</h1>
+                        <p class="mb-4">Sélectionnez un événement et complétez les détails de votre réservation. Les champs marqués d'un * sont obligatoires.</p>
+                        <div class="d-flex align-items-center pt-2">
+                            <div class="bg-primary p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-phone-alt text-white fs-4"></i>
+                            </div>
+                            <div class="ps-4">
+                                <h5 class="mb-2">Besoin d'aide ?</h5>
+                                <h4 class="text-primary mb-0">(+216) 50 654 852</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="bg-primary rounded p-5">
+                        <h2 class="text-white mb-4">Nouvelle réservation</h2>
+                        
+                        <!-- Flash Messages -->
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success alert-dismissible fade show mb-4">
+                                <i class="fas fa-check-circle me-2"></i> {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                        
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger alert-dismissible fade show mb-4">
+                                <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal needs-validation', 'novalidate': 'novalidate'}}) }}
+                            <div class="row g-3">
+                                <!-- Nom de l'événement -->
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        {{ form_label(form.nom, "Nom de l'événement *", {'label_attr': {'class': 'text-white mb-2 fw-bold'}}) }}
+                                        {{ form_widget(form.nom, {
+                                            'attr': {
+                                                'class': 'form-select bg-white border-0' ~ (form.nom.vars.errors|length ? ' is-invalid' : ''),
+                                                'placeholder': 'Choisissez un événement'
+                                            }
+                                        }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.nom)|striptags }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Type de réservation -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_label(form.typeReservation, "Type de réservation *", {'label_attr': {'class': 'text-white mb-2 fw-bold'}}) }}
+                                        {{ form_widget(form.typeReservation, {
+                                            'attr': {
+                                                'class': 'form-select bg-white border-0' ~ (form.typeReservation.vars.errors|length ? ' is-invalid' : ''),
+                                                'placeholder': 'Choisissez un type'
+                                            }
+                                        }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.typeReservation)|striptags }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Nombre de places -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_label(form.nombrePlaces, "Nombre de places *", {'label_attr': {'class': 'text-white mb-2 fw-bold'}}) }}
+                                        {{ form_widget(form.nombrePlaces, {
+                                            'attr': {
+                                                'class': 'form-control bg-white border-0' ~ (form.nombrePlaces.vars.errors|length ? ' is-invalid' : ''),
+                                                'placeholder': 'Nombre de places',
+                                                'min': 1
+                                            }
+                                        }) }}
+                                        <div class="invalid-feedback">
+                                            {{ form_errors(form.nombrePlaces)|striptags }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Remarques (optionnel) -->
+                                <div class="col-12">
+                                    <div class="form-group">
+                                         {{ form_label(form.remarque, "Remarques (optionnel) *", {'label_attr': {'class': 'text-white mb-2 fw-bold'}}) }}
+                                         {{ form_widget(form.remarque, {
+                                              'attr': {
+                                               'class': 'form-control bg-white border-0' ~ (form.remarque.vars.errors|length ? ' is-invalid' : ''),
+                                                'placeholder': 'Informations supplémentaires...',
+                                                'style': 'height: 100px',
+                                                'data-minlength': '5',
+                                                'data-maxlength': '500'
+                                            }
+                                        }) }}
+                                    <div class="invalid-feedback">
+                                         {{ form_errors(form.remarque)|striptags }}
+                                        </div>
+                                     </div>
+                            </div>
+
+                                <!-- Conditions générales -->
+                                <div class="col-12">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="conditions" required>
+                                        <label class="form-check-label text-white" for="conditions">
+                                            J'accepte les <a href="#" class="text-white fw-bold">conditions générales</a> *
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Vous devez accepter les conditions générales
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bouton de confirmation -->
+                                <div class="col-12">
+                                    <button class="btn btn-dark w-100 py-3" type="submit">
+                                        <i class="fas fa-calendar-check me-2"></i> Confirmer la réservation
+                                    </button>
+                                </div>
+                                
+                                <!-- ... dans le bloc de formulaire, après le bouton de confirmation ... -->
+                                <div class="col-12 mt-3">
+                                    <a href="{{ path('app_reclamation_new') }}" class="btn btn-danger w-100 py-3">
+                                    <i class="fas fa-times-circle me-2"></i> Annuler la réservation
+                                    </a>
+                                </div>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Reservation Form End -->
+
+    <!-- Réservations existantes -->
+    <div class="container-fluid">
+    
+       
+       
+        <!-- Copyright End -->
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                new bootstrap.Alert(alert).close();
+            });
+        }, 5000);
+
+        // Gestion de la validation du formulaire
+        (() => {
+            'use strict';
+            
+            const forms = document.querySelectorAll('.needs-validation');
+            
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

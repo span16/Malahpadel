@@ -69,6 +69,8 @@
 
     <!-- Template Stylesheet -->
     <link rel="stylesheet" href="/assets/css/style.css">
+     <!-- ✅ FullCalendar CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css">
     {% endblock %}
 
     </head>
@@ -143,29 +145,15 @@
                     <div class="navbar-nav ms-auto py-0">
                         <a href="home.html.twig" class="nav-item nav-link active">Home</a>
                         <a href="about.html" class="nav-item nav-link">About</a>
-                        <a href="service.html" class="nav-item nav-link">Evenements</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link" data-bs-toggle="dropdown">
-                                <span class="dropdown-toggle">Evenements</span>
-                            </a>
-                            <div class="dropdown-menu m-0">
-                                <a href="feature.html" class="dropdown-item">liste  des  evenements</a>
-
-                                <a href="team.html" class="dropdown-item">calandar</a>
-                               
-                            </div>
-                        </div>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link" data-bs-toggle="dropdown">
-                                <span class="dropdown-toggle">Shop</span>
-                            </a>
-                            <div class="dropdown-menu m-0">
-                                <a href="feature.html" class="dropdown-item">liste des produit</a>
-                                <a href="team.html" class="dropdown-item">wishlist produit</a>
-                               
-                            </div>
-                        </div>
-                        <a href="blog.html" class="nav-item nav-link">Panier</a>
+                         <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Evenements</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{{ path('evenement_list') }}" class="dropdown-item">Liste des événements</a>
+                      
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ path('emploi_du_temps_calendrier') }}" class="dropdown-item">calendar</a>
+                    </div>
+                </div>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link" data-bs-toggle="dropdown">
                                 <span class="dropdown-toggle">Pages</span>
@@ -180,6 +168,26 @@
                             </div>
                         </div>
                         <a href="blog.html" class="nav-item nav-link">Matchup</a>
+                                        <a href="{{ path('app_reservation') }}" class="nav-item nav-link">Réservations</a>
+                                        <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        Produit
+                    </a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{{ path('app_produit_index') }}" class="dropdown-item">Liste des produits</a>     
+                    </div>
+                </div>
+                  <a href="{{ path('app_reclamation_index') }}" class="nav-item nav-link">Réclamations</a>
+               <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_panier_index') }}">
+            <i class="fas fa-shopping-cart"></i>
+            Panier
+            {% if app.session.get('panier')|default([])|length > 0 %}
+                <span class="badge bg-primary rounded-pill">
+                    {{ app.session.get('panier')|reduce((carry, qty) => carry + qty) }}
+                </span>
+            {% endif %}
+        </a>
                         <a href="contact.html" class="nav-item nav-link">Contact Us</a>
                     </div>
                     <a href="#" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Get Started</a>
@@ -304,6 +312,32 @@
 
     <!-- Template Javascript -->
     <script src="/assets/js/main.js"></script>
+
+    
+    <!-- Scripts FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/fr.global.min.js"></script>
+
+    <script>
+        window.addEventListener('load', function () {
+            var calendarEl = document.getElementById('calendar');
+            if (calendarEl) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'fr',
+                    events: [
+                        {
+                            title: 'Match test',
+                            start: '2025-04-15'
+                        }
+                    ]
+                });
+                calendar.render();
+            } else {
+                console.error("DIV #calendar non trouvé !");
+            }
+        });
+    </script>
 {% endblock js %}
 
 

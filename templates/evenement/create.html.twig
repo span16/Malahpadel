@@ -1,0 +1,24 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Création d'un événement{% endblock %}
+
+{% block body %}
+    <h2 class="mb-4">Créer un événement</h2>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+        {{ form_row(form.nom) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.date) }}
+        {{ form_row(form.terrain) }}
+        {{ form_row(form.image_url) }}
+
+        <button type="submit" class="btn btn-success">Valider</button>
+        <a href="{{ path('evenement_list') }}" class="btn btn-secondary">Annuler</a>
+    {{ form_end(form) }}
+{% endblock %}

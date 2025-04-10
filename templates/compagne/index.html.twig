@@ -1,0 +1,256 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des campagnes | MALAH PADEL{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .campaign-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 100%;
+        }
+        .campaign-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .campaign-logo {
+            height: 120px;
+            object-fit: contain;
+            background: #f8f9fa;
+            padding: 10px;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .filter-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .loading-spinner {
+            display: none;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .search-container {
+            position: relative;
+        }
+        .sort-active {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        .sort-indicator {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-left: 10px;
+        }
+        .dropdown-toggle::after {
+            margin-left: 0.5em;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="display-5">Liste des campagnes</h1>
+        <div>
+           <div class="btn-group">
+    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-sort me-1"></i>
+        {% if current_filters.sort is defined and current_filters.sort == 'tarif_asc' %}
+            Tarif croissant
+        {% else %}
+            Tarif décroissant
+        {% endif %}
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item sort-option {{ current_filters.sort is defined and current_filters.sort == 'tarif_desc' ? 'sort-active' }}" 
+              href="#" data-sort="tarif_desc">Tarif décroissant</a></li>
+        <li><a class="dropdown-item sort-option {{ current_filters.sort is defined and current_filters.sort == 'tarif_asc' ? 'sort-active' }}" 
+              href="#" data-sort="tarif_asc">Tarif croissant</a></li>
+    </ul>
+</div>
+            <a href="{{ path('app_compagne_new') }}" class="btn btn-primary ms-3">
+                <i class="fas fa-plus me-2"></i>Nouvelle campagne
+            </a>
+        </div>
+    </div>
+
+    <div class="filter-section mb-4">
+        <form id="filter-form">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Statut</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">Tous les statuts</option>
+                        <option value="active" {{ current_filters.status is defined and current_filters.status == 'active' ? 'selected' }}>Active</option>
+                        <option value="inactive" {{ current_filters.status is defined and current_filters.status == 'inactive' ? 'selected' }}>Inactive</option>
+                        <option value="pending" {{ current_filters.status is defined and current_filters.status == 'pending' ? 'selected' }}>En attente</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="type" class="form-label">Type</label>
+                    <select class="form-select" id="type" name="type">
+                        <option value="">Tous les types</option>
+                        <option value="réseaux sociaux" {{ current_filters.type is defined and current_filters.type == 'réseaux sociaux' ? 'selected' }}>Réseaux sociaux</option>
+                        <option value="email" {{ current_filters.type is defined and current_filters.type == 'email' ? 'selected' }}>Email</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="search" class="form-label">Recherche</label>
+                    <div class="search-container">
+                        <input type="text" class="form-control" id="search" name="search" 
+                               placeholder="Nom du sponsor..." value="{{ current_filters.search is defined ? current_filters.search : '' }}">
+                        <div class="loading-spinner spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="button" id="reset-filters" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-undo me-1"></i>Réinitialiser
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter me-1"></i>Filtrer
+                    </button>
+                </div>
+            </div>
+            <input type="hidden" name="sort" id="sort-input" value="{{ current_filters.sort is defined ? current_filters.sort : 'date_desc' }}">
+        </form>
+    </div>
+
+    <div id="campaign-list" class="row g-4">
+        {% include 'compagne/_campaign_list.html.twig' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusSelect = document.getElementById('status');
+            const typeSelect = document.getElementById('type');
+            const searchInput = document.getElementById('search');
+            const resetButton = document.getElementById('reset-filters');
+            const filterForm = document.getElementById('filter-form');
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            const campaignList = document.getElementById('campaign-list');
+            const sortOptions = document.querySelectorAll('.sort-option');
+            const sortInput = document.getElementById('sort-input');
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            
+            let currentRequest = null;
+            let typingTimer;
+            const doneTypingInterval = 500;
+
+            // Fonction pour appliquer les filtres
+            function applyFilters() {
+                if (currentRequest) {
+                    currentRequest.abort();
+                }
+                
+                loadingSpinner.style.display = 'block';
+                
+                const formData = new FormData(filterForm);
+                const params = new URLSearchParams();
+                
+                for (const [key, value] of formData.entries()) {
+                    if (value) params.append(key, value);
+                }
+                
+                console.log('Paramètres envoyés:', params.toString());
+                
+                currentRequest = new XMLHttpRequest();
+                currentRequest.open('GET', `${'{{ path('app_compagne_index') }}'}?${params.toString()}`, true);
+                currentRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                
+                currentRequest.onload = function() {
+                    if (this.status >= 200 && this.status < 400) {
+                        campaignList.innerHTML = this.responseText;
+                        // Mise à jour de l'URL sans rechargement
+                        window.history.pushState({}, '', `${'{{ path('app_compagne_index') }}'}?${params.toString()}`);
+                    } else {
+                        console.error('Erreur lors du chargement des campagnes');
+                    }
+                    loadingSpinner.style.display = 'none';
+                    currentRequest = null;
+                };
+                
+                currentRequest.onerror = function() {
+                    loadingSpinner.style.display = 'none';
+                    currentRequest = null;
+                    console.error('Erreur réseau');
+                };
+                
+                currentRequest.send();
+            }
+
+            // Écouteurs d'événements pour les filtres
+            statusSelect.addEventListener('change', applyFilters);
+            typeSelect.addEventListener('change', applyFilters);
+            
+            // Recherche avec debounce
+            searchInput.addEventListener('input', function() {
+                clearTimeout(typingTimer);
+                loadingSpinner.style.display = 'block';
+                typingTimer = setTimeout(() => {
+                    applyFilters();
+                    loadingSpinner.style.display = 'none';
+                }, doneTypingInterval);
+            });
+            
+            // Réinitialisation des filtres
+            resetButton.addEventListener('click', function() {
+                statusSelect.value = '';
+                typeSelect.value = '';
+                searchInput.value = '';
+                sortInput.value = 'date_desc';
+                
+                // Réinitialisation visuelle du tri
+                sortOptions.forEach(opt => {
+                    opt.classList.toggle('sort-active', opt.dataset.sort === 'date_desc');
+                });
+                
+                dropdownToggle.innerHTML = '<i class="fas fa-sort me-1"></i>Plus récentes';
+                
+                applyFilters();
+            });
+            
+            // Annulation de la recherche avec Escape
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Escape') {
+                    searchInput.value = '';
+                    applyFilters();
+                }
+            });
+            
+            // Empêcher le rechargement du formulaire
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                applyFilters();
+            });
+        });
+    </script>
+{% endblock %}

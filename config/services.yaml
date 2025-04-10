@@ -8,6 +8,9 @@ parameters:
   
 
     avatars_directory: '%kernel.project_dir%/public/uploads/avatars'
+#chaima//rana
+    logos_directory: '%kernel.project_dir%/public/uploads/logos'
+    produits_directory: '%kernel.project_dir%/public/uploads/produits'
 
 services:
    
@@ -37,6 +40,17 @@ services:
 
 
       # Service pour la gestion des utilisateurs via OAuth
+
+     # Dépendance explicite pour le formulaire EquipeType
+    App\Form\EquipeType:
+        arguments:
+            $userRepository: '@App\Repository\UserRepository'
+
+    # Enregistrement explicite du contrôleur EmploiDuTempsController
+    App\Controller\EmploiDuTempsController:
+        autowire: true
+        autoconfigure: true
+        public: true
    
    
    

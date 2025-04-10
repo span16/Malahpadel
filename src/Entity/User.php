@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Repository\UserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Equipes;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
@@ -70,9 +71,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: Profil::class, cascade: ['persist', 'remove'])]
     private ?Profil $profil = null;
 
+    #[ORM\OneToMany(mappedBy: 'joueur1', targetEntity: Equipes::class)]
+    private Collection $equipesJoueur1;
+
+    #[ORM\OneToMany(mappedBy: 'joueur2', targetEntity: Equipes::class)]
+    private Collection $equipesJoueur2;
 
     public function __construct()
     {
+        $this->equipesJoueur1 = new ArrayCollection();
+        $this->equipesJoueur2 = new ArrayCollection();
         $this->loginhistorys = new ArrayCollection();
     }
 
@@ -250,4 +258,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isVerified = $isVerified;
         return $this;
     }
+
+    public function getEquipesJoueur1(): Collection { return $this->equipesJoueur1; }
+    public function getEquipesJoueur2(): Collection { return $this->equipesJoueur2; }
+
+
+
 }

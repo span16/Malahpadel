@@ -7,7 +7,7 @@ framework:
         csrf_protection:
             enabled: true
     session:
-        handler_id: null  # This is important for file-based sessions
+        handler_id: null # This is important for file-based sessions
         save_path: '%kernel.cache_dir%/sessions'
 
 when@test:

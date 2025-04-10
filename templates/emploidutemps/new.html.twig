@@ -1,0 +1,46 @@
+{% extends 'Back.html.twig' %}
+
+{% block title %}Créer un emploi du temps{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Créer un emploi du temps</h2>
+
+    {# ✅ Messages flash (succès / erreur) #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label == 'success' ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.date, "Date du match") }}
+            {{ form_widget(form.date, {'attr': {'class': 'form-control', 'min': "now"|date("Y-m-d")}}) }}
+            {{ form_errors(form.date) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.partie, "N° de partie") }}
+            {{ form_widget(form.partie, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.partie) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.evenement, "Tournoi / Événement") }}
+            {{ form_widget(form.evenement, {'attr': {'class': 'form-select'}}) }}
+            {{ form_errors(form.evenement) }}
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-calendar-plus"></i> Créer l'emploi du temps
+            </button>
+            <a href="{{ path('emploi_du_temps_calendrier') }}" class="btn btn-secondary">Retour</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

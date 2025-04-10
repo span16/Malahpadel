@@ -1,0 +1,147 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Gestion des Produits - Admin{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">Gestion des produits</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Tableau de bord</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Produits</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <!-- Formulaire d'ajout ou d'édition -->
+        {% if form is not null %}
+        <div class="col-md-4 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ form_title|default('Ajouter un produit') }}</h4>
+                    
+                    {{ form_start(form, {'attr': {'class': 'forms-sample', 'novalidate': 'novalidate'}}) }}
+                    <div class="form-group">
+                        {{ form_label(form.nom_produit) }}
+                        {{ form_widget(form.nom_produit, {'attr': {'class': 'form-control', 'placeholder': 'Nom du produit'}}) }}
+                        <small class="text-danger">{{ form_errors(form.nom_produit) }}</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.categorie) }}
+                        {{ form_widget(form.categorie, {'attr': {'class': 'form-control'}}) }}
+                        <small class="text-danger">{{ form_errors(form.categorie) }}</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.prix) }}
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Prix'}}) }}
+                        </div>
+                        <small class="text-danger">{{ form_errors(form.prix) }}</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.stock) }}
+                        {{ form_widget(form.stock, {'attr': {'class': 'form-control', 'placeholder': 'Stock'}}) }}
+                        <small class="text-danger">{{ form_errors(form.stock) }}</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Description'}}) }}
+                        <small class="text-danger">{{ form_errors(form.description) }}</small>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.image_produit) }}
+                        {{ form_widget(form.image_produit, {'attr': {'class': 'form-control file-upload-info'}}) }}
+                        <small class="text-muted">Formats: JPG, PNG (max 2MB)</small>
+                        <small class="text-danger">{{ form_errors(form.image_produit) }}</small>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('admin_produit_index') }}" class="btn btn-light">
+                            <i class="mdi mdi-arrow-left"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary mr-2">
+                            <i class="mdi mdi-content-save"></i> {{ button_label|default('Enregistrer') }}
+                        </button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Liste des produits (affichage horizontal) -->
+        {% if produits is not null %}
+        <div class="col-md-{{ form is null ? '12' : '8' }} grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="card-title">Liste des produits</h4>
+                        <span class="badge bg-primary text-white">Nombre de produits : {{ total_produits }}</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-3">
+                        {% for produit in produits %}
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body d-flex flex-column">
+                                {% if produit.imageProduit %}
+                                    <img src="{{ asset('uploads/produits/' ~ produit.imageProduit) }}" 
+                                         class="card-img-top" 
+                                         style="height: 150px; object-fit: cover;" 
+                                         alt="{{ produit.nomProduit }}">
+                                {% else %}
+                                    <div class="d-flex align-items-center justify-content-center" 
+                                         style="height: 150px; background-color: #f5f5f5;">
+                                        <i class="mdi mdi-image-off text-muted" style="font-size: 2rem;"></i>
+                                    </div>
+                                {% endif %}
+                                <h5 class="card-title mt-2">{{ produit.nomProduit }}</h5>
+                                <p class="card-text">
+                                    <strong>Catégorie:</strong> {{ produit.categorie }}<br>
+                                    <strong>Prix:</strong> {{ produit.prix|number_format(2, ',', ' ') }} €<br>
+                                    <strong>Stock:</strong> 
+                                    <span class="badge badge-{{ produit.stock > 10 ? 'success' : (produit.stock > 0 ? 'warning' : 'danger') }}">
+                                        {{ produit.stock }}
+                                    </span>
+                                </p>
+                                <div class="mt-auto d-flex justify-content-between">
+                                    <a href="{{ path('admin_produit_edit', {'id_produit': produit.idProduit}) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="mdi mdi-pencil"></i> Modifier
+                                    </a>
+                                    <form method="post" 
+                                          action="{{ path('app_produit_delete2', {'id_produit': produit.idProduit}) }}" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.idProduit) }}">
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="mdi mdi-delete"></i> Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center w-100 py-4 text-muted">
+                            Aucun produit trouvé
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

@@ -2,84 +2,97 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use App\Repository\ReservationRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
-#[ORM\Table(name: 'reservation')]
+#[ORM\HasLifecycleCallbacks]
 class Reservation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id_R = null;
+    #[ORM\Column(name: "id_R", type: "integer")]
+    private ?int $id = null;
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $nombre_places = null;
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $type_reservation = null;
-
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $code_confirmation = null;
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $remarque = null;
-
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Vous devez sélectionner un événement")]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(targetEntity: Paiement::class, mappedBy: 'reservation', cascade: ['persist', 'remove'])]
-    private Collection $paiements;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le type de réservation est obligatoire")]
+    #[Assert\Choice(
+        choices: ['simple', 'duo', 'groupe', 'vip', 'tournoi', 'location', 'coach'],
+        message: "Type de réservation invalide"
+    )]
+    private ?string $typeReservation = null;
 
-    public function __construct()
+    #[ORM\Column]
+    #[Assert\NotBlank(message: "Le nombre de places est obligatoire")]
+    #[Assert\Range(
+        min: 1,
+        max: 100,
+        notInRangeMessage: "Le nombre de places doit être entre {{ min }} et {{ max }}"
+    )]
+    private ?int $nombrePlaces = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\Length(
+        min: 5,
+        minMessage: "La remarque doit contenir au moins {{ limit }} caractères",
+        max: 500,
+        maxMessage: "La remarque ne peut pas dépasser {{ limit }} caractères"
+    )]
+    private ?string $remarque = null;
+
+    #[ORM\Column(unique: true)]
+    private ?int $codeConfirmation = null;
+
+    #[ORM\PrePersist]
+    public function generateConfirmationCode(): void
     {
-        $this->paiements = new ArrayCollection();
+        error_log('PrePersist callback executed - Generating confirmation code');
+        if ($this->codeConfirmation === null) {
+            $this->codeConfirmation = random_int(100000, 999999);
+            error_log('Generated code: '.$this->codeConfirmation);
+        }
     }
 
-    public function getId_R(): ?int
+    public function getId(): ?int
     {
-        return $this->id_R;
+        return $this->id;
     }
 
-    public function setId_R(int $id_R): self
+    public function getNom(): ?string
     {
-        $this->id_R = $id_R;
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
         return $this;
     }
 
-    public function getNombre_places(): ?int
+    public function getTypeReservation(): ?string
     {
-        return $this->nombre_places;
+        return $this->typeReservation;
     }
 
-    public function setNombre_places(int $nombre_places): self
+    public function setTypeReservation(string $typeReservation): self
     {
-        $this->nombre_places = $nombre_places;
+        $this->typeReservation = $typeReservation;
         return $this;
     }
 
-    public function getType_reservation(): ?string
+    public function getNombrePlaces(): ?int
     {
-        return $this->type_reservation;
+        return $this->nombrePlaces;
     }
 
-    public function setType_reservation(string $type_reservation): self
+    public function setNombrePlaces(int $nombrePlaces): self
     {
-        $this->type_reservation = $type_reservation;
-        return $this;
-    }
-
-    public function getCode_confirmation(): ?int
-    {
-        return $this->code_confirmation;
-    }
-
-    public function setCode_confirmation(int $code_confirmation): self
-    {
-        $this->code_confirmation = $code_confirmation;
+        $this->nombrePlaces = $nombrePlaces;
         return $this;
     }
 
@@ -88,48 +101,30 @@ class Reservation
         return $this->remarque;
     }
 
-    public function setRemarque(string $remarque): self
+    public function setRemarque(?string $remarque): self
     {
         $this->remarque = $remarque;
         return $this;
     }
 
-    public function getNom(): ?string
+    public function getCodeConfirmation(): ?int
     {
-        return $this->nom;
+        return $this->codeConfirmation;
     }
 
-    public function setNom(?string $nom): self
+    public function setCodeConfirmation(int $codeConfirmation): self
     {
-        $this->nom = $nom;
+        $this->codeConfirmation = $codeConfirmation;
         return $this;
     }
 
-    /**
-     * @return Collection<int, Paiement>
-     */
-    public function getPaiements(): Collection
+    public function __toString(): string
     {
-        return $this->paiements;
-    }
-
-    public function addPaiement(Paiement $paiement): self
-    {
-        if (!$this->paiements->contains($paiement)) {
-            $this->paiements[] = $paiement;
-            $paiement->setReservation($this); // Lier la réservation au paiement
-        }
-        return $this;
-    }
-
-    public function removePaiement(Paiement $paiement): self
-    {
-        if ($this->paiements->removeElement($paiement)) {
-            // On dissocie la réservation du paiement
-            if ($paiement->getReservation() === $this) {
-                $paiement->setReservation(null);
-            }
-        }
-        return $this;
+        return sprintf(
+            'Réservation #%s - %s (%s)',
+            $this->id ?? 'Nouvelle',
+            $this->nom ?? 'Aucun événement',
+            $this->typeReservation ?? 'Aucun type'
+        );
     }
 }

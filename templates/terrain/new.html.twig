@@ -1,0 +1,47 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}Créer un terrain{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Créer un terrain</h2>
+
+    {{ form_start(form) }}
+
+    <div class="mb-3">
+        {{ form_label(form.nom) }}
+        {{ form_widget(form.nom, { 'attr': {'class': 'form-control'} }) }}
+        {{ form_errors(form.nom) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.adresse) }}
+        {{ form_widget(form.adresse, { 'attr': {'class': 'form-control'} }) }}
+        {{ form_errors(form.adresse) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.prix_par_personne) }}
+        {{ form_widget(form.prix_par_personne, { 'attr': {'class': 'form-control'} }) }}
+        {{ form_errors(form.prix_par_personne) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.heure_ouverture) }}
+        {{ form_widget(form.heure_ouverture, { 'attr': {'class': 'form-control'} }) }}
+        {{ form_errors(form.heure_ouverture) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.heure_fermeture) }}
+        {{ form_widget(form.heure_fermeture, { 'attr': {'class': 'form-control'} }) }}
+        {{ form_errors(form.heure_fermeture) }}
+    </div>
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}

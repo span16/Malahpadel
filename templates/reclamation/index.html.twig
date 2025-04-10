@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réclamation | Malah Padel{% endblock %}
+ {% block body %}
+    <!-- Hero Section -->
+    <div class="container-fluid bg-breadcrumb">
+        <div class="container text-center py-5" style="max-width: 900px;">
+            <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Formulaire de Réclamation</h4>
+            <ol class="breadcrumb d-flex justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item active text-primary">Réclamation</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Confirmation Message -->
+    {% for message in app.flashes('reclamation_success') %}
+        <div class="container-fluid py-5 bg-light wow fadeInUp" data-wow-delay="0.1s">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 col-md-10">
+                        <div class="card border-0 shadow rounded-3 overflow-hidden">
+                            <div class="card-body p-0">
+                                <div class="p-5 text-center">
+                                    <div class="d-inline-flex align-items-center justify-content-center bg-{{ message.is_cancellation ? 'danger' : 'primary' }} rounded-circle mb-4" style="width: 100px; height: 100px;">
+                                        <i class="fas fa-check fa-3x text-white"></i>
+                                    </div>
+                                    <h3 class="fw-bold text-{{ message.is_cancellation ? 'danger' : 'primary' }} mb-3">{{ message.title }}</h3>
+                                    <p class="fs-5 mb-2">{{ message.message }}</p>
+                                    <p class="text-muted mb-4">{{ message.details }}</p>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <a href="{{ path('app_reclamation_new') }}" class="btn btn-{{ message.is_cancellation ? 'danger' : 'primary' }} px-4">
+                                            <i class="fas fa-plus me-2"></i> Nouvelle demande
+                                        </a>
+                                        <a href="{{ path('app_home') }}" class="btn btn-outline-dark px-4">
+                                            <i class="fas fa-home me-2"></i> Retour à l'accueil
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Formulaire de Réclamation (seulement si pas de message de confirmation) -->
+        <div class="container-fluid py-5">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="bg-primary rounded p-5 shadow">
+                            <h2 class="text-white mb-4">Nouvelle Réclamation</h2>
+                            
+                            {% if reservation is defined and reservation is not null %}
+                                <div class="alert alert-info mb-4">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Vous créez une réclamation concernant la réservation #{{ reservation.id }}
+                                </div>
+                            {% endif %}
+                            
+                            {% if form is defined %}
+                                {{ form_start(form, {
+                                    'attr': {
+                                        'class': 'needs-validation',
+                                        'novalidate': 'novalidate'
+                                    }
+                                }) }}
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="form-floating">
+                                                {{ form_widget(form.date, {
+                                                    'attr': {
+                                                        'class': 'form-control bg-white border-0',
+                                                        'placeholder': 'Date'
+                                                    }
+                                                }) }}
+                                                {{ form_label(form.date, 'Date', {
+                                                    'label_attr': {'class': 'text-white'}
+                                                }) }}
+                                                <div class="invalid-feedback">
+                                                    {{ form_errors(form.date) }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-floating">
+                                                {{ form_widget(form.raison, {
+                                                    'attr': {
+                                                        'class': 'form-control bg-white border-0',
+                                                        'placeholder': 'Raison',
+                                                        'style': 'height: 100px'
+                                                    }
+                                                }) }}
+                                                {{ form_label(form.raison, 'Raison de la réclamation', {
+                                                    'label_attr': {'class': 'text-white'}
+                                                }) }}
+                                                <div class="invalid-feedback">
+                                                    {{ form_errors(form.raison) }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{ form_widget(form.etat, {'attr': {'class': 'd-none'}}) }}
+
+                                        {% if form.reservation is defined %}
+                                            {{ form_widget(form.reservation, {'attr': {'class': 'd-none'}}) }}
+                                        {% endif %}
+
+                                        <div class="col-12">
+                                            <button class="btn btn-dark w-100 py-3" type="submit">
+                                                <i class="fas fa-paper-plane me-2"></i> Envoyer la réclamation
+                                            </button>
+                                        </div>
+                                    </div>
+                                {{ form_end(form) }}
+                            {% else %}
+                                <div class="alert alert-danger">
+                                    Le formulaire n'est pas disponible pour le moment.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

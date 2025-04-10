@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Campagne - {{ compagne.nomSponsor }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .logo-preview-container {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .logo-preview-container:hover {
+            border-color: #0d6efd;
+        }
+        #logoPreview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            cursor: pointer;
+        }
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .form-section h2 {
+            color: #0d6efd;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 10px;
+        }
+        .date-fields {
+            display: flex;
+            gap: 15px;
+        }
+        .date-fields .form-group {
+            flex: 1;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Image preview
+            const logoInput = document.querySelector('#{{ form.logoCompagne.vars.id }}');
+            const logoPreview = document.getElementById('logoPreview');
+            const previewContainer = document.querySelector('.logo-preview-container');
+            
+            logoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        logoPreview.src = e.target.result;
+                        previewContainer.classList.add('has-image');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Datepicker initialization if using flatpickr
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr('.datepicker', {
+                    dateFormat: 'd/m/Y',
+                    locale: 'fr'
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <h1 class="display-5 mb-0">
+                    <i class="fas fa-edit text-primary me-2"></i>
+                    Modifier campagne
+                </h1>
+                <a href="{{ path('app_compagne_index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+                </a>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="form-section">
+                        <h2><i class="fas fa-info-circle me-2"></i>Informations de base</h2>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.nomSponsor, {
+                                    'label': 'Nom du sponsor',
+                                    'attr': {'class': 'form-control-lg'}
+                                }) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.tarifs, {
+                                    'label': 'Budget',
+                                    'attr': {'class': 'form-control-lg'}
+                                }) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2><i class="fas fa-calendar-alt me-2"></i>Période de campagne</h2>
+                        <div class="date-fields">
+                            {{ form_row(form.dateDebut, {
+                                'label': 'Date de début',
+                                'attr': {'class': 'form-control datepicker'}
+                            }) }}
+                            {{ form_row(form.dateFin, {
+                                'label': 'Date de fin',
+                                'attr': {'class': 'form-control datepicker'}
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2><i class="fas fa-image me-2"></i>Logo du sponsor</h2>
+                        <div class="logo-preview-container upload-area" onclick="document.getElementById('{{ form.logoCompagne.vars.id }}').click()">
+                            {% if compagne.logoCompagne %}
+                                <img id="logoPreview" 
+                                     src="{{ asset('uploads/logos/' ~ compagne.logoCompagne) }}" 
+                                     class="img-fluid mb-3"
+                                     alt="Logo actuel">
+                            {% else %}
+                                <img id="logoPreview" 
+                                     src="{{ asset('img/default-logo.png') }}" 
+                                     class="img-fluid mb-3"
+                                     alt="Aucun logo">
+                            {% endif %}
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-upload me-2"></i>
+                                Cliquez pour télécharger un nouveau logo
+                            </p>
+                            <small class="text-muted">Formats supportés: JPG, PNG (Max 2MB)</small>
+                            {{ form_widget(form.logoCompagne, {
+                                'attr': {
+                                    'class': 'd-none',
+                                    'onchange': 'previewImage(this)'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2><i class="fas fa-cog me-2"></i>Paramètres</h2>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.status, {
+                                    'label': 'Statut de la campagne',
+                                    'attr': {'class': 'form-select-lg'}
+                                }) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.typeMarketing, {
+                                    'label': 'Type de marketing',
+                                    'attr': {'class': 'form-select-lg'}
+                                }) }}
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            {{ form_row(form.produit, {
+                                'label': 'Produit associé',
+                                'attr': {'class': 'form-select-lg'}
+                            }) }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-save me-2"></i> Enregistrer les modifications
+                        </button>
+                        <a href="{{ path('app_compagne_index') }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
