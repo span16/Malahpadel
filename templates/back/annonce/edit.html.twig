@@ -1,0 +1,76 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Modifier l'annonce{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Modifier l'annonce</h1>
+            <a href="{{ path('back_annonce_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.titre, {
+                                'label': 'Titre',
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.dateHeure, {
+                                'label': 'Date du match',
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.lieu, {
+                                'label': 'Lieu',
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.joueursRecherches, {
+                                'label': 'Joueurs recherchés',
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.niveau, {
+                                'label': 'Niveau',
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.description, {
+                                'label': 'Description',
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-save"></i> Mettre à jour
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+            <div class="card-footer">
+                <form method="post" action="{{ path('back_annonce_delete', {'id': annonce_match.annonceId}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce_match.annonceId) }}">
+                    <button class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

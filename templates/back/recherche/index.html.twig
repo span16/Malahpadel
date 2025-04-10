@@ -1,0 +1,62 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Gestion des Recherches{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Gestion des Recherches</h1>
+            <a href="{{ path('back_recherche_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nouvelle recherche
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID Utilisateur</th>
+                                <th>Nom</th>
+                                <th>Niveau</th>
+                                <th>Annonces</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for recherche in recherches %}
+                                <tr>
+                                    <td>{{ recherche.userId }}</td>
+                                    <td>{{ recherche.nom }}</td>
+                                    <td>{{ recherche.niveau }}</td>
+                                    <td>{{ recherche.annonces }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('back_recherche_show', {'userId': recherche.userId}) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('back_recherche_edit', {'userId': recherche.userId}) }}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('back_recherche_delete', {'userId': recherche.userId}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette recherche ?');" style="display: inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recherche.userId) }}">
+                                                <button class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">Aucune recherche trouvée</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

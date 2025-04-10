@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('app_annonce_match_delete', {'annonceId': annonce_match.annonceId}) }}" style="display:inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce_match.annonceId) }}">
+    <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash"></i> Supprimer
+    </button>
+</form>

@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('back_invitation_delete', {'id': invitation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette invitation ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ invitation.id) }}">
+    <button class="btn btn-danger">
+        <i class="fas fa-trash"></i> Supprimer
+    </button>
+</form> 

@@ -1,0 +1,64 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Gestion des Annonces{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Gestion des Annonces</h1>
+            <a href="{{ path('back_annonce_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nouvelle annonce
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Titre</th>
+                                <th>Date du match</th>
+                                <th>Niveau</th>
+                                <th>Prix</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for annonce_match in annonce_matches %}
+                                <tr>
+                                    <td>{{ annonce_match.annonceId }}</td>
+                                    <td>{{ annonce_match.titre }}</td>
+                                    <td>{{ annonce_match.dateHeure ? annonce_match.dateHeure|date('d/m/Y') : '' }}</td>
+                                    <td>{{ annonce_match.niveau }}</td>
+                                    <td>{{ annonce_match.joueursRecherches }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('back_annonce_show', {'id': annonce_match.annonceId}) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('back_annonce_edit', {'id': annonce_match.annonceId}) }}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('back_annonce_delete', {'id': annonce_match.annonceId}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');" style="display: inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce_match.annonceId) }}">
+                                                <button class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center">Aucune annonce trouvée</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

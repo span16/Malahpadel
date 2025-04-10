@@ -1,0 +1,29 @@
+{{ form_start(form) }}
+    <div class="form-group">
+        {{ form_label(form.senderId) }}
+        {{ form_widget(form.senderId, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.senderId) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.receiverId) }}
+        {{ form_widget(form.receiverId, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.receiverId) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.dateEnvoi) }}
+        {{ form_widget(form.dateEnvoi, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.dateEnvoi) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.statut) }}
+        {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.statut) }}
+    </div>
+
+    <div class="form-group mt-3">
+        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+{{ form_end(form) }} 
