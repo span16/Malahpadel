@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-bullhorn fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Annonces</h3>
+                    <p class="card-text">Consultez et créez des annonces pour vos matchs de padel.</p>
+                    <a href="{{ path('app_annonce_match_index') }}" class="btn btn-primary">
+                        Voir les annonces
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-search fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Recherches</h3>
+                    <p class="card-text">Trouvez des partenaires pour vos matchs de padel.</p>
+                    <a href="{{ path('app_recherche_index') }}" class="btn btn-primary">
+                        Voir les recherches
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-envelope fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Invitations</h3>
+                    <p class="card-text">Gérez vos invitations pour les matchs de padel.</p>
+                    <a href="{{ path('app_invitation_index') }}" class="btn btn-primary">
+                        Voir les invitations
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

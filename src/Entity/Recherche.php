@@ -2,72 +2,67 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use App\Repository\RechercheRepository;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RechercheRepository::class)]
 #[ORM\Table(name: 'recherche')]
 class Recherche
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $user_id = null;
+    #[ORM\Column(name: 'user_id', type: 'integer')]
+    private ?int $userId = null;
 
-    public function getUser_id(): ?int
+    #[ORM\Column(length: 25)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 25)]
+    private ?string $niveau = null;
+
+    #[ORM\Column(length: 25)]
+    private ?string $annonces = null;
+
+    public function getUserId(): ?int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
-    public function setUser_id(int $user_id): self
+    public function setUserId(int $userId): static
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $nom = null;
 
     public function getNom(): ?string
     {
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $niveau = null;
 
     public function getNiveau(): ?string
     {
         return $this->niveau;
     }
 
-    public function setNiveau(string $niveau): self
+    public function setNiveau(string $niveau): static
     {
         $this->niveau = $niveau;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $annonces = null;
 
     public function getAnnonces(): ?string
     {
         return $this->annonces;
     }
 
-    public function setAnnonces(string $annonces): self
+    public function setAnnonces(string $annonces): static
     {
         $this->annonces = $annonces;
         return $this;
     }
-
-}
+} 

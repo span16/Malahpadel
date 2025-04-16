@@ -1,0 +1,58 @@
+{% extends 'annonce_match/base.html.twig' %}
+
+{% block title %}Annonces{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Liste des Annonces</h1>
+        <a href="{{ path('app_annonce_match_new') }}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Créer une nouvelle annonce
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Date</th>
+                    <th>Lieu</th>
+                    <th>Joueurs Recherchés</th>
+                    <th>Niveau</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for annonce_match in annonce_matches %}
+                <tr>
+                    <td>{{ annonce_match.titre }}</td>
+                    <td>{{ annonce_match.dateHeure ? annonce_match.dateHeure|date('Y-m-d') : '' }}</td>
+                    <td>{{ annonce_match.lieu }}</td>
+                    <td>{{ annonce_match.joueursRecherches }}</td>
+                    <td>{{ annonce_match.niveau }}</td>
+                    <td>{{ annonce_match.description }}</td>
+                    <td>
+                        <a href="{{ path('app_annonce_match_show', {'annonceId': annonce_match.annonceId}) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_annonce_match_edit', {'annonceId': annonce_match.annonceId}) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form method="post" action="{{ path('app_annonce_match_delete', {'annonceId': annonce_match.annonceId}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce?');" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce_match.annonceId) }}">
+                            <button class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucune annonce trouvée</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %} 

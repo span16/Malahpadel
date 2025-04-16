@@ -1,0 +1,130 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Dashboard - Administration{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="mb-4">Dashboard</h1>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-bullhorn text-primary"></i> Annonces
+                        </h5>
+                        <p class="card-text display-4">{{ annonces|length }}</p>
+                        <a href="{{ path('back_annonce_index') }}" class="btn btn-primary">
+                            Voir toutes les annonces
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-search text-success"></i> Recherches
+                        </h5>
+                        <p class="card-text display-4">{{ recherches|length }}</p>
+                        <a href="{{ path('back_recherche_index') }}" class="btn btn-success">
+                            Voir toutes les recherches
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-envelope text-info"></i> Invitations
+                        </h5>
+                        <p class="card-text display-4">{{ invitations|length }}</p>
+                        <a href="{{ path('back_invitation_index') }}" class="btn btn-info">
+                            Voir toutes les invitations
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Items -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Dernières Annonces</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            {% for annonce in annonces|slice(0, 5) %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ annonce.titre }}</h6>
+                                            <small class="text-muted">{{ annonce.dateHeure|date('d/m/Y') }}</small>
+                                        </div>
+                                        <a href="{{ path('back_annonce_show', {'id': annonce.annonceId}) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Dernières Recherches</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            {% for recherche in recherches|slice(0, 5) %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ recherche.nom }}</h6>
+                                            <small class="text-muted">Niveau: {{ recherche.niveau }}</small>
+                                        </div>
+                                        <a href="{{ path('back_recherche_show', {'userId': recherche.userId}) }}" class="btn btn-sm btn-success">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Dernières Invitations</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            {% for invitation in invitations|slice(0, 5) %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Invitation #{{ invitation.id }}</h6>
+                                            <small class="text-muted">Statut: {{ invitation.statut.value }}</small>
+                                        </div>
+                                        <a href="{{ path('back_invitation_show', {'id': invitation.id}) }}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

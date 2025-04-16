@@ -1,0 +1,64 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Détails de l'annonce{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Détails de l'annonce</h1>
+            <div>
+                <a href="{{ path('back_annonce_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <a href="{{ path('back_annonce_edit', {'id': annonce_match.annonceId}) }}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>ID</th>
+                            <td>{{ annonce_match.annonceId }}</td>
+                        </tr>
+                        <tr>
+                            <th>Titre</th>
+                            <td>{{ annonce_match.titre }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date du match</th>
+                            <td>{{ annonce_match.dateHeure ? annonce_match.dateHeure|date('d/m/Y H:i') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Lieu</th>
+                            <td>{{ annonce_match.lieu }}</td>
+                        </tr>
+                        <tr>
+                            <th>Joueurs recherchés</th>
+                            <td>{{ annonce_match.joueursRecherches }}</td>
+                        </tr>
+                        <tr>
+                            <th>Niveau</th>
+                            <td>{{ annonce_match.niveau }}</td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td>{{ annonce_match.description }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <form method="post" action="{{ path('back_annonce_delete', {'id': annonce_match.annonceId}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce_match.annonceId) }}">
+                    <button class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

@@ -2,114 +2,111 @@
 
 namespace App\Entity;
 
+use App\Repository\AnnonceMatchRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
-use App\Repository\AnnoncematchRepository;
-
-#[ORM\Entity(repositoryClass: AnnoncematchRepository::class)]
+#[ORM\Entity(repositoryClass: AnnonceMatchRepository::class)]
 #[ORM\Table(name: 'annoncematch')]
-class Annoncematch
+class AnnonceMatch
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $annonce_id = null;
+    #[ORM\Column(name: 'annonce_id')]
+    private ?int $annonceId = null;
 
-    public function getAnnonce_id(): ?int
-    {
-        return $this->annonce_id;
-    }
-
-    public function setAnnonce_id(int $annonce_id): self
-    {
-        $this->annonce_id = $annonce_id;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(length: 25)]
     private ?string $titre = null;
+
+    #[ORM\Column(name: 'date_heure', type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateHeure = null;
+
+    #[ORM\Column(length: 25, nullable: true)]
+    private ?string $lieu = null;
+
+    #[ORM\Column(name: 'joueurs_recherches')]
+    private ?int $joueursRecherches = null;
+
+    #[ORM\Column(length: 25)]
+    private ?string $niveau = null;
+
+    #[ORM\Column(length: 25)]
+    private ?string $description = null;
+
+    public function getAnnonceId(): ?int
+    {
+        return $this->annonceId;
+    }
 
     public function getTitre(): ?string
     {
         return $this->titre;
     }
 
-    public function setTitre(string $titre): self
+    public function setTitre(string $titre): static
     {
         $this->titre = $titre;
+
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: false)]
-    private ?\DateTimeInterface $date_heure = null;
-
-    public function getDate_heure(): ?\DateTimeInterface
+    public function getDateHeure(): ?\DateTimeInterface
     {
-        return $this->date_heure;
+        return $this->dateHeure;
     }
 
-    public function setDate_heure(\DateTimeInterface $date_heure): self
+    public function setDateHeure(\DateTimeInterface $dateHeure): static
     {
-        $this->date_heure = $date_heure;
+        $this->dateHeure = $dateHeure;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $lieu = null;
 
     public function getLieu(): ?string
     {
         return $this->lieu;
     }
 
-    public function setLieu(?string $lieu): self
+    public function setLieu(?string $lieu): static
     {
         $this->lieu = $lieu;
+
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $joueurs_recherches = null;
-
-    public function getJoueurs_recherches(): ?int
+    public function getJoueursRecherches(): ?int
     {
-        return $this->joueurs_recherches;
+        return $this->joueursRecherches;
     }
 
-    public function setJoueurs_recherches(int $joueurs_recherches): self
+    public function setJoueursRecherches(int $joueursRecherches): static
     {
-        $this->joueurs_recherches = $joueurs_recherches;
+        $this->joueursRecherches = $joueursRecherches;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $niveau = null;
 
     public function getNiveau(): ?string
     {
         return $this->niveau;
     }
 
-    public function setNiveau(string $niveau): self
+    public function setNiveau(string $niveau): static
     {
         $this->niveau = $niveau;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $description = null;
 
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
-
-}
+} 

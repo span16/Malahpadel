@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Recherche{% endblock %}
+
+{% block body %}
+    <h1>Create new Recherche</h1>
+
+    {{ include('recherche/_form.html.twig') }}
+
+    <a href="{{ path('app_recherche_index') }}" class="btn btn-secondary">Back to list</a>
+{% endblock %} 

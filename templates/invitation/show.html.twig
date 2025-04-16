@@ -1,0 +1,54 @@
+{% extends 'invitation/base.html.twig' %}
+
+{% block title %}Détails de l'invitation{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h1 class="h3 mb-0">Détails de l'invitation</h1>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>ID Expéditeur</th>
+                        <td>{{ invitation.senderId }}</td>
+                    </tr>
+                    <tr>
+                        <th>ID Destinataire</th>
+                        <td>{{ invitation.receiverId }}</td>
+                    </tr>
+                    <tr>
+                        <th>Statut</th>
+                        <td>
+                            {% if invitation.statut == constant('App\\Entity\\InvitationStatus::EN_ATTENTE') %}
+                                En attente
+                            {% elseif invitation.statut == constant('App\\Entity\\InvitationStatus::ACCEPTEE') %}
+                                Acceptée
+                            {% elseif invitation.statut == constant('App\\Entity\\InvitationStatus::REFUSEE') %}
+                                Refusée
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Date d'envoi</th>
+                        <td>{{ invitation.dateEnvoi ? invitation.dateEnvoi|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <a href="{{ path('app_invitation_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <div>
+                    <a href="{{ path('app_invitation_edit', {'id': invitation.id}) }}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                    {{ include('invitation/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

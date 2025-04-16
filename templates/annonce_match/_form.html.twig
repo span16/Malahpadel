@@ -1,0 +1,42 @@
+<form {{ form_start(form) }}>
+    <div class="form-group">
+        {{ form_label(form.titre) }}
+        {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.titre) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.dateHeure) }}
+        {{ form_widget(form.dateHeure, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.dateHeure) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.lieu) }}
+        {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.lieu) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.joueursRecherches) }}
+        {{ form_widget(form.joueursRecherches, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.joueursRecherches) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.niveau) }}
+        {{ form_widget(form.niveau, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.niveau) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary" type="submit">{{ button_label }}</button>
+    </div>
+
+{{ form_end(form) }}

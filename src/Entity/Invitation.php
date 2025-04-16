@@ -2,11 +2,9 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use App\Repository\InvitationRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InvitationRepository::class)]
 #[ORM\Table(name: 'invitation')]
@@ -14,74 +12,71 @@ class Invitation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $Id = null;
+    #[ORM\Column(name: 'Id')]
+    private ?int $id = null;
+
+    #[ORM\Column(name: 'senderId')]
+    private ?int $senderId = null;
+
+    #[ORM\Column(name: 'receiverId')]
+    private ?int $receiverId = null;
+
+    #[ORM\Column(name: 'dateEnvoi', type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $dateEnvoi = null;
+
+    #[ORM\Column(length: 20, enumType: InvitationStatus::class)]
+    private ?InvitationStatus $statut = null;
 
     public function getId(): ?int
     {
-        return $this->Id;
+        return $this->id;
     }
-
-    public function setId(int $Id): self
-    {
-        $this->Id = $Id;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $senderId = null;
 
     public function getSenderId(): ?int
     {
         return $this->senderId;
     }
 
-    public function setSenderId(int $senderId): self
+    public function setSenderId(int $senderId): static
     {
         $this->senderId = $senderId;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $receiverId = null;
 
     public function getReceiverId(): ?int
     {
         return $this->receiverId;
     }
 
-    public function setReceiverId(int $receiverId): self
+    public function setReceiverId(int $receiverId): static
     {
         $this->receiverId = $receiverId;
+
         return $this;
     }
-
-    #[ORM\Column(type: 'date', nullable: false)]
-    private ?\DateTimeInterface $dateEnvoi = null;
 
     public function getDateEnvoi(): ?\DateTimeInterface
     {
         return $this->dateEnvoi;
     }
 
-    public function setDateEnvoi(\DateTimeInterface $dateEnvoi): self
+    public function setDateEnvoi(\DateTimeInterface $dateEnvoi): static
     {
         $this->dateEnvoi = $dateEnvoi;
+
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $statut = null;
-
-    public function getStatut(): ?string
+    public function getStatut(): ?InvitationStatus
     {
         return $this->statut;
     }
 
-    public function setStatut(string $statut): self
+    public function setStatut(InvitationStatus $statut): static
     {
         $this->statut = $statut;
+
         return $this;
     }
-
-}
+} 

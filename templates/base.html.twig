@@ -167,7 +167,11 @@
                                 <a href="404.html" class="dropdown-item">404 Page</a>
                             </div>
                         </div>
-                        <a href="blog.html" class="nav-item nav-link">Matchup</a>
+                        <a href="{{ path('app_annonce_match_index') }}" class="nav-item nav-link">Annonces</a>
+                                <a href="{{ path('app_recherche_index') }}" class="nav-item nav-link">Partner</a>
+                                     <a href="" class="nav-item nav-link">Invitation</a>
+
+
                                         <a href="{{ path('app_reservation') }}" class="nav-item nav-link">Réservations</a>
                                         <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -188,6 +192,7 @@
                 </span>
             {% endif %}
         </a>
+        </li>
                         <a href="contact.html" class="nav-item nav-link">Contact Us</a>
                     </div>
                     <a href="#" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Get Started</a>

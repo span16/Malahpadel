@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('back_recherche_delete', {'userId': recherche.userId}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette recherche ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recherche.userId) }}">
+    <button class="btn btn-danger">
+        <i class="fas fa-trash"></i> Supprimer
+    </button>
+</form> 
